@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="app-version" content="1.0.0">
+<meta name="app-name" content="IrisID">
+<title>IrisID</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c:#f5f0e8;--p:#ede5d0;--dk:#2c1f0e;--br:#5c3d1e;--gr:#8a7968;
+  --vi:#5b3a8c;--gn:#3a6b28;--gd:#b8920a;--rd:#a02828;--bd:#c4b090;
+  --sh:rgba(44,31,14,.13);--bl:#2a5080;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--c);color:var(--dk);font-family:'Crimson Pro',serif;font-size:16px;min-height:100vh}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+a{color:var(--vi);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ─── HEADER ─── */
+.hdr{text-align:center;padding:1.1rem 1rem .8rem;border-bottom:1px solid var(--bd);background:linear-gradient(to bottom,rgba(91,58,140,.05),transparent)}
+.hdr h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,5vw,2.6rem);font-weight:700}
+.hdr h1 em{color:var(--vi)}.hdr p{font-size:.72rem;color:var(--gr);letter-spacing:.18em;text-transform:uppercase;margin-top:.18rem}
+
+/* ─── NAV ─── */
+.nav{display:flex;border-bottom:1px solid var(--bd);background:rgba(237,229,208,.93);position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);overflow-x:auto}
+.nb{flex:1;min-width:max-content;background:none;border:none;padding:.55rem .5rem;font-size:.82rem;color:var(--gr);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.nb.on{color:var(--vi);border-bottom-color:var(--vi);font-weight:500}
+.nb .bk{display:inline-block;background:var(--vi);color:#fff;border-radius:9px;font-size:.58rem;padding:.02rem .3rem;margin-left:.18rem;vertical-align:middle;font-family:sans-serif;font-weight:700}
+.nb.des{color:var(--gd)}.nb.des.on{border-bottom-color:var(--gd)}
+
+/* ─── PAGE ─── */
+.pg{display:none;padding:1rem 1rem 5rem;max-width:880px;margin:0 auto}
+.pg.on{display:block}
+
+/* ─── CARDS ─── */
+.card{background:#fff;border:1px solid var(--bd);border-radius:4px;padding:1.1rem;margin-bottom:.9rem}
+.card h2{font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--vi);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--p)}
+.card h2.gd{color:var(--gd)}
+
+/* ─── FORMS ─── */
+.fg{margin-bottom:.7rem}
+.fg label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.22rem}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;background:var(--c);color:var(--dk);transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--vi)}
+.fg textarea{resize:vertical;min-height:60px}
+.row{display:flex;gap:.4rem}.row input,.row select{flex:1}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem}
+@media(max-width:460px){.row2{grid-template-columns:1fr}.row3{grid-template-columns:1fr 1fr}}
+
+/* ─── BUTTONS ─── */
+.btn{border:none;padding:.4rem 1rem;border-radius:2px;cursor:pointer;font-size:.9rem;transition:all .2s}
+.btn-p{background:var(--vi);color:#fff}.btn-p:hover{background:#4a2f78}
+.btn-g{background:var(--gn);color:#fff}.btn-g:hover{background:#2a5020}
+.btn-d{background:var(--rd);color:#fff}.btn-d:hover{background:#7a1818}
+.btn-o{background:var(--gd);color:#fff}.btn-o:hover{background:#8a6a08}
+.btn-b{background:var(--bl);color:#fff}.btn-b:hover{background:#1a3860}
+.btn-s{background:none;border:1px solid var(--bd);color:var(--br)}.btn-s:hover{border-color:var(--vi);color:var(--vi)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:.38rem;flex-wrap:wrap;margin-top:.3rem}
+
+/* ─── BANNER ─── */
+.bn{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;border:1px solid #e8b840;background:#fff8e7;border-radius:3px;padding:.65rem .9rem;margin-bottom:.9rem;font-size:.86rem;color:var(--br)}
+.bn.ok{border-color:#7ab360;background:#edf5e8}
+.bn.info{border-color:var(--bd);background:var(--p)}
+
+/* ─── UPLOAD ─── */
+.dropbox{border:2px dashed var(--bd);border-radius:4px;padding:1.8rem 1.2rem;text-align:center;background:rgba(237,229,208,.3);transition:border-color .2s;position:relative}
+.dropbox.ov{border-color:var(--vi);background:rgba(91,58,140,.04)}
+.dropbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropbox .ico{font-size:2rem;opacity:.32;display:block;margin-bottom:.5rem}
+.dropbox h3{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--br);margin-bottom:.18rem}
+.dropbox p{font-size:.8rem;color:var(--gr)}
+
+/* STRIP */
+.strip{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--bd)}
+.tw{position:relative}
+.tw img{width:72px;height:72px;object-fit:cover;border-radius:3px;border:2px solid var(--bd);display:block}
+.tw img.main{border-color:var(--vi)}
+.tw .td{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:.58rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tw .ml{position:absolute;bottom:2px;left:2px;background:var(--vi);color:#fff;font-size:.48rem;padding:.02rem .22rem;border-radius:1px}
+
+/* CAM */
+.cam-row{margin-top:.6rem;text-align:center}
+video#camv{width:100%;max-height:230px;border:1px solid var(--bd);border-radius:3px;display:none;margin-top:.5rem;background:#000}
+video#camv.on{display:block}
+
+/* SCAN BTN */
+.scan-btn{display:block;width:100%;margin-top:.9rem;padding:.72rem;background:var(--vi);color:#fff;border:none;font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic;cursor:pointer;border-radius:3px;transition:all .2s}
+.scan-btn:hover:not(:disabled){background:#4a2f78;transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,58,140,.3)}
+.scan-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* LOADING */
+.ld{text-align:center;padding:1.5rem;display:none}
+.ld.on{display:block}
+.sp{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--vi);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .6rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld p{font-family:'Playfair Display',serif;font-style:italic;color:var(--gr);font-size:.92rem}
+.ld .steps-prog{text-align:left;margin-top:.8rem;max-width:340px;margin-left:auto;margin-right:auto}
+.prog-step{font-size:.82rem;padding:.22rem 0;display:flex;align-items:center;gap:.5rem;color:var(--gr)}
+.prog-step.done{color:var(--gn)}.prog-step.active{color:var(--vi);font-weight:500}
+.prog-step .si{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;background:var(--p)}
+.prog-step.done .si{background:var(--gn);color:#fff}
+.prog-step.active .si{background:var(--vi);color:#fff;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ERR */
+.err{background:#fff5f5;border:1px solid #dba0a0;border-radius:3px;padding:.75rem .9rem;font-size:.86rem;line-height:1.5;margin-top:.8rem;display:none}
+.err.on{display:block}
+
+/* ─── RESULT ─── */
+.res{display:none;margin-top:.9rem;animation:fu .3s ease}
+.res.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PlantNet badge */
+.pn-badge{border-radius:3px;padding:.5rem .8rem;margin-bottom:.7rem;font-size:.84rem;border:1px solid}
+.pn-ok{border-color:#7ab360;background:#edf5e8}
+.pn-warn{border-color:#e8b840;background:#fff8e7}
+.pn-fail{border-color:var(--bd);background:var(--p)}
+
+/* Result header */
+.res-hd{background:linear-gradient(135deg,var(--vi),#3d2666);color:#fff;border-radius:4px 4px 0 0;padding:1.1rem 1.2rem;position:relative;overflow:hidden}
+.res-hd::after{content:'🌸';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:2.8rem;opacity:.1}
+.res-conf{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;opacity:.58;margin-bottom:.1rem}
+.res-name{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,4vw,1.75rem);font-style:italic;line-height:1.1}
+.res-group{font-size:.78rem;opacity:.65;margin-top:.08rem}
+
+/* Morpho fiche */
+.morpho-fiche{background:#fff;border:1px solid var(--bd);border-top:none;border-radius:0 0 4px 4px;padding:1rem 1.2rem}
+.morpho-section{margin-bottom:.9rem}
+.morpho-section h4{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--br);margin-bottom:.45rem;padding-bottom:.22rem;border-bottom:1px solid var(--p)}
+.crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .8rem}
+@media(max-width:420px){.crit-grid{grid-template-columns:1fr}}
+.crit-row{display:flex;align-items:baseline;gap:.3rem}
+.crit-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);white-space:nowrap;flex-shrink:0}
+.crit-val{font-size:.86rem;color:var(--dk)}
+.score-bar{height:6px;border-radius:3px;background:var(--p);margin:.4rem 0;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;background:var(--vi);transition:width .6s ease}
+
+/* Match results */
+.match-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.match-item{border:1px solid var(--bd);border-radius:3px;padding:.6rem .8rem;background:#fff;cursor:pointer;transition:all .2s;display:flex;gap:.7rem;align-items:stretch}
+.match-item:hover{border-color:var(--vi);box-shadow:0 2px 10px var(--sh)}
+.match-item.top{border-color:var(--vi);background:rgba(91,58,140,.02)}
+.mi-img{width:60px;height:60px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--p)}
+.mi-info{flex:1}
+.mi-name{font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:var(--dk);margin-bottom:.1rem}
+.mi-meta{font-size:.74rem;color:var(--gr)}
+.mi-score{font-size:.78rem;font-weight:600;margin-top:.2rem}
+.mi-score.hi{color:var(--gn)}.mi-score.med{color:var(--gd)}.mi-score.lo{color:var(--gr)}
+.match-none{font-style:italic;font-size:.88rem;color:var(--gr);padding:.5rem 0}
+
+/* res actions */
+.res-actions{margin-top:.8rem;display:flex;gap:.38rem;flex-wrap:wrap;padding-top:.75rem;border-top:1px solid var(--p)}
+.lb{display:inline-flex;align-items:center;gap:.22rem;padding:.24rem .7rem;border:1px solid var(--bd);border-radius:2px;font-size:.83rem;color:var(--br);text-decoration:none;cursor:pointer;background:none;transition:all .2s;white-space:nowrap}
+.lb:hover{border-color:var(--vi);color:var(--vi);text-decoration:none}
+.lb-g{background:var(--gn);color:#fff;border-color:var(--gn)}.lb-g:hover{background:#2a5020!important;color:#fff!important}
+.lb-o{background:var(--vi);color:#fff;border-color:var(--vi)}.lb-o:hover{background:#4a2f78!important;color:#fff!important}
+.lb.done{background:var(--gr);border-color:var(--gr);color:#fff;cursor:default}
+.dup-banner{display:none;border-radius:3px;padding:.55rem .8rem;margin-top:.55rem;font-size:.84rem;line-height:1.5}
+
+/* ─── COLLECTION ─── */
+.coll-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem}
+.coll-bar h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic}
+input.search{border:1px solid var(--bd);border-radius:2px;padding:.3rem .65rem;font-size:.88rem;background:#fff;color:var(--dk);width:155px}
+input.search:focus{outline:none;border-color:var(--vi)}
+.vt{display:flex;gap:.2rem}
+.vt button{background:none;border:1px solid var(--bd);padding:.26rem .45rem;border-radius:2px;cursor:pointer;font-size:.78rem;color:var(--gr);transition:all .2s}
+.vt button.on{background:var(--vi);color:#fff;border-color:var(--vi)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:.8rem}
+.cc{background:#fff;border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.cc:hover{border-color:var(--vi);box-shadow:0 4px 14px var(--sh);transform:translateY(-2px)}
+.cc-img{width:100%;height:115px;object-fit:cover;display:block;background:var(--p)}
+.cc-ph{width:100%;height:115px;background:linear-gradient(135deg,#e8dff0,#d5c8e8);display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.cc-info{padding:.45rem .6rem}
+.cc-name{font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--dk);margin-bottom:.08rem;line-height:1.2}
+.cc-meta{font-size:.68rem;color:var(--gr)}
+.yr-tag{font-size:.6rem;background:var(--p);border:1px solid var(--bd);border-radius:10px;padding:.02rem .28rem;color:var(--br);margin:.08rem .06rem 0 0;display:inline-block}
+.yr-tag.y{background:#e2f0e2;border-color:#8ab08a;color:var(--gn)}
+.yr-tag.n{background:#f5e2e2;border-color:#c09090;color:var(--rd)}
+.cc-del{position:absolute;top:.28rem;right:.28rem;background:rgba(44,31,14,.6);color:#fff;border:none;border-radius:50%;width:19px;height:19px;font-size:.65rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+.cc:hover .cc-del{display:flex}
+.clist{display:flex;flex-direction:column;gap:.45rem}
+.li{background:#fff;border:1px solid var(--bd);border-radius:3px;display:flex;align-items:stretch;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.li:hover{border-color:var(--vi);box-shadow:0 2px 10px var(--sh)}
+.li-img{width:68px;object-fit:cover;flex-shrink:0}
+.li-ph{width:68px;flex-shrink:0;background:linear-gradient(135deg,#e8dff0,#d5c8e8);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.li-info{flex:1;padding:.45rem .65rem}
+.li-name{font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;margin-bottom:.06rem}
+.li-meta{font-size:.72rem;color:var(--gr)}
+.li-del{position:absolute;top:.32rem;right:.32rem;background:rgba(44,31,14,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:.62rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+.li:hover .li-del{display:flex}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--gr)}
+.empty .ei{font-size:2.4rem;opacity:.25;margin-bottom:.55rem}
+.empty p{font-family:'Playfair Display',serif;font-style:italic}
+
+/* ─── DATABASE VIEW ─── */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.db-card{background:#fff;border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.db-card:hover{border-color:var(--vi);box-shadow:0 3px 12px var(--sh)}
+.db-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--p)}
+.db-ph{width:100%;height:110px;background:linear-gradient(135deg,#dde8f0,#c8d8e8);display:flex;align-items:center;justify-content:center;font-size:2rem}
+.db-info{padding:.5rem .65rem}
+.db-name{font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;color:var(--dk);margin-bottom:.1rem}
+.db-meta{font-size:.68rem;color:var(--gr)}
+.db-completeness{height:3px;border-radius:2px;margin-top:.35rem;overflow:hidden;background:var(--p)}
+.db-comp-fill{height:100%;border-radius:2px;background:var(--gn)}
+.tag{display:inline-block;font-size:.62rem;padding:.04rem .28rem;border-radius:2px;margin:.08rem .04rem 0 0;font-family:sans-serif}
+.tag-g{background:#e2f0e2;color:var(--gn)}
+.tag-b{background:#dde8f0;color:var(--bl)}
+.tag-o{background:#f5eed8;color:var(--gd)}
+.tag-r{background:#f5e2e2;color:var(--rd)}
+
+/* ─── MODAL ─── */
+.ov{position:fixed;inset:0;background:rgba(44,31,14,.62);z-index:200;display:none;overflow-y:auto;padding:.8rem}
+.ov.on{display:block}
+.modal{background:var(--c);border:1px solid var(--bd);border-radius:4px;max-width:720px;margin:0 auto;position:relative;animation:fu .22s ease}
+.modal-close{position:absolute;top:.55rem;right:.55rem;background:rgba(44,31,14,.5);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+
+/* Iris fiche modal */
+.cover-wrap{position:relative;width:100%;height:200px;background:linear-gradient(135deg,#e8dff0,#d5c8e8);overflow:hidden}
+.cover-img{width:100%;height:100%;object-fit:cover;display:block}
+.cover-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,20,80,.65) 0%,transparent 55%)}
+.cover-title{position:absolute;bottom:.8rem;left:1rem;right:1rem;color:#fff}
+.cover-title h2{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,4vw,1.8rem);font-style:italic;line-height:1.1}
+.cover-title p{font-size:.78rem;opacity:.72;margin-top:.08rem}
+.cover-edit-btn{position:absolute;top:.55rem;left:.55rem;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.35);padding:.2rem .55rem;border-radius:2px;font-size:.72rem;cursor:pointer;backdrop-filter:blur(4px)}
+.mbody{padding:1rem 1.1rem}
+.mfgrid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.75rem}
+.mf label{display:block;font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr)}
+.mf span{font-size:.88rem;color:var(--dk)}
+.mdesc{font-style:italic;color:var(--br);font-size:.84rem;line-height:1.6;border-top:1px solid var(--p);padding-top:.6rem;margin-bottom:.9rem}
+
+/* Gallery */
+.gallery{display:flex;gap:.38rem;flex-wrap:wrap}
+.gp{position:relative}
+.gp img{width:72px;height:72px;object-fit:cover;border-radius:3px;border:2px solid var(--bd);cursor:pointer}
+.gp img.cov{border-color:var(--vi)}
+.gp .gp-d{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:.52rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.gp .gp-s{position:absolute;bottom:2px;left:2px;font-size:.58rem;background:var(--vi);color:#fff;padding:.02rem .25rem;border-radius:2px;cursor:pointer}
+.add-ph{width:72px;height:72px;border:2px dashed var(--bd);border-radius:3px;background:none;cursor:pointer;font-size:1.5rem;color:var(--gr);display:flex;align-items:center;justify-content:center;position:relative}
+.add-ph:hover{border-color:var(--vi);color:var(--vi)}
+.add-ph input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+/* History */
+.obs-list{display:flex;flex-direction:column;gap:.5rem}
+.obs-item{border:1px solid var(--bd);border-radius:3px;padding:.6rem .75rem;background:#fff;position:relative}
+.obs-hd{display:flex;align-items:center;gap:.45rem;margin-bottom:.35rem;flex-wrap:wrap}
+.obs-yr{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700}
+.obs-bl{font-size:.7rem;padding:.07rem .4rem;border-radius:10px;font-family:sans-serif;font-weight:600}
+.obs-bl.y{background:#d4ecd4;color:var(--gn)}
+.obs-bl.n{background:#f0d8d8;color:var(--rd)}
+.obs-bl.u{background:var(--p);color:var(--gr)}
+.obs-del{position:absolute;top:.38rem;right:.38rem;background:none;border:none;color:var(--gr);cursor:pointer;font-size:.82rem}
+.obs-del:hover{color:var(--rd)}
+.obs-photos{display:flex;gap:.32rem;flex-wrap:wrap;margin:.4rem 0}
+.obs-photos img{width:58px;height:58px;object-fit:cover;border-radius:3px;border:1px solid var(--bd);cursor:pointer}
+.obs-notes{font-style:italic;font-size:.82rem;color:var(--br)}
+.obs-form{border:1px solid var(--vi);border-radius:3px;padding:.75rem;background:#f9f7ff;margin-top:.5rem}
+.obs-form h4{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--vi);margin-bottom:.5rem}
+.bloom-row{display:flex;gap:.32rem;flex-wrap:wrap}
+.bb{background:none;border:1px solid var(--bd);padding:.22rem .6rem;border-radius:2px;font-size:.82rem;cursor:pointer;transition:all .2s;color:var(--gr)}
+.bb.sy{background:#d4ecd4;border-color:var(--gn);color:var(--gn);font-weight:600}
+.bb.sn{background:#f0d8d8;border-color:var(--rd);color:var(--rd);font-weight:600}
+.obs-form-photos{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.35rem}
+.op-wrap{position:relative}
+.op-wrap img{width:54px;height:54px;object-fit:cover;border-radius:3px;border:1px solid var(--bd)}
+.op-del{position:absolute;top:-3px;right:-3px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:14px;height:14px;font-size:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.add-op{width:54px;height:54px;border:2px dashed var(--bd);border-radius:3px;background:none;cursor:pointer;font-size:1.3rem;color:var(--gr);display:flex;align-items:center;justify-content:center;position:relative}
+.add-op:hover{border-color:var(--vi);color:var(--vi)}
+.add-op input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+/* ─── DESIGNER ─── */
+.lock-screen{text-align:center;padding:2rem 1rem}
+.lock-screen .lock-ico{font-size:3rem;opacity:.3;margin-bottom:.8rem}
+.step-badge{display:inline-block;background:var(--vi);color:#fff;border-radius:50%;width:22px;height:22px;font-size:.75rem;font-family:sans-serif;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:.4rem;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.55rem;font-size:.88rem;color:var(--br);line-height:1.5}
+
+/* Scraper panel */
+.site-chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.6rem}
+.site-chip{border:1px solid var(--bd);border-radius:2px;padding:.22rem .6rem;font-size:.8rem;cursor:pointer;background:none;color:var(--br);transition:all .2s}
+.site-chip.sel{background:var(--vi);color:#fff;border-color:var(--vi)}
+.scrape-result{border:1px solid var(--bd);border-radius:3px;background:#fff;padding:.7rem;font-size:.82rem;color:var(--br);max-height:180px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;display:none}
+.scrape-result.on{display:block}
+
+/* DB entry form */
+.morpho-editor{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:500px){.morpho-editor{grid-template-columns:1fr}}
+.me-group{background:rgba(237,229,208,.4);border:1px solid var(--bd);border-radius:3px;padding:.65rem}
+.me-group h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.45rem}
+.me-field{margin-bottom:.38rem}
+.me-field label{display:block;font-size:.68rem;color:var(--gr);margin-bottom:.15rem;text-transform:capitalize}
+.me-field select,.me-field input{width:100%;border:1px solid var(--bd);border-radius:2px;padding:.28rem .5rem;font-size:.82rem;background:#fff;color:var(--dk)}
+.me-field select:focus,.me-field input:focus{outline:none;border-color:var(--vi)}
+
+/* ─── SETTINGS ─── */
+.kst{font-size:.82rem;margin-top:.28rem}
+.kst.ok{color:#3a7a2a}.kst.bad{color:var(--rd)}
+.si-list{list-style:none}
+.si{display:flex;align-items:center;gap:.38rem;padding:.3rem .45rem;border:1px solid var(--bd);border-radius:2px;margin-bottom:.28rem;background:var(--c)}
+.si-i{flex:1;min-width:0}
+.si-n{font-size:.86rem;font-weight:500}
+.si-u{font-size:.68rem;color:var(--gr);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-d{background:none;border:none;color:var(--rd);cursor:pointer;font-size:.88rem;padding:.08rem .18rem;flex-shrink:0}
+.add-row{display:grid;grid-template-columns:1fr 2fr auto;gap:.38rem;margin-top:.45rem;align-items:end}
+@media(max-width:460px){.add-row{grid-template-columns:1fr}}
+.hint{font-size:.73rem;color:var(--gr);margin-top:.28rem;line-height:1.45}
+code{background:var(--p);padding:.06rem .22rem;border-radius:2px;font-size:.78rem}
+.step-s{display:flex;gap:.55rem;margin-bottom:.48rem}
+.sn{background:var(--vi);color:#fff;border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-family:sans-serif;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.st{font-size:.85rem;color:var(--br);line-height:1.48}.st a{color:var(--vi)}
+
+/* ─── LIGHTBOX ─── */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;justify-content:center}
+.lbox.on{display:flex}
+.lbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:3px}
+.lbox-x{position:absolute;top:.8rem;right:.8rem;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:50%;width:30px;height:30px;font-size:.95rem;cursor:pointer}
+
+/* Cover picker */
+.cpov{position:fixed;inset:0;background:rgba(44,31,14,.7);z-index:300;display:none;align-items:center;justify-content:center;padding:.8rem}
+.cpov.on{display:flex}
+.cpbox{background:var(--c);border:1px solid var(--bd);border-radius:4px;padding:1rem;max-width:480px;width:100%}
+.cpbox h3{font-family:'Playfair Display',serif;font-style:italic;color:var(--vi);margin-bottom:.65rem}
+.cp-grid{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+.cp-opt{width:78px;height:78px;object-fit:cover;border-radius:3px;border:3px solid transparent;cursor:pointer}
+.cp-opt.sel{border-color:var(--vi)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:1.1rem;left:50%;transform:translateX(-50%) translateY(55px);background:var(--dk);color:#fff;padding:.4rem 1rem;border-radius:3px;font-size:.88rem;transition:transform .25s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* ─── CHIPS ─── */
+.chips-wrap{margin-top:.4rem}
+.chips-lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.25rem}
+.chip{display:inline-block;background:var(--p);border:1px solid var(--bd);border-radius:20px;padding:.14rem .55rem;font-size:.75rem;margin:.14rem;text-decoration:none;color:var(--br)}
+.chip:hover{border-color:var(--vi);color:var(--vi)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>Iris<em>ID</em></h1>
+  <p>Identification morphologique · Collection · Base de données</p>
+</div>
+
+<div class="nav">
+  <button class="nb on"  id="nb-scan"       onclick="nav('scan')">🔍 Identifier</button>
+  <button class="nb"     id="nb-collection"  onclick="nav('collection')">🌸 Collection <span class="bk" id="badge">0</span></button>
+  <button class="nb"     id="nb-database"    onclick="nav('database')">🗄 Base <span class="bk" id="dbBadge">0</span></button>
+  <button class="nb des" id="nb-designer"    onclick="nav('designer')">🔧 Concepteur</button>
+  <button class="nb"     id="nb-settings"    onclick="nav('settings')">⚙️ Config</button>
+</div>
+
+<main>
+
+<!-- ══════ SCAN ══════ -->
+<div class="pg on" id="pg-scan">
+  <div class="bn" id="apiBanner">
+    <span>⚠️</span>
+    <span style="flex:1">Configurez vos clés API pour identifier vos iris.</span>
+    <button class="btn btn-p" onclick="nav('settings')" style="padding:.2rem .65rem;font-size:.82rem">Configurer →</button>
+  </div>
+
+  <div class="dropbox" id="dropbox">
+    <input type="file" id="scanFiles" accept="image/*" multiple>
+    <span class="ico">🌺</span>
+    <h3>Photo(s) d'iris à identifier</h3>
+    <p>Glissez ou cliquez · 1-2 photos max · JPG, PNG, WEBP</p>
+  </div>
+  <div class="strip" id="thumbStrip" style="display:none"></div>
+
+  <div class="cam-row">
+    <button class="btn btn-s" onclick="toggleCam()">📷 Appareil photo</button>
+    <video id="camv" autoplay playsinline></video>
+    <div id="camCtrl" style="display:none;text-align:center;margin-top:.45rem">
+      <button class="btn btn-p" onclick="captureCam()">📸 Capturer</button>
+      <button class="btn btn-d" onclick="stopCam()" style="margin-left:.35rem">✕</button>
+    </div>
+    <canvas id="camCanvas" style="display:none"></canvas>
+  </div>
+
+  <button class="scan-btn" id="scanBtn" onclick="doScan()" disabled>Identifier →</button>
+
+  <div class="ld" id="loadDiv">
+    <div class="sp"></div>
+    <p id="loadTxt">Analyse en cours…</p>
+    <div class="steps-prog" id="stepsProgs">
+      <div class="prog-step" id="ps1"><span class="si">1</span> Vérification PlantNet</div>
+      <div class="prog-step" id="ps2"><span class="si">2</span> Analyse morphologique (Mistral)</div>
+      <div class="prog-step" id="ps3"><span class="si">3</span> Recherche dans la base de données</div>
+    </div>
+  </div>
+  <div class="err" id="errDiv"></div>
+
+  <!-- RESULT — Vue simplifiée utilisateur -->
+  <div class="res" id="resDiv">
+    <!-- PlantNet species confirmation -->
+    <div id="pnBadge" class="pn-badge" style="display:none"></div>
+
+    <!-- Card résultat principal -->
+    <div class="res-hd">
+      <div class="res-conf" id="rConf"></div>
+      <div class="res-name" id="rName"></div>
+      <div class="res-group" id="rGroup"></div>
+    </div>
+    <div class="morpho-fiche">
+
+      <!-- Résumé couleurs seulement -->
+      <div id="rColorsRow" style="margin-bottom:.8rem;font-size:.92rem;color:var(--br)"></div>
+
+      <!-- Description -->
+      <div id="rDesc" style="font-style:italic;color:var(--br);font-size:.9rem;line-height:1.65;margin-bottom:.8rem;display:none"></div>
+
+      <!-- Alternatives (1-2 max) -->
+      <div id="rAlts" style="font-size:.84rem;color:var(--gr);margin-bottom:.6rem"></div>
+
+      <!-- DB Matches -->
+      <div id="matchSection" style="display:none">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.4rem">Correspondances dans la base</div>
+        <div id="matchList"></div>
+      </div>
+
+      <!-- Morpho cachée — utilisée pour le matching uniquement, non affichée -->
+      <div style="display:none">
+        <span id="m-falls-tip"></span><span id="m-falls-edge"></span><span id="m-falls-surf"></span>
+        <span id="m-falls-haft"></span><span id="m-falls-pat"></span><span id="m-falls-vein"></span>
+        <span id="m-falls-col"></span><span id="m-falls-cb"></span>
+        <span id="m-std-shape"></span><span id="m-std-tip"></span><span id="m-std-edge"></span>
+        <span id="m-std-ruff"></span><span id="m-std-col"></span><span id="m-std-vs"></span>
+        <span id="m-beard-type"></span><span id="m-beard-col"></span><span id="m-beard-vs"></span>
+        <span id="m-beard-unif"></span><span id="m-gen-group"></span><span id="m-gen-size"></span>
+        <span id="m-gen-form"></span><span id="m-gen-ruff"></span>
+      </div>
+
+      <!-- Actions -->
+      <div class="res-actions">
+        <a id="rAIS"  class="lb" href="#" target="_blank">🔗 AIS</a>
+        <a id="rGoog" class="lb" href="#" target="_blank">🔍 Images</a>
+        <a id="rLens" class="lb" href="https://lens.google.com/" target="_blank" onclick="toast('Glissez votre photo sur Google Lens')">🔎 Lens</a>
+        <button class="lb lb-g" id="saveBtn"   onclick="saveNew()">💾 Ajouter à ma collection</button>
+        <button class="lb lb-o" id="addObsBtn" onclick="addToExisting()" style="display:none">📅 Nouvelle floraison</button>
+      </div>
+      <div id="dupBanner" class="dup-banner"></div>
+      <div id="suppChips" style="display:none" class="chips-wrap">
+        <div class="chips-lbl">Rechercher chez vos fournisseurs</div>
+        <div id="chipsInner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ COLLECTION ══════ -->
+<div class="pg" id="pg-collection">
+  <div class="coll-bar">
+    <h2>Ma Collection</h2>
+    <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+      <input class="search" type="text" placeholder="Rechercher…" id="csearch" oninput="renderColl()">
+      <div class="vt">
+        <button id="vg" class="on" onclick="setView('g',this)">⊞</button>
+        <button id="vl"            onclick="setView('l',this)">☰</button>
+      </div>
+    </div>
+  </div>
+  <div id="collOut"></div>
+</div>
+
+<!-- ══════ DATABASE ══════ -->
+<div class="pg" id="pg-database">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic">Base morphologique</h2>
+    <div style="display:flex;gap:.35rem;align-items:center">
+      <input class="search" type="text" id="dbsearch" placeholder="Rechercher…" oninput="renderDB()">
+      <button class="btn btn-s" onclick="nav('designer')" style="font-size:.8rem;padding:.28rem .7rem">+ Ajouter</button>
+    </div>
+  </div>
+  <div id="dbOut"></div>
+</div>
+
+<!-- ══════ DESIGNER ══════ -->
+<div class="pg" id="pg-designer">
+  <div id="designerLock" class="lock-screen">
+    <div class="lock-ico">🔐</div>
+    <p style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;margin-bottom:.8rem">Mode concepteur</p>
+    <p style="font-size:.86rem;color:var(--gr);margin-bottom:1rem">Gérez la base de données morphologique des iris.</p>
+    <div style="display:flex;gap:.4rem;max-width:300px;margin:0 auto">
+      <input type="password" id="designerPin" placeholder="Code PIN (défaut: 1234)" style="flex:1;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;background:var(--c)">
+      <button class="btn btn-o" onclick="unlockDesigner()">Entrer</button>
+    </div>
+  </div>
+  <div id="designerContent" style="display:none">
+    <!-- Tabs internes -->
+    <div style="display:flex;gap:.3rem;margin-bottom:.9rem;flex-wrap:wrap">
+      <button class="btn btn-o" id="dt-add"    onclick="setDesTab('add')">➕ Nouvel iris</button>
+      <button class="btn btn-s" id="dt-import" onclick="setDesTab('import')">📥 Import</button>
+      <button class="btn btn-s" id="dt-scrape" onclick="setDesTab('scrape')">🌐 Sites</button>
+      <button class="btn btn-s" id="dt-manage" onclick="setDesTab('manage')">🗂 Gérer</button>
+      <button class="btn btn-s" id="dt-deploy" onclick="setDesTab('deploy')">🚀 Déployer</button>
+      <button class="btn btn-s" id="dt-pin"    onclick="setDesTab('pin')" style="margin-left:auto">🔒 PIN</button>
+    </div>
+
+    <!-- ADD ENTRY -->
+    <div id="dt-add-panel">
+      <div class="card">
+        <h2 class="gd">Fiche iris — informations générales</h2>
+        <div class="row2">
+          <div class="fg"><label>Nom du cultivar *</label><input type="text" id="de-name" placeholder="ex: Immortality"></div>
+          <div class="fg"><label>Espèce / Groupe *</label>
+            <select id="de-group">
+              <option value="">— Sélectionner —</option>
+              <option>TB (Tall Bearded)</option><option>IB (Intermediate Bearded)</option>
+              <option>SDB (Standard Dwarf Bearded)</option><option>MDB (Miniature Dwarf Bearded)</option>
+              <option>BB (Border Bearded)</option><option>MTB (Miniature Tall Bearded)</option>
+              <option>Siberian</option><option>Japanese (Ensata)</option>
+              <option>Louisiana</option><option>Species</option><option>Arilbred</option><option>Spuria</option>
+            </select>
+          </div>
+        </div>
+        <div class="row3">
+          <div class="fg"><label>Obtenteur</label><input type="text" id="de-breeder" placeholder="nom"></div>
+          <div class="fg"><label>Année AIS</label><input type="text" id="de-year" placeholder="2020"></div>
+          <div class="fg"><label>Hauteur (cm)</label><input type="text" id="de-height" placeholder="90"></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Fournisseur principal</label><input type="text" id="de-supplier" placeholder="Cayeux, Schreiner…"></div>
+          <div class="fg"><label>URL fiche fournisseur</label><input type="text" id="de-url" placeholder="https://…"></div>
+        </div>
+        <div class="fg"><label>Description</label><textarea id="de-desc" placeholder="Description horticole…"></textarea></div>
+        <div class="fg"><label>Photo URL ou charger</label>
+          <div class="row">
+            <input type="text" id="de-imgurl" placeholder="https://… (URL image)">
+            <div style="position:relative;flex-shrink:0">
+              <button class="btn btn-s" style="padding:.38rem .65rem">📁</button>
+              <input type="file" accept="image/*" onchange="loadDBPhoto(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+            </div>
+          </div>
+          <img id="de-preview" src="" alt="" style="display:none;width:100%;max-height:160px;object-fit:contain;margin-top:.5rem;border-radius:3px;border:1px solid var(--bd)">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="gd">Critères morphologiques</h2>
+        <div class="morpho-editor" id="morphoEditor">
+          <!-- Falls -->
+          <div class="me-group">
+            <h4>🌸 Falls (pétales extérieurs)</h4>
+            <div class="me-field"><label>Bout des pétales</label>
+              <select id="me-falls-tip"><option value="">—</option><option>Lisse/arrondi</option><option>Légèrement ondulé</option><option>Ondulé</option><option>Fortement frisé</option><option>Dentelé</option></select></div>
+            <div class="me-field"><label>Bord</label>
+              <select id="me-falls-edge"><option value="">—</option><option>Uni/lisse</option><option>Frisé</option><option>Lacé</option><option>Crénelé</option></select></div>
+            <div class="me-field"><label>Surface</label>
+              <select id="me-falls-surf"><option value="">—</option><option>Plane</option><option>Arrondie</option><option>Réfléchie</option><option>Évasée</option></select></div>
+            <div class="me-field"><label>Onglet (haft)</label>
+              <select id="me-falls-haft"><option value="">—</option><option>Clair/net</option><option>Veiné</option><option>Strié</option><option>Uniforme</option></select></div>
+            <div class="me-field"><label>Patron de couleur</label>
+              <select id="me-falls-pat"><option value="">—</option><option>Uni (self)</option><option>Bicolore</option><option>Biton</option><option>Plicata (ponctué bord)</option><option>Blend (dégradé)</option><option>Luminata</option><option>Amoena</option></select></div>
+            <div class="me-field"><label>Veinures</label>
+              <select id="me-falls-vein"><option value="">—</option><option>Absentes</option><option>Fines</option><option>Marquées</option><option>Contrastées</option></select></div>
+            <div class="me-field"><label>Centre vs bord</label>
+              <select id="me-falls-cb"><option value="">—</option><option>Uniforme</option><option>Centre plus sombre</option><option>Centre plus clair</option><option>Halo lumineux</option><option>Signal contrasté</option></select></div>
+            <div class="me-field"><label>Couleur dominante</label><input type="text" id="me-falls-col" placeholder="ex: violet foncé"></div>
+          </div>
+          <!-- Standards -->
+          <div class="me-group">
+            <h4>🌿 Standards (pétales intérieurs)</h4>
+            <div class="me-field"><label>Forme générale</label>
+              <select id="me-std-shape"><option value="">—</option><option>Dressés</option><option>Ouverts</option><option>En dôme</option><option>Évasés</option></select></div>
+            <div class="me-field"><label>Bout des pétales</label>
+              <select id="me-std-tip"><option value="">—</option><option>Arrondi</option><option>Pointu</option><option>Échancré</option><option>Ondulé</option></select></div>
+            <div class="me-field"><label>Bord</label>
+              <select id="me-std-edge"><option value="">—</option><option>Lisse</option><option>Frisé</option><option>Lacé</option></select></div>
+            <div class="me-field"><label>Niveau d'ondulation</label>
+              <select id="me-std-ruff"><option value="">—</option><option>Aucun</option><option>Léger</option><option>Modéré</option><option>Prononcé</option></select></div>
+            <div class="me-field"><label>Couleur dominante</label><input type="text" id="me-std-col" placeholder="ex: blanc nacré"></div>
+            <div class="me-field"><label>vs Falls</label>
+              <select id="me-std-vs"><option value="">—</option><option>Identique</option><option>Plus clair</option><option>Plus foncé</option><option>Teinte différente</option><option>Très contrasté</option></select></div>
+          </div>
+          <!-- Beard/Signal -->
+          <div class="me-group">
+            <h4>✨ Barbe / Signal / Crête</h4>
+            <div class="me-field"><label>Type</label>
+              <select id="me-beard-type"><option value="">—</option><option>Barbe (iris barbu)</option><option>Signal (Siberian/Japanese)</option><option>Crête (crested)</option><option>Absent</option></select></div>
+            <div class="me-field"><label>Couleur barbe/signal</label><input type="text" id="me-beard-col" placeholder="ex: orange vif"></div>
+            <div class="me-field"><label>vs Couleur pétale</label>
+              <select id="me-beard-vs"><option value="">—</option><option>Identique</option><option>Légèrement contrasté</option><option>Fortement contrasté</option><option>Multicolore</option></select></div>
+            <div class="me-field"><label>Uniformité</label>
+              <select id="me-beard-unif"><option value="">—</option><option>Uniforme</option><option>Dégradé</option><option>Tacheté</option></select></div>
+          </div>
+          <!-- Général -->
+          <div class="me-group">
+            <h4>📐 Caractéristiques générales</h4>
+            <div class="me-field"><label>Forme globale fleur</label>
+              <select id="me-gen-form"><option value="">—</option><option>Ronde/pleine</option><option>Triangulaire</option><option>Plate/étalée</option><option>En coupe</option><option>Papillon</option></select></div>
+            <div class="me-field"><label>Niveau ondulation global</label>
+              <select id="me-gen-ruff"><option value="">—</option><option>Aucun</option><option>Léger</option><option>Modéré</option><option>Prononcé</option></select></div>
+            <div class="me-field"><label>Saison</label>
+              <select id="me-gen-season"><option value="">—</option><option>Hâtif</option><option>Milieu de saison</option><option>Tardif</option><option>Remontant</option></select></div>
+            <div class="me-field"><label>Parfum</label>
+              <select id="me-gen-scent"><option value="">—</option><option>Inodore</option><option>Léger</option><option>Prononcé</option><option>Intense</option></select></div>
+          </div>
+        </div>
+        <div class="btns" style="margin-top:.8rem">
+          <button class="btn btn-o" onclick="saveDBEntry()">💾 Enregistrer dans la base</button>
+          <button class="btn btn-s" onclick="clearDBForm()">✕ Effacer</button>
+        </div>
+        <div class="kst" id="de-status"></div>
+      </div>
+    </div>
+
+    <!-- IMPORT -->
+    <div id="dt-import-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">📥 Import de données</h2>
+        <p style="font-size:.86rem;color:var(--br);margin-bottom:.9rem">Importez des fiches iris depuis un fichier CSV ou JSON. Les doublons (même nom) sont ignorés.</p>
+        <div class="fg"><label>Format CSV attendu (copiez depuis tableur)</label>
+          <p class="hint" style="margin-bottom:.4rem">Colonnes : <code>nom, groupe, obtenteur, annee, hauteur, fournisseur, url_fiche, description, falls_tip, falls_edge, falls_surf, falls_haft, falls_pat, falls_vein, falls_cb, falls_col, std_shape, std_tip, std_edge, std_ruff, std_col, std_vs, beard_type, beard_col, beard_vs, beard_unif, form, ruff, saison, parfum</code></p>
+          <textarea id="importData" style="min-height:120px;font-size:.78rem" placeholder="Collez votre CSV ou JSON ici…"></textarea>
+        </div>
+        <div class="fg"><label>Ou charger un fichier</label>
+          <div style="position:relative;display:inline-block">
+            <button class="btn btn-b">📁 Choisir fichier (.csv, .json)</button>
+            <input type="file" accept=".csv,.json" onchange="loadImportFile(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn btn-o" onclick="doImport()">⬆️ Importer</button>
+          <button class="btn btn-b" onclick="downloadTemplate()">⬇️ Télécharger template CSV</button>
+        </div>
+        <div class="kst" id="import-status"></div>
+      </div>
+      <div class="card">
+        <h2 class="gd">💾 Sauvegarde collection + base</h2>
+        <div class="btns">
+          <button class="btn btn-g" onclick="exportAll()">⬇️ Exporter tout (JSON)</button>
+          <div style="position:relative">
+            <button class="btn btn-b">⬆️ Importer sauvegarde</button>
+            <input type="file" accept=".json" onchange="importAll(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTO-SCAN -->
+    <div id="dt-scrape-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🤖 Scan automatique des sites fournisseurs</h2>
+        <p style="font-size:.86rem;color:var(--br);margin-bottom:.8rem;line-height:1.55">
+          L'appli lit la page du fournisseur, extrait les infos du cultivar (nom, description, caractéristiques) et enrichit la base de données automatiquement. Nécessite <strong>Mistral</strong>.
+        </p>
+
+        <!-- Mode 1 : URL directe -->
+        <div class="fg">
+          <label>🔗 URL directe d'une fiche cultivar</label>
+          <div class="row">
+            <input type="text" id="autoScanUrl" placeholder="https://www.cayeux.fr/iris/mon-iris/">
+            <button class="btn btn-o" onclick="autoScanUrl()">▶ Scanner</button>
+          </div>
+          <p class="hint">Collez l'URL d'une fiche de cultivar sur n'importe quel site.</p>
+        </div>
+
+        <!-- Mode 2 : Recherche par nom + site -->
+        <div style="border-top:1px solid var(--p);margin-top:.8rem;padding-top:.8rem">
+          <div class="fg">
+            <label>🔍 Ou rechercher un cultivar sur un site</label>
+            <div class="row">
+              <input type="text" id="autoScanQuery" placeholder="ex: Superstition, Immortality…">
+              <button class="btn btn-p" onclick="autoScanSearch()">Rechercher</button>
+            </div>
+          </div>
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.35rem">Choisir le site source</div>
+          <div class="site-chips" id="autoScanSiteChips"></div>
+        </div>
+
+        <!-- Mode 3 : Scan en masse d'un catalogue -->
+        <div style="border-top:1px solid var(--p);margin-top:.8rem;padding-top:.8rem">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.35rem">🗂 Scan en masse (liste d'URLs)</div>
+          <textarea id="batchUrls" style="width:100%;min-height:80px;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;font-size:.8rem;background:var(--c)" placeholder="Collez une URL par ligne :&#10;https://www.cayeux.fr/iris/iris1/&#10;https://www.cayeux.fr/iris/iris2/&#10;…"></textarea>
+          <div class="btns" style="margin-top:.5rem">
+            <button class="btn btn-o" onclick="autoScanBatch()">▶ Scanner toutes les URLs</button>
+          </div>
+        </div>
+
+        <!-- Mode manuel : copier-coller si tous les proxies échouent -->
+        <div style="border-top:1px solid var(--p);margin-top:.8rem;padding-top:.8rem">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.35rem">📋 Fallback manuel (si le site bloque les proxies)</div>
+          <p class="hint" style="margin-bottom:.5rem">Ouvrez la fiche du cultivar dans votre navigateur, sélectionnez tout le texte (Ctrl+A), copiez (Ctrl+C) et collez ici. Mistral extraira les données.</p>
+          <div class="fg" style="margin:0">
+            <textarea id="manualPasteData" style="width:100%;min-height:90px;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;font-size:.82rem;background:var(--c)" placeholder="Collez le texte de la page ici…"></textarea>
+          </div>
+          <div class="btns" style="margin-top:.4rem">
+            <button class="btn btn-o" onclick="parseManualPaste()">📋 Extraire avec Mistral</button>
+          </div>
+        </div>
+
+        <!-- Log de progression -->
+        <div id="scanLog" style="display:none;margin-top:.8rem">
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.35rem">Journal de scan</div>
+          <div id="scanLogContent" style="border:1px solid var(--bd);border-radius:3px;background:#fff;padding:.6rem;font-size:.78rem;color:var(--br);max-height:220px;overflow-y:auto;font-family:monospace;white-space:pre-wrap;line-height:1.5"></div>
+          <div class="btns" style="margin-top:.4rem">
+            <button class="btn btn-s" onclick="document.getElementById('scanLog').style.display='none'">Fermer le journal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résultat du scan -->
+      <div class="card" id="scanResultCard" style="display:none">
+        <h2 class="gd">✅ Résultat extrait</h2>
+        <div id="scanResultContent"></div>
+        <div class="btns" style="margin-top:.7rem">
+          <button class="btn btn-o" id="scanSaveBtn" onclick="saveScanResult()">💾 Enregistrer dans la base</button>
+          <button class="btn btn-s" onclick="editScanResult()">✏️ Modifier avant d'enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE -->
+    <div id="dt-manage-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🗂 Gestion de la base</h2>
+        <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap">
+          <input class="search" type="text" id="mgsearch" placeholder="Rechercher…" oninput="renderManageList()">
+          <span id="mgCount" style="font-size:.82rem;color:var(--gr)"></span>
+        </div>
+        <div id="mgList"></div>
+      </div>
+    </div>
+
+    <!-- DEPLOY -->
+    <div id="dt-deploy-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🚀 Déploiement & Mises à jour</h2>
+        <p style="font-size:.86rem;color:var(--br);margin-bottom:.9rem;line-height:1.6">
+          Publiez l'application sur une URL publique. L'utilisatrice saisit l'URL dans ses paramètres et peut installer les mises à jour en un clic. Ses données sont toujours préservées.
+        </p>
+
+        <!-- Version actuelle -->
+        <div style="background:var(--p);border-radius:3px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.86rem">
+          <strong>Version actuelle de l'app :</strong> <span id="desVerDisplay" style="color:var(--vi);font-weight:600"></span><br>
+          <span style="color:var(--gr);font-size:.78rem">Incrémentez la version à chaque mise à jour pour déclencher la notification chez l'utilisatrice.</span>
+        </div>
+
+        <!-- Bump version -->
+        <div class="fg">
+          <label>Numéro de version (format X.Y.Z)</label>
+          <div class="row">
+            <input type="text" id="newVersion" placeholder="ex: 1.1.0">
+            <button class="btn btn-o" onclick="bumpVersion()">Mettre à jour</button>
+          </div>
+        </div>
+
+        <!-- Notes de version -->
+        <div class="fg">
+          <label>Notes de mise à jour (visibles par l'utilisatrice)</label>
+          <textarea id="releaseNotes" placeholder="- Amélioration de l'identification&#10;- Nouveaux iris dans la base&#10;- Correction de bugs…" style="min-height:80px"></textarea>
+        </div>
+
+        <!-- URL de déploiement -->
+        <div style="border-top:1px solid var(--p);margin-top:.9rem;padding-top:.9rem">
+          <h3 style="font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--gd);margin-bottom:.7rem">Comment déployer</h3>
+          <div class="step-s"><div class="sn">1</div><div class="st">Cliquez <strong>"Télécharger l'app"</strong> pour obtenir le fichier HTML à jour</div></div>
+          <div class="step-s"><div class="sn">2</div><div class="st">Publiez-le sur <a href="https://github.com" target="_blank">GitHub</a> (gratuit) : créez un dépôt → uploadez le fichier → copiez l'URL "Raw"</div></div>
+          <div class="step-s"><div class="sn">3</div><div class="st">Communiquez l'URL Raw à l'utilisatrice — elle la colle dans <strong>Config → Mises à jour</strong></div></div>
+          <div class="step-s"><div class="sn">4</div><div class="st">Pour chaque nouvelle version : répétez l'upload. L'app détecte la nouvelle version et propose l'installation</div></div>
+          <div class="btns" style="margin-top:.8rem">
+            <button class="btn btn-o" onclick="downloadApp()">⬇️ Télécharger l'app (à publier)</button>
+          </div>
+          <p class="hint" style="margin-top:.4rem">💡 <strong>GitHub Pages</strong> permet aussi d'héberger l'app directement à une URL permanente (ex: votre-nom.github.io/irisid).</p>
+        </div>
+
+        <!-- Export base de données seule -->
+        <div style="border-top:1px solid var(--p);margin-top:.9rem;padding-top:.9rem">
+          <h3 style="font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--gd);margin-bottom:.6rem">Partager uniquement la base de données</h3>
+          <p style="font-size:.84rem;color:var(--br);margin-bottom:.6rem">Exportez la base morphologique seule pour la transmettre sans toucher au code.</p>
+          <div class="btns">
+            <button class="btn btn-g" onclick="exportDB()">⬇️ Exporter la base (JSON)</button>
+            <div style="position:relative">
+              <button class="btn btn-b">⬆️ Importer une base</button>
+              <input type="file" accept=".json" onchange="importDBOnly(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIN -->
+    <div id="dt-pin-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🔒 Changer le code PIN</h2>
+        <div class="fg"><label>Nouveau PIN (4 chiffres)</label><input type="password" id="newPin" placeholder="1234" maxlength="6"></div>
+        <button class="btn btn-o" onclick="changePin()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SETTINGS ══════ -->
+<div class="pg" id="pg-settings">
+  <div class="card">
+    <h2>🌿 Pl@ntNet (identification espèce — gratuit)</h2>
+    <div class="step-s"><div class="sn">1</div><div class="st">Créez un compte sur <a href="https://my.plantnet.org/" target="_blank">my.plantnet.org</a></div></div>
+    <div class="step-s"><div class="sn">2</div><div class="st">Settings → API key → <strong>cochez "Expose my API key"</strong></div></div>
+    <div class="step-s"><div class="sn">3</div><div class="st">Ajoutez <code>*</code> dans <strong>Authorized domains</strong> → copiez la clé</div></div>
+    <div class="fg" style="margin-top:.6rem"><label>Clé PlantNet</label>
+      <div class="row"><input type="password" id="pnIn" placeholder="Clé PlantNet…"><button class="btn btn-p" onclick="savePN()">Enregistrer</button></div>
+      <div class="kst" id="pnKst"></div>
+    </div>
+    <div class="btns"><button class="btn btn-g" onclick="testPN()">🔍 Tester</button><button class="btn btn-d" onclick="clearPN()">Supprimer</button></div>
+    <p class="hint" style="margin-top:.4rem">500 identifications/jour gratuites. Identifie l'espèce botanique.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔑 Mistral AI (analyse morphologique — optionnel)</h2>
+    <div class="step-s"><div class="sn">1</div><div class="st">Allez sur <a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a></div></div>
+    <div class="step-s"><div class="sn">2</div><div class="st"><a href="https://console.mistral.ai/home?workspace_dialog=apiKeys" target="_blank">Lien direct clés API</a> → <strong>Create new secret key</strong></div></div>
+    <div class="fg" style="margin-top:.6rem"><label>Clé Mistral</label>
+      <div class="row"><input type="password" id="miIn" placeholder="Clé Mistral…"><button class="btn btn-p" onclick="saveMI()">Enregistrer</button></div>
+      <div class="kst" id="miKst"></div>
+    </div>
+    <div class="btns"><button class="btn btn-g" onclick="testMI()">🔍 Tester</button><button class="btn btn-d" onclick="clearMI()">Supprimer</button></div>
+  </div>
+
+  <div class="card">
+    <h2>🌐 Sites fournisseurs</h2>
+    <ul class="si-list" id="siteList"></ul>
+    <div class="add-row">
+      <div class="fg" style="margin:0"><label>Nom</label><input type="text" id="sName" placeholder="Cayeux"></div>
+      <div class="fg" style="margin:0"><label>URL avec <code>{query}</code></label><input type="text" id="sUrl" placeholder="https://…?q={query}"></div>
+      <button class="btn btn-p" onclick="addSite()" style="align-self:flex-end">+</button>
+    </div>
+    <div class="hint" style="margin-top:.3rem">Ex: <code>https://www.cayeux.fr/catalogue/?recherche={query}</code></div>
+  </div>
+
+  <!-- MISE À JOUR -->
+  <div class="card">
+    <h2>🔄 Mises à jour</h2>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap">
+      <span style="font-size:.82rem;color:var(--gr)">Version actuelle : <strong id="currentVerDisplay"></strong></span>
+      <span id="updateBadge" style="display:none;background:var(--gd);color:#fff;font-size:.72rem;padding:.1rem .45rem;border-radius:10px;font-family:sans-serif">Mise à jour disponible !</span>
+    </div>
+    <div class="fg">
+      <label>URL de mise à jour (fournie par le concepteur)</label>
+      <div class="row">
+        <input type="text" id="updateUrl" placeholder="https://raw.githubusercontent.com/…/irisid.html">
+        <button class="btn btn-p" onclick="saveUpdateUrl()">OK</button>
+      </div>
+    </div>
+    <div class="btns">
+      <button class="btn btn-g" onclick="checkForUpdate()">🔍 Vérifier les mises à jour</button>
+      <button class="btn btn-b" id="applyUpdateBtn" onclick="applyUpdate()" style="display:none">⬇️ Installer la mise à jour</button>
+    </div>
+    <div id="updateStatus" class="kst" style="margin-top:.4rem"></div>
+    <p class="hint" style="margin-top:.4rem">Vos données (collection, base, clés API) sont <strong>toujours préservées</strong> lors des mises à jour.</p>
+  </div>
+</div>
+
+</main>
+
+<!-- ══ IRIS FICHE MODAL ══ -->
+<div class="ov" id="ficheOv" onclick="closeFicheOnBg(event)">
+  <div class="modal" id="ficheModal">
+    <button class="modal-close" onclick="closeFiche()">✕</button>
+    <div class="cover-wrap" id="coverWrap">
+      <div id="coverPh" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4.5rem">🌺</div>
+      <img id="coverImg" class="cover-img" src="" alt="" style="display:none">
+      <div class="cover-ov"></div>
+      <button class="cover-edit-btn" onclick="openCP()">🖼 Photo</button>
+      <div class="cover-title">
+        <h2 id="ficheTitle"></h2><p id="ficheGroup"></p>
+      </div>
+    </div>
+    <div class="mbody">
+      <div class="mfgrid">
+        <div class="mf"><label>Couleur(s)</label><span id="f-colors"></span></div>
+        <div class="mf"><label>Obtenteur</label><span id="f-breeder"></span></div>
+        <div class="mf"><label>Année</label><span id="f-year"></span></div>
+        <div class="mf"><label>Hauteur</label><span id="f-height"></span></div>
+      </div>
+      <div class="mdesc" id="f-desc"></div>
+      <div id="f-supplier-sec" style="margin-bottom:.9rem;display:none">
+        <div class="chips-lbl" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.3rem">Fournisseurs</div>
+        <div id="f-supplier-links"></div>
+      </div>
+      <div style="margin-bottom:.9rem">
+        <div style="font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--br);margin-bottom:.5rem;padding-bottom:.22rem;border-top:1px solid var(--p);padding-top:.55rem">📷 Photos</div>
+        <div class="gallery" id="ficheGallery"></div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;padding-top:.55rem;border-top:1px solid var(--p)">
+          <div style="font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--br)">📅 Historique</div>
+          <button class="btn btn-p" style="font-size:.76rem;padding:.2rem .65rem" onclick="toggleObsForm()">+ Observation</button>
+        </div>
+        <div class="obs-form" id="obsForm" style="display:none">
+          <h4>Nouvelle observation</h4>
+          <div class="row2" style="margin-bottom:.5rem">
+            <div class="fg" style="margin:0"><label>Année</label><input type="text" id="obsYr" placeholder="2025" maxlength="4"></div>
+            <div class="fg" style="margin:0"><label>Date</label><input type="date" id="obsDt"></div>
+          </div>
+          <div class="fg"><label>A fleuri ?</label>
+            <div class="bloom-row">
+              <button class="bb" id="bby" onclick="setBloom(true)">✅ Oui</button>
+              <button class="bb" id="bbn" onclick="setBloom(false)">❌ Non</button>
+              <button class="bb" id="bbu" onclick="setBloom(null)">— Inconnu</button>
+            </div>
+          </div>
+          <div class="fg"><label>Notes</label><textarea id="obsNotes" placeholder="Couleur, vigueur…" style="min-height:52px"></textarea></div>
+          <div class="fg"><label>Photos</label>
+            <div class="obs-form-photos" id="obsFormPh">
+              <div class="add-op"><input type="file" accept="image/*" multiple onchange="addObsPh(this)">＋</div>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn btn-p" onclick="saveObs()">Enregistrer</button>
+            <button class="btn btn-d" onclick="document.getElementById('obsForm').style.display='none'">Annuler</button>
+          </div>
+        </div>
+        <div class="obs-list" id="obsList"></div>
+        <p id="obsEmpty" style="font-size:.82rem;color:var(--gr);font-style:italic;padding:.4rem 0;display:none">Aucune observation.</p>
+      </div>
+      <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--p)">
+        <a id="f-ais"  class="lb" href="#" target="_blank">🔗 AIS</a>
+        <a id="f-gimg" class="lb" href="#" target="_blank">🔍 Images</a>
+        <button class="lb" style="color:var(--rd);border-color:var(--rd)" onclick="deleteCurrentIris()">🗑 Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DB Entry Modal -->
+<div class="ov" id="dbEntryOv" onclick="if(event.target===this)closeDBEntry()">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-close" onclick="closeDBEntry()">✕</button>
+    <div id="dbEntryContent" style="padding:1rem"></div>
+  </div>
+</div>
+
+<!-- Cover Picker -->
+<div class="cpov" id="cpov" onclick="if(event.target===this)closeCP()">
+  <div class="cpbox">
+    <h3>Photo de couverture</h3>
+    <div class="cp-grid" id="cpGrid"></div>
+    <button class="btn btn-d" onclick="closeCP()">Fermer</button>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lbox" id="lbox" onclick="closeLbox()">
+  <button class="lbox-x" onclick="closeLbox()">✕</button>
+  <img id="lboxImg" src="" alt="">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════
+const S={
+  g:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  d:k=>localStorage.removeItem(k)
+};
+
+// ══════════════════════════════════════════════
+// FINGERPRINT (duplicate photo detection)
+// ══════════════════════════════════════════════
+function fp(b64){const s=(b64||'').replace(/\s/g,'');return s.length+'|'+s.slice(0,100)+'|'+s.slice(-50);}
+function rebuildFP(iris){
+  const set=new Set();
+  (iris.photos||[]).forEach(p=>set.add(fp(p)));
+  (iris.obs||[]).forEach(o=>(o.photos||[]).forEach(p=>set.add(fp(p))));
+  iris._fps=[...set];
+}
+function findByPhoto(b64){
+  const f=fp(b64);
+  for(const iris of coll){
+    if((iris._fps||[]).includes(f)) return iris;
+    if((iris.photos||[]).some(p=>fp(p)===f)) return iris;
+    if((iris.obs||[]).some(o=>(o.photos||[]).some(p=>fp(p)===f))) return iris;
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+const DEF_SITES=[
+  {name:'Iris Cayeux',  url:'https://www.iris-cayeux.com/?s={query}',           base:'https://www.iris-cayeux.com/'},
+  {name:"Schreiner's",  url:'https://www.schreinersgardens.com/?s={query}',      base:'https://www.schreinersgardens.com/irises/'},
+  {name:'Superstition', url:'https://www.superstitioniris.com/?s={query}',       base:'https://www.superstitioniris.com/'},
+  {name:'Mid-America',  url:'https://www.mid-americagarden.com/?s={query}',      base:'https://www.mid-americagarden.com/'},
+  {name:'Iris-Passion', url:'https://www.iris-passion.com/?s={query}',           base:'https://www.iris-passion.com/'},
+  {name:'AIS Database', url:'https://www.irises.org/iris-search/?name={query}',  base:'https://www.irises.org/iris-database/'},
+  {name:'Baumschule',   url:'https://www.baumschule-horstmann.de/suche?q={query}+iris', base:'https://www.baumschule-horstmann.de/'},
+];
+
+let pnKey  = S.g('pn')||'';
+let miKey  = S.g('mi')||'';
+let sites  = S.g('si')||DEF_SITES.slice();
+let coll   = S.g('co')||[];
+let irisDB = S.g('db')||[];   // Morphological database
+let desPin = S.g('dp')||'1234';
+let collView = S.g('cv')||'g';
+let desLocked = true;
+
+coll.forEach(ir=>{if(!ir._fps||!ir._fps.length) rebuildFP(ir);});
+
+let scanPhotos=[], curRes=null, camStream=null;
+let currentIrisId=null, obsBloom=null, obsPhArr=[];
+let editDBId=null;
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  restoreAfterUpdate(); // doit être avant tout le reste
+  updateBanner(); updateBadge(); updateDBBadge();
+  renderSites(); initDropbox();
+  if(pnKey) document.getElementById('pnIn').value=pnKey;
+  if(miKey) document.getElementById('miIn').value=miKey;
+  document.getElementById('vg').classList.toggle('on',collView==='g');
+  document.getElementById('vl').classList.toggle('on',collView==='l');
+  initVersionDisplay();
+});
+
+function initDropbox(){
+  const db=document.getElementById('dropbox');
+  db.addEventListener('dragover',e=>{e.preventDefault();db.classList.add('ov');});
+  db.addEventListener('dragleave',()=>db.classList.remove('ov'));
+  db.addEventListener('drop',e=>{e.preventDefault();db.classList.remove('ov');handleFiles(Array.from(e.dataTransfer.files));});
+  document.getElementById('scanFiles').addEventListener('change',function(){handleFiles(Array.from(this.files));this.value='';});
+}
+
+// ══════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════
+function nav(p){
+  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.getElementById('nb-'+p).classList.add('on');
+  if(p==='collection') renderColl();
+  if(p==='database')   renderDB();
+  if(p==='settings'){renderSites();if(pnKey)document.getElementById('pnIn').value=pnKey;if(miKey)document.getElementById('miIn').value=miKey;}
+  if(p==='designer' && desLocked) showDesLock();
+  if(p==='designer' && !desLocked) setDesTab('add');
+}
+
+// ══════════════════════════════════════════════
+// BANNER
+// ══════════════════════════════════════════════
+function updateBanner(){
+  const b=document.getElementById('apiBanner');
+  const ok=pnKey||miKey;
+  b.className='bn'+(ok?' ok':'');
+  b.innerHTML=ok
+    ?`<span>✅</span><span>${pnKey?'🌿 PlantNet':''}${pnKey&&miKey?' + ':''}${miKey?'🔑 Mistral':''} configuré(s).</span>`
+    :`<span>⚠️</span><span style="flex:1">Aucune clé API. Configurez <strong>PlantNet</strong> (gratuit) au minimum.</span><button class="btn btn-p" onclick="nav('settings')" style="padding:.2rem .6rem;font-size:.8rem">Configurer →</button>`;
+}
+function updateBadge(){document.getElementById('badge').textContent=coll.length;}
+function updateDBBadge(){document.getElementById('dbBadge').textContent=irisDB.length;}
+
+// ══════════════════════════════════════════════
+// API KEYS
+// ══════════════════════════════════════════════
+function savePN(){const v=document.getElementById('pnIn').value.trim();if(!v){toast('Clé vide');return;}pnKey=v;S.s('pn',pnKey);updateBanner();setKst('pnKst','ok','✓ PlantNet enregistré');toast('Clé PlantNet enregistrée');}
+function clearPN(){pnKey='';S.d('pn');document.getElementById('pnIn').value='';setKst('pnKst','bad','Supprimé');updateBanner();}
+async function testPN(){
+  const k=document.getElementById('pnIn').value.trim()||pnKey;
+  if(!k){toast('Aucune clé');return;}
+  setKst('pnKst','','⏳ Test…');
+  try{
+    const c=document.createElement('canvas');c.width=1;c.height=1;
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg'));
+    const fd=new FormData();fd.append('images',blob,'t.jpg');fd.append('organs','flower');
+    const r=await fetch(`https://my-api.plantnet.org/v2/identify/all?api-key=${k}&lang=fr`,{method:'POST',body:fd});
+    if(r.status===401){setKst('pnKst','bad','❌ Clé invalide — cochez "Expose my API key" + ajoutez * aux domaines');return;}
+    pnKey=k;S.s('pn',pnKey);document.getElementById('pnIn').value=k;updateBanner();
+    setKst('pnKst','ok','✅ PlantNet OK !');
+  }catch(e){setKst('pnKst','bad','❌ Erreur réseau ou CORS — vérifiez "Expose my API key"');}
+}
+function saveMI(){const v=document.getElementById('miIn').value.trim();if(!v){toast('Clé vide');return;}miKey=v;S.s('mi',miKey);updateBanner();setKst('miKst','ok','✓ Mistral enregistré');toast('Clé Mistral enregistrée');}
+function clearMI(){miKey='';S.d('mi');document.getElementById('miIn').value='';setKst('miKst','bad','Supprimé');updateBanner();}
+async function testMI(){
+  const k=document.getElementById('miIn').value.trim()||miKey;
+  if(!k){toast('Aucune clé');return;}
+  setKst('miKst','','⏳ Test…');
+  try{
+    const r=await fetch('https://api.mistral.ai/v1/models',{headers:{'Authorization':'Bearer '+k}});
+    if(r.ok){miKey=k;S.s('mi',miKey);document.getElementById('miIn').value=k;updateBanner();setKst('miKst','ok','✅ Mistral OK !');}
+    else setKst('miKst','bad','❌ Erreur '+r.status+' — vérifiez la clé et la validation email');
+  }catch(e){setKst('miKst','bad','❌ Erreur réseau');}
+}
+function setKst(id,cls,txt){const el=document.getElementById(id);el.className='kst'+(cls?' '+cls:'');el.textContent=txt;}
+
+// ══════════════════════════════════════════════
+// SITES
+// ══════════════════════════════════════════════
+function renderSites(){
+  const ul=document.getElementById('siteList');
+  if(!sites.length){ul.innerHTML='<li style="color:var(--gr);font-size:.84rem;padding:.22rem 0">Aucun site.</li>';return;}
+  ul.innerHTML=sites.map((s,i)=>`<li class="si"><div class="si-i"><div class="si-n">${s.name}</div><div class="si-u">${s.url}</div></div><button class="si-d" onclick="delSite(${i})">✕</button></li>`).join('');
+}
+function addSite(){const n=document.getElementById('sName').value.trim(),u=document.getElementById('sUrl').value.trim();if(!n||!u){toast('Nom et URL requis');return;}sites.push({name:n,url:u});S.s('si',sites);renderSites();document.getElementById('sName').value='';document.getElementById('sUrl').value='';toast('"'+n+'" ajouté');}
+function delSite(i){sites.splice(i,1);S.s('si',sites);renderSites();}
+function renderSiteChips(){const el=document.getElementById('siteChips');if(!el)return;el.innerHTML=sites.map((s,i)=>`<button class="site-chip" onclick="openSiteLink(${i})">${s.name}</button>`).join('');}
+function openSiteLink(i){const q=document.getElementById('scrapeQuery').value.trim();const url=q?sites[i].url.replace('{query}',encodeURIComponent(q)):sites[i].url.replace('{query}','iris');window.open(url,'_blank');}
+function openSiteSearch(){const q=document.getElementById('scrapeQuery').value.trim();if(!q){toast('Entrez un nom de cultivar');return;}sites.forEach((s,i)=>window.open(s.url.replace('{query}',encodeURIComponent(q)),'_blank'));}
+
+// ══════════════════════════════════════════════
+// FILES / CAMERA
+// ══════════════════════════════════════════════
+function handleFiles(files){
+  const imgs=files.filter(f=>f.type.startsWith('image/'));
+  if(scanPhotos.length+imgs.length>2){toast('Max 2 photos (rate limit API)');return;}
+  imgs.forEach(f=>{const r=new FileReader();r.onload=e=>{scanPhotos.push({b64:e.target.result.split(',')[1],src:e.target.result});renderStrip();};r.readAsDataURL(f);});
+}
+function renderStrip(){
+  const strip=document.getElementById('thumbStrip');
+  if(!scanPhotos.length){strip.style.display='none';document.getElementById('scanBtn').disabled=true;return;}
+  strip.style.display='flex';
+  strip.innerHTML=scanPhotos.map((p,i)=>`<div class="tw">${i===0?'<div class="ml">Principale</div>':''}<img src="${p.src}" class="${i===0?'main':''}"><button class="td" onclick="rmScanPh(${i})">✕</button></div>`).join('');
+  document.getElementById('scanBtn').disabled=false;
+  document.getElementById('resDiv').classList.remove('on');
+  document.getElementById('errDiv').classList.remove('on');
+}
+function rmScanPh(i){scanPhotos.splice(i,1);renderStrip();}
+function toggleCam(){if(camStream){stopCam();return;}navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{camStream=s;const v=document.getElementById('camv');v.srcObject=s;v.classList.add('on');document.getElementById('camCtrl').style.display='block';}).catch(()=>toast('Caméra refusée'));}
+function stopCam(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}document.getElementById('camv').classList.remove('on');document.getElementById('camCtrl').style.display='none';}
+function captureCam(){const v=document.getElementById('camv'),c=document.getElementById('camCanvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const src=c.toDataURL('image/jpeg',.9);if(scanPhotos.length>=2){toast('Max 2 photos');return;}scanPhotos.push({b64:src.split(',')[1],src});renderStrip();stopCam();}
+
+// ══════════════════════════════════════════════
+// RESIZE + b64→Blob
+// ══════════════════════════════════════════════
+function resize(b64,max,q){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
+      const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg',q).split(',')[1]);
+    };
+    img.src='data:image/jpeg;base64,'+b64;
+  });
+}
+function b64Blob(b64,mime='image/jpeg'){const a=atob(b64),ar=new Uint8Array(a.length);for(let i=0;i<a.length;i++)ar[i]=a.charCodeAt(i);return new Blob([ar],{type:mime});}
+function cleanJSON(raw){
+  if(!raw) throw new Error('Réponse vide');
+  let s=raw
+    .replace(/^\uFEFF/,'')           // BOM
+    .replace(/```json\s*/gi,'')       // balises markdown
+    .replace(/```\s*/g,'')
+    .trim();
+
+  // Extraire le premier objet { } ou tableau [ ]
+  const isArr=s.indexOf('[')!==-1 && (s.indexOf('[')<s.indexOf('{')||s.indexOf('{')===-1);
+  const open=isArr?'[':'{', close=isArr?']':'}';
+  const a=s.indexOf(open), b=s.lastIndexOf(close);
+  if(a<0||b<0||b<=a) throw new Error('Pas de JSON dans la réponse');
+  s=s.slice(a,b+1);
+
+  // Nettoyer les caractères de contrôle SAUF dans les strings — approche safe
+  // 1. Remplacer les vrais retours ligne/tab hors strings
+  s=s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,'');
+
+  // 2. Réparer les retours ligne/tab à l'intérieur des strings JSON
+  s=s.replace(/"((?:[^"\\]|\\.)*)"/g,(_,inner)=>{
+    return '"'+inner
+      .replace(/\n/g,'\\n')
+      .replace(/\r/g,'\\r')
+      .replace(/\t/g,'\\t')
+      +'"';
+  });
+
+  // 3. Supprimer les virgules traînantes avant } ou ]
+  s=s.replace(/,\s*([}\]])/g,'$1');
+
+  // 4. Corriger les clés non quotées (cas rare)
+  s=s.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g,'$1"$2":');
+
+  try{ return JSON.parse(s); }
+  catch(e){
+    // Dernière tentative : extraire uniquement la première paire clé-valeur connue
+    const fallback={};
+    const nameM=raw.match(/"name"\s*:\s*"([^"]+)"/);
+    if(nameM) fallback.name=nameM[1];
+    const cultivarM=raw.match(/"cultivar"\s*:\s*"([^"]+)"/);
+    if(cultivarM) fallback.cultivar=cultivarM[1];
+    if(Object.keys(fallback).length) return fallback;
+    throw new Error('JSON invalide : '+e.message+'\nDébut : '+s.slice(0,80));
+  }
+}
+
+// ══════════════════════════════════════════════
+// PROGRESS STEPS
+// ══════════════════════════════════════════════
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('ps'+i);
+    el.className='prog-step'+(i<n?' done':i===n?' active':'');
+  });
+}
+
+// ══════════════════════════════════════════════
+// PLANTNET
+// ══════════════════════════════════════════════
+async function identifyPN(photos){
+  const fd=new FormData();
+  photos.slice(0,3).forEach((p,i)=>{fd.append('images',b64Blob(p.b64),`iris${i}.jpg`);fd.append('organs','flower');});
+  const r=await fetch(`https://my-api.plantnet.org/v2/identify/all?api-key=${pnKey}&lang=fr&nb-results=6`,{method:'POST',body:fd});
+  if(!r.ok){
+    if(r.status===401) throw new Error('Clé PlantNet invalide. Vérifiez "Expose my API key" + domaine * dans vos paramètres PlantNet.');
+    const e=await r.json().catch(()=>({}));
+    throw new Error('PlantNet '+r.status+': '+(e.message||'erreur'));
+  }
+  return r.json();
+}
+
+function parsePN(data){
+  const results=data.results||[];
+  if(!results.length) return {isIris:false,score:0};
+  const top=results[0];
+  const sp=top.species||{};
+  const score=Math.round((top.score||0)*100);
+  const name=sp.scientificNameWithoutAuthor||sp.scientificName||'';
+  const common=(sp.commonNames||[]).join(', ');
+  const genus=(sp.genus?.scientificNameWithoutAuthor||'').toLowerCase();
+  const isIris=genus==='iris'||name.toLowerCase().startsWith('iris');
+  const alts=results.slice(1,5).map(r=>({
+    name:r.species?.scientificNameWithoutAuthor||'',
+    score:Math.round((r.score||0)*100),
+    common:(r.species?.commonNames||[])[0]||''
+  }));
+  return {isIris,name,common,score,genus,alts,quota:data.remainingIdentificationRequests};
+}
+
+// ══════════════════════════════════════════════
+// MISTRAL MORPHO
+// ══════════════════════════════════════════════
+async function analyzeMorpho(photos, pnInfo){
+  const n=photos.length;
+  const resized=await Promise.all(photos.map(p=>resize(p.b64,n>1?768:900,.8)));
+  const pnCtx=pnInfo
+    ?`PlantNet a identifié : "${pnInfo.name}"${pnInfo.common?' ('+pnInfo.common+')':''}, confiance ${pnInfo.score}%. `
+    :'';
+
+  const parts=[];
+  resized.forEach((b,i)=>{
+    parts.push({type:'image_url',image_url:{url:'data:image/jpeg;base64,'+b}});
+    if(n>1) parts.push({type:'text',text:'Photo '+(i+1)+'/'+n+' :'});
+  });
+
+  parts.push({type:'text',text:`Tu es expert botaniste en iris horticoles. ${pnCtx}
+Analyse cette fleur selon une méthode rigoureuse. Commence par les critères INDÉPENDANTS DE LA COULEUR, puis les couleurs.
+
+MÉTHODE D'ANALYSE :
+1. FALLS (pétales extérieurs) :
+   - Bout des pétales : lisse/arrondi, légèrement ondulé, ondulé, fortement frisé, dentelé
+   - Bord : uni/lisse, frisé, lacé, crénelé
+   - Surface : plane, arrondie, réfléchie, évasée
+   - Onglet (haft, partie centrale) : clair/net, veiné, strié, uniforme
+   - Patron de couleur : uni, bicolore, biton, plicata, blend/dégradé, luminata, amoena
+   - Veinures : absentes, fines, marquées, contrastées
+   - Contraste centre/bord : uniforme, centre plus sombre, centre plus clair, halo, signal contrasté
+   - Couleur dominante
+
+2. STANDARDS (pétales intérieurs) :
+   - Forme : dressés, ouverts, en dôme, évasés
+   - Bout : arrondi, pointu, échancré, ondulé
+   - Bord : lisse, frisé, lacé
+   - Ondulation : aucune, légère, modérée, prononcée
+   - Couleur dominante
+   - Comparaison avec falls : identique, plus clair, plus foncé, teinte différente, très contrasté
+
+3. BARBE/SIGNAL/CRÊTE :
+   - Type : barbe, signal, crête, absent
+   - Couleur
+   - Contraste vs pétale : identique, léger, fort, multicolore
+   - Uniformité : uniforme, dégradé, tacheté
+
+4. GÉNÉRAL :
+   - Groupe : TB/IB/SDB/MDB/BB/MTB/Siberian/Japanese/Louisiana/Species/Arilbred
+   - Taille estimée
+   - Forme globale : ronde/pleine, triangulaire, plate/étalée, en coupe, papillon
+   - Niveau ondulation global : aucun, léger, modéré, prononcé
+
+JSON uniquement, sans balises markdown :
+{"is_iris":true,
+"confidence":"élevée|moyenne|faible",
+"why":"raison courte",
+"falls":{"tip":"valeur","edge":"valeur","surf":"valeur","haft":"valeur","pat":"valeur","vein":"valeur","cb":"valeur","col":"couleur descriptive"},
+"standards":{"shape":"valeur","tip":"valeur","edge":"valeur","ruff":"valeur","col":"couleur descriptive","vs_falls":"valeur"},
+"beard":{"type":"valeur","col":"couleur","vs_pet":"valeur","unif":"valeur"},
+"general":{"group":"valeur","size":"estimation cm","form":"valeur","ruff":"valeur"},
+"cultivar":"nom le plus probable ou description morpho si incertain",
+"colors":"résumé couleurs falls+standards+barbe",
+"breeder":"ou Inconnu","year":"ou Inconnue","height":"xcm",
+"desc":"2-3 phrases évocatrices en français",
+"alts":[{"n":"cultivar","r":"raison"}],
+"search_terms":"mots-clés Google Images optimaux pour trouver ce cultivar"}
+Sinon: {"is_iris":false,"reason":"description précise de ce qui est visible"}`});
+
+  const r=await fetch('https://api.mistral.ai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+    body:JSON.stringify({model:'pixtral-12b-2409',messages:[{role:'user',content:parts}],max_tokens:1100,temperature:.1})
+  });
+  if(!r.ok){
+    const e=await r.json().catch(()=>({}));
+    const m=e?.message||e?.error?.message||'Erreur '+r.status;
+    if(r.status===401) throw new Error('Clé Mistral invalide (401).');
+    if(r.status===429) throw new Error('Limite Mistral (429) — attendez 30s.');
+    throw new Error('Mistral : '+m);
+  }
+  const d=await r.json();
+  return cleanJSON(d.choices?.[0]?.message?.content||'');
+}
+
+// ══════════════════════════════════════════════
+// MORPHO MATCHING against irisDB
+// ══════════════════════════════════════════════
+function matchScore(extracted, dbEntry){
+  // Score morphologique sur les critères non-couleur en priorité
+  let score=0, total=0;
+  const m=extracted;
+  const e=dbEntry.morpho||{};
+  const pairs=[
+    ['falls.tip',  'falls_tip',  4],['falls.edge','falls_edge',3],
+    ['falls.surf', 'falls_surf', 2],['falls.haft','falls_haft',2],
+    ['falls.pat',  'falls_pat',  4],['falls.vein','falls_vein',2],
+    ['falls.cb',   'falls_cb',   3],
+    ['standards.shape','std_shape',3],['standards.tip','std_tip',2],
+    ['standards.edge','std_edge',2],['standards.ruff','std_ruff',2],
+    ['standards.vs_falls','std_vs',3],
+    ['beard.type','beard_type',4],['beard.vs_pet','beard_vs',3],
+    ['beard.unif','beard_unif',2],
+    ['general.group','group',5],['general.form','gen_form',3],
+    ['general.ruff','gen_ruff',2],
+  ];
+  for(const [mPath,ePath,w] of pairs){
+    const [obj,key]=mPath.split('.');
+    const mv=(m[obj]||{})[key]||'';
+    const ev=e[ePath]||'';
+    if(!mv||!ev){continue;}
+    total+=w;
+    const mvn=mv.toLowerCase(), evn=ev.toLowerCase();
+    if(mvn===evn) score+=w;
+    else if(mvn.includes(evn)||evn.includes(mvn)) score+=w*0.6;
+  }
+  if(!total) return 0;
+  return Math.round((score/total)*100);
+}
+
+function findMatches(extracted){
+  if(!irisDB.length) return [];
+  return irisDB.map(entry=>({entry,score:matchScore(extracted,entry)}))
+    .filter(r=>r.score>30)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,5);
+}
+
+// ══════════════════════════════════════════════
+// MAIN SCAN
+// ══════════════════════════════════════════════
+async function doScan(){
+  if(!scanPhotos.length) return;
+  if(!pnKey&&!miKey){nav('settings');toast('Configurez au moins une clé API');return;}
+
+  // Check photo duplicates first
+  let photoMatch=null;
+  for(const p of scanPhotos){const f=findByPhoto(p.b64);if(f){photoMatch=f;break;}}
+
+  document.getElementById('scanBtn').disabled=true;
+  document.getElementById('loadDiv').classList.add('on');
+  document.getElementById('resDiv').classList.remove('on');
+  document.getElementById('errDiv').classList.remove('on');
+  document.getElementById('stepsProgs').style.display='block';
+
+  let pnInfo=null, morpho=null;
+
+  try{
+    // ── STEP 1: PlantNet ──
+    if(pnKey){
+      setStep(1);
+      document.getElementById('loadTxt').textContent='🌿 PlantNet : vérification espèce…';
+      try{
+        const pnData=await identifyPN(scanPhotos);
+        pnInfo=parsePN(pnData);
+        // If high confidence non-iris, stop
+        if(!pnInfo.isIris && pnInfo.score>65){
+          document.getElementById('loadDiv').classList.remove('on');
+          showErr(`🌿 PlantNet (${pnInfo.score}%) : ce n'est pas un iris — <strong>${pnInfo.name}</strong>${pnInfo.common?' ('+pnInfo.common+')':''}. Essayez une meilleure photo.`);
+          document.getElementById('scanBtn').disabled=false;
+          return;
+        }
+      }catch(e){pnInfo=null;console.warn('PlantNet:',e.message);}
+    }
+
+    // ── STEP 2: Mistral morpho ──
+    if(miKey){
+      setStep(2);
+      document.getElementById('loadTxt').textContent='🔑 Mistral : analyse morphologique…';
+      morpho=await analyzeMorpho(scanPhotos.slice(0,2), pnInfo);
+      if(!morpho.is_iris && !pnInfo?.isIris){
+        document.getElementById('loadDiv').classList.remove('on');
+        showErr('Non identifié — '+(morpho.reason||'Image non exploitable.'));
+        document.getElementById('scanBtn').disabled=false;
+        return;
+      }
+    }
+
+    // ── STEP 3: DB matching ──
+    setStep(3);
+    document.getElementById('loadTxt').textContent='🗄 Recherche dans la base de données…';
+    await new Promise(r=>setTimeout(r,400)); // give UI a moment
+
+    document.getElementById('loadDiv').classList.remove('on');
+
+    // If only PlantNet (no Mistral), create minimal morpho object
+    if(!morpho && pnInfo){
+      morpho={is_iris:true,confidence:'moyenne',why:'Identifié par PlantNet',
+        falls:{},standards:{},beard:{},general:{group:''},
+        cultivar:pnInfo.name,colors:'—',breeder:'Inconnu',year:'Inconnue',height:'—',
+        desc:'PlantNet a identifié : '+pnInfo.name+(pnInfo.common?' ('+pnInfo.common+')':''),
+        alts:pnInfo.alts.map(a=>({n:a.name+(a.common?' ('+a.common+')':''),r:a.score+'%'})),
+        search_terms:'iris cultivar '+pnInfo.name};
+    }
+
+    curRes={...morpho,_photos:scanPhotos.map(p=>p.b64),_pnInfo:pnInfo,_photoMatch:photoMatch};
+    showResult(curRes, photoMatch);
+
+  }catch(e){
+    document.getElementById('loadDiv').classList.remove('on');
+    showErr('Erreur : '+e.message);
+  }
+  document.getElementById('scanBtn').disabled=false;
+}
+
+// ══════════════════════════════════════════════
+// SHOW RESULT
+// ══════════════════════════════════════════════
+function showErr(msg){const el=document.getElementById('errDiv');el.innerHTML=msg;el.classList.add('on');}
+
+function showResult(r, photoMatch){
+  const pn=r._pnInfo;
+  const pnEl=document.getElementById('pnBadge');
+  if(pn){
+    pnEl.style.display='block';
+    pnEl.className='pn-badge '+(pn.isIris?'pn-ok':pn.score>40?'pn-warn':'pn-fail');
+    pnEl.innerHTML=`🌿 <strong>PlantNet</strong> : <em>${pn.name}</em>${pn.common?' — '+pn.common:''} <strong>${pn.score}%</strong> ${pn.isIris?'✅':''}`;
+  } else pnEl.style.display='none';
+
+  document.getElementById('rConf').textContent=`Confiance : ${r.confidence||'?'}${r.why?' — '+r.why:''}`;
+  document.getElementById('rName').textContent=r.cultivar||'Iris sp.';
+  const G=r.general||{};
+  document.getElementById('rGroup').textContent=[G.group||r.group,G.size].filter(Boolean).join(' · ');
+
+  // Couleurs résumé
+  const colEl=document.getElementById('rColorsRow');
+  if(r.colors){colEl.textContent=r.colors;colEl.style.display='block';}else colEl.style.display='none';
+
+  // Description
+  const descEl=document.getElementById('rDesc');
+  if(r.desc){descEl.textContent=r.desc;descEl.style.display='block';}else descEl.style.display='none';
+
+  // Alternatives — max 2
+  const altsEl=document.getElementById('rAlts');
+  if(r.alts?.length){
+    altsEl.innerHTML='<strong>Autres possibles :</strong> '+r.alts.slice(0,2).map(a=>a.n||a).join(' · ');
+  } else altsEl.innerHTML='';
+
+  // Morpho dans spans cachés (pour matching)
+  const F=r.falls||{},St=r.standards||{},B=r.beard||{};
+  setText('m-falls-tip',F.tip);setText('m-falls-edge',F.edge);setText('m-falls-surf',F.surf);
+  setText('m-falls-haft',F.haft);setText('m-falls-pat',F.pat);setText('m-falls-vein',F.vein);
+  setText('m-falls-col',F.col);setText('m-falls-cb',F.cb);
+  setText('m-std-shape',St.shape);setText('m-std-tip',St.tip);setText('m-std-edge',St.edge);
+  setText('m-std-ruff',St.ruff);setText('m-std-col',St.col);setText('m-std-vs',St.vs_falls||St.vs);
+  setText('m-beard-type',B.type);setText('m-beard-col',B.col);
+  setText('m-beard-vs',B.vs_pet||B.vs);setText('m-beard-unif',B.unif);
+  setText('m-gen-group',G.group);setText('m-gen-size',G.size);
+  setText('m-gen-form',G.form);setText('m-gen-ruff',G.ruff);
+
+  // DB Matches
+  const matches=findMatches(r);
+  const matchSec=document.getElementById('matchSection'),matchList=document.getElementById('matchList');
+  if(matches.length){
+    matchSec.style.display='block';
+    matchList.innerHTML='<div class="match-list">'+matches.slice(0,3).map((m,i)=>{
+      const sc=m.score>70?'hi':m.score>45?'med':'lo';
+      const img=m.entry.imgB64?`<img class="mi-img" src="data:image/jpeg;base64,${m.entry.imgB64}" alt="">`
+               :m.entry.imgUrl?`<img class="mi-img" src="${m.entry.imgUrl}" alt="" onerror="this.style.display='none'">`:`<div class="mi-img" style="background:var(--p);display:flex;align-items:center;justify-content:center;font-size:1.8rem">🌸</div>`;
+      return `<div class="match-item${i===0?' top':''}" onclick="openDBEntry('${m.entry.id}')">${img}<div class="mi-info"><div class="mi-name">${m.entry.name}</div><div class="mi-meta">${[m.entry.group,m.entry.breeder,m.entry.year].filter(Boolean).join(' · ')}</div>${m.entry.supplier?`<div class="mi-meta">🛒 ${m.entry.supplier}</div>`:''}<div class="mi-score ${sc}">Correspondance : ${m.score}%</div></div></div>`;
+    }).join('')+'</div>';
+  } else {
+    matchSec.style.display=irisDB.length?'block':'none';
+    matchList.innerHTML=`<div style="font-style:italic;font-size:.84rem;color:var(--gr)">${irisDB.length?'Aucune correspondance — <a href="#" onclick="nav(\'designer\');return false">enrichissez la base →</a>':'Base vide — <a href="#" onclick="nav(\'designer\');return false">ajoutez des iris →</a>'}</div>`;
+  }
+
+  const q=encodeURIComponent(r.cultivar||pn?.name||'iris');
+  const sq=encodeURIComponent(r.search_terms||(pn?'iris cultivar '+pn.name:'iris'));
+  document.getElementById('rAIS').href='https://www.irises.org/iris-search/?name='+q;
+  document.getElementById('rGoog').href='https://www.google.com/search?tbm=isch&q='+sq;
+
+  const ci=document.getElementById('chipsInner'),cs=document.getElementById('suppChips');
+  if(sites.length){ci.innerHTML=sites.map(s=>`<a class="chip" href="${s.url.replace('{query}',q)}" target="_blank">🌸 ${s.name}</a>`).join('');cs.style.display='block';}else cs.style.display='none';
+
+  const sb=document.getElementById('saveBtn'),ab=document.getElementById('addObsBtn'),dup=document.getElementById('dupBanner');
+  const collMatch=!photoMatch?coll.find(c=>(c.cultivar||'').trim().toLowerCase()===(r.cultivar||'').trim().toLowerCase()):null;
+  if(photoMatch){
+    dup.style.cssText='display:block;border:1px solid #e8b840;background:#fff8e7;border-radius:3px;padding:.55rem .8rem;margin-top:.5rem;font-size:.84rem';
+    dup.innerHTML=`📷 <strong>Photo déjà enregistrée</strong> — <em>"${photoMatch.cultivar}"</em>.`;
+    sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+    ab.style.display='inline-flex';ab.textContent='📅 Ajouter une floraison';curRes._matchId=photoMatch.id;
+  } else if(collMatch){
+    const last=(collMatch.obs||[]).sort((a,b)=>b.year-a.year)[0];
+    const lt=last?` — ${last.year}${last.bloomed===true?' ✅':last.bloomed===false?' ❌':''}` :'';
+    dup.style.cssText='display:block;border:1px solid #7ab360;background:#edf5e8;border-radius:3px;padding:.55rem .8rem;margin-top:.5rem;font-size:.84rem';
+    dup.innerHTML=`🌸 <strong>Déjà dans votre collection</strong> : <em>"${collMatch.cultivar}"</em>${lt}.`;
+    sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+    ab.style.display='inline-flex';ab.textContent='📅 Ajouter une floraison';curRes._matchId=collMatch.id;
+  } else {
+    dup.style.display='none';sb.className='lb lb-g';sb.disabled=false;sb.textContent='💾 Ajouter à ma collection';ab.style.display='none';
+  }
+  document.getElementById('resDiv').classList.add('on');
+  setTimeout(()=>document.getElementById('resDiv').scrollIntoView({behavior:'smooth',block:'nearest'}),60);
+}
+
+// ══════════════════════════════════════════════
+// AUTO-SCAN SITES (via Jina Reader - contourne CORS)
+// ══════════════════════════════════════════════
+let scanResult=null;
+let autoScanSiteIdx=0;
+
+async function parseManualPaste(){
+  const txt=document.getElementById('manualPasteData').value.trim();
+  if(!txt){toast('Collez d\'abord le texte');return;}
+  if(!miKey){toast('Clé Mistral requise');return;}
+  scanLog('📋 Extraction depuis texte collé…');
+  try{
+    const site=sites[autoScanSiteIdx]||{name:'Fournisseur'};
+    const data=await extractIrisFromText(txt,'(texte collé manuellement)',site.name);
+    if(!data.name){scanLog('✗ Aucun cultivar détecté dans ce texte','err');return;}
+    scanLog(`✓ Cultivar détecté : "${data.name}"`, 'ok');
+    scanResult=data;
+    showScanResult(data);
+    document.getElementById('manualPasteData').value='';
+  }catch(e){scanLog('✗ Erreur : '+e.message,'err');}
+}
+
+function renderAutoScanChips(){
+  const el=document.getElementById('autoScanSiteChips');if(!el)return;
+  el.innerHTML=sites.map((s,i)=>`<button class="site-chip${i===autoScanSiteIdx?' sel':''}" onclick="autoScanSiteIdx=${i};renderAutoScanChips()">${s.name}</button>`).join('');
+}
+
+async function fetchViaJina(url){
+  // Essaie plusieurs proxies CORS en cascade
+  const proxies=[
+    // Jina Reader — renvoie 451 pour certains sites protégés
+    async ()=>{
+      const r=await fetch(`https://r.jina.ai/${url}`,{
+        headers:{'Accept':'text/plain','X-No-Cache':'true'}
+      });
+      if(r.status===451) throw new Error('451 (contenu bloqué géographiquement par ce site)');
+      if(r.status===400) throw new Error('400 (URL refusée par Jina)');
+      if(!r.ok) throw new Error(`Jina: HTTP ${r.status}`);
+      return r.text();
+    },
+    // AllOrigins — proxy CORS générique
+    async ()=>{
+      const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+      if(!r.ok) throw new Error(`AllOrigins: HTTP ${r.status}`);
+      const d=await r.json();
+      if(!d.contents) throw new Error('AllOrigins: contenu vide');
+      // Strip HTML tags pour obtenir le texte
+      return d.contents.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'')
+                       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'')
+                       .replace(/<[^>]+>/g,' ')
+                       .replace(/\s{2,}/g,' ').slice(0,8000);
+    },
+    // corsproxy.io
+    async ()=>{
+      const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+      if(!r.ok) throw new Error(`corsproxy.io: HTTP ${r.status}`);
+      const html=await r.text();
+      return html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'')
+                 .replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'')
+                 .replace(/<[^>]+>/g,' ')
+                 .replace(/\s{2,}/g,' ').slice(0,8000);
+    },
+  ];
+
+  let lastErr='';
+  for(let i=0;i<proxies.length;i++){
+    try{
+      scanLog(`  Proxy ${i+1}/3…`);
+      const text=await proxies[i]();
+      if(text && text.length>100) return text;
+      throw new Error('Contenu trop court');
+    }catch(e){
+      lastErr=e.message;
+      scanLog(`  ✗ Proxy ${i+1}: ${e.message}`,'err');
+    }
+  }
+  throw new Error(`Tous les proxies ont échoué. Dernier : ${lastErr}\n💡 Essayez de copier-coller le texte de la page manuellement.`);
+}
+
+function scanLog(msg,type='info'){
+  const el=document.getElementById('scanLogContent');if(!el)return;
+  const c=type==='ok'?'color:#3a7a2a':type==='err'?'color:#a02828':'color:var(--br)';
+  el.innerHTML+=`<span style="${c}">${msg}</span>\n`;
+  el.scrollTop=el.scrollHeight;
+  document.getElementById('scanLog').style.display='block';
+}
+
+async function extractIrisFromText(text, url, siteName){
+  // 1. Extraire les URLs d'images présentes dans le texte Jina (format ![alt](url))
+  const imgUrls=[...text.matchAll(/!\[[^\]]*\]\((https?:\/\/[^\)]+\.(?:jpg|jpeg|png|webp)[^\)]*)\)/gi)]
+    .map(m=>m[1]).filter(u=>!u.includes('logo')&&!u.includes('icon')&&!u.includes('banner'));
+  const firstImg=imgUrls[0]||'';
+
+  // 2. Extraire avec Mistral — prompt enrichi avec tous les champs morpho
+  const truncated=text.replace(/!\[[^\]]*\]\([^\)]+\)/g,'').slice(0,5000); // retire les images du texte
+  const resp=await fetch('https://api.mistral.ai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+    body:JSON.stringify({
+      model:'mistral-small-latest',
+      messages:[{role:'user',content:`Tu es expert en iris horticoles. Extrait toutes les informations de cette fiche cultivar.
+Fournisseur : ${siteName} — URL : ${url}
+Image principale trouvée : ${firstImg||'aucune'}
+
+Retourne UNIQUEMENT du JSON valide sans balises markdown.
+Si la page est une fiche d'UN iris précis, retourne :
+{"name":"nom exact du cultivar","group":"TB/IB/SDB/BB/MTB/Siberian/Japanese/Louisiana/Species/Arilbred","breeder":"obtenteur","year":"année","height":"hauteur en cm","supplier":"${siteName}","url":"${url}","desc":"description complète","colors":"résumé couleurs","falls_col":"couleur falls","falls_pat":"patron (uni/bicolore/biton/plicata/blend/luminata/amoena)","falls_edge":"bord (lisse/frisé/lacé)","falls_tip":"bout pétale (lisse/ondulé/frisé/dentelé)","std_col":"couleur standards","std_vs":"standards vs falls (identique/plus clair/plus foncé/très contrasté)","beard_type":"barbe/signal/crête/absent","beard_col":"couleur barbe/signal","imgUrl":"${firstImg}"}
+Si la page ne contient pas de fiche précise : {"name":""}
+
+Texte de la page :
+${truncated}`}],
+      max_tokens:600,temperature:.1
+    })
+  });
+  const d=await resp.json();
+  const result=cleanJSON(d.choices?.[0]?.message?.content||'{}');
+
+  // 3. Si l'image n'a pas été trouvée par le modèle mais qu'on en a une, l'ajouter
+  if(!result.imgUrl && firstImg) result.imgUrl=firstImg;
+  if(!result.url) result.url=url;
+  if(!result.supplier) result.supplier=siteName;
+
+  return result;
+}
+
+// Détecte si c'est une page catalogue (plusieurs iris) ou une fiche individuelle
+async function autoScanUrl(){
+  const url=document.getElementById('autoScanUrl').value.trim();
+  if(!url){toast('Entrez une URL');return;}
+  if(!miKey){toast('Clé Mistral requise');return;}
+
+  document.getElementById('scanResultCard').style.display='none';
+  scanLog(`\n📡 Lecture de ${url}…`);
+
+  try{
+    const text=await fetchViaJina(url);
+    scanLog(`✓ Page lue (${text.length} car.)`, 'ok');
+
+    // Demander à Mistral si c'est un catalogue ou une fiche
+    const typeResp=await fetch('https://api.mistral.ai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+      body:JSON.stringify({model:'mistral-small-latest',max_tokens:50,temperature:.1,
+        messages:[{role:'user',content:`Cette page contient-elle une LISTE de plusieurs iris (catalogue) ou la fiche détaillée d'UN SEUL iris ? Réponds uniquement : "catalogue" ou "fiche".\n\nDébut du contenu:\n${text.slice(0,1500)}`}]
+      })
+    });
+    const typeData=await typeResp.json();
+    const pageType=(typeData.choices?.[0]?.message?.content||'').toLowerCase().includes('catalogue')?'catalogue':'fiche';
+    scanLog(`📋 Type détecté : ${pageType}`, 'ok');
+
+    if(pageType==='catalogue'){
+      await scanCatalogPage(text, url);
+    } else {
+      await scanSinglePage(text, url);
+    }
+
+  }catch(e){scanLog('✗ '+e.message,'err');}
+}
+
+// Scanne une page catalogue : extrait tous les liens d'iris et les visite un par un
+async function scanCatalogPage(text, catalogUrl){
+  scanLog('🗂 Extraction des liens du catalogue…');
+
+  const base=new URL(catalogUrl).origin;
+  const catPath=new URL(catalogUrl).pathname.replace(/\/$/,'');
+  // Dernier segment du path = identifiant catalogue (ex: "26-grand-iris")
+  const catSegment=catPath.split('/').pop();
+
+  // Collecter tous les liens de la page (absolus + relatifs)
+  const allLinks=new Map();
+  for(const m of text.matchAll(/\[([^\]]*)\]\((https?:\/\/[^\)"\s]+)\)/g))
+    allLinks.set(m[2],m[1]);
+  for(const m of text.matchAll(/\[([^\]]*)\]\((\/[^\)"\s]+)\)/g))
+    allLinks.set(base+m[2],m[1]);
+  // Aussi les URLs brutes (sans markdown)
+  for(const m of text.matchAll(/https?:\/\/[^\s\)\]"'<>]+/g)){
+    if(!allLinks.has(m[0])) allLinks.set(m[0],'');
+  }
+
+  // Filtrer : garder les liens qui sont des fiches individuelles
+  // Stratégie : même domaine, chemin plus long que le catalogue, pas de paramètres de navigation
+  let irisLinks=[...allLinks.entries()]
+    .map(([url,label])=>({url,label}))
+    .filter(({url})=>{
+      try{
+        const u=new URL(url);
+        if(u.hostname!==new URL(catalogUrl).hostname) return false;
+        const p=u.pathname.replace(/\/$/,'');
+        // Le lien doit être "sous" le catalogue ou partager son segment
+        const deeper=p.startsWith(catPath) && p!==catPath;
+        const sibling=p.includes(catSegment.replace(/^\d+-/,''));
+        // Exclure pagination, filtres, cart, account…
+        const exclude=['page','sort','order','filter','cart','account','login','search','tag','category','?p='];
+        const isNav=exclude.some(x=>url.toLowerCase().includes(x));
+        return (deeper||sibling) && !isNav;
+      }catch{return false;}
+    });
+
+  // Déduplique
+  irisLinks=[...new Map(irisLinks.map(l=>[l.url,l])).values()];
+
+  // Chercher la pagination (liens "page suivante")
+  const paginationLinks=[...allLinks.keys()].filter(u=>{
+    const p=new URL(u).pathname;
+    return p.startsWith(catPath) && /\/page\/\d+/.test(p);
+  });
+  if(paginationLinks.length){
+    scanLog(`📄 Pagination détectée : ${paginationLinks.length} page(s) supplémentaire(s)`);
+    for(const pageUrl of paginationLinks){
+      if(pageUrl===catalogUrl) continue;
+      scanLog(`  Lecture page : ${pageUrl}`);
+      try{
+        await new Promise(r=>setTimeout(r,800));
+        const pageText=await fetchViaJina(pageUrl);
+        for(const m of pageText.matchAll(/\[([^\]]*)\]\((https?:\/\/[^\)"\s]+)\)/g)){
+          if(!allLinks.has(m[2])) irisLinks.push({url:m[2],label:m[1]});
+        }
+        for(const m of pageText.matchAll(/\[([^\]]*)\]\((\/[^\)"\s]+)\)/g)){
+          const abs=base+m[2];
+          if(!allLinks.has(abs)) irisLinks.push({url:abs,label:m[1]});
+        }
+      }catch(e){scanLog('  ✗ Pagination : '+e.message,'err');}
+    }
+    // Redéduplique
+    irisLinks=[...new Map(irisLinks.map(l=>[l.url,l])).values()]
+      .filter(({url})=>{
+        try{
+          const u=new URL(url);
+          if(u.hostname!==new URL(catalogUrl).hostname) return false;
+          const p=u.pathname.replace(/\/$/,'');
+          const deeper=p.startsWith(catPath)&&p!==catPath;
+          const sibling=p.includes(catSegment.replace(/^\d+-/,''));
+          const exclude=['page','sort','order','filter','cart','account','login','search','tag','category'];
+          return (deeper||sibling)&&!exclude.some(x=>url.toLowerCase().includes(x));
+        }catch{return false;}
+      });
+  }
+
+  if(!irisLinks.length){
+    scanLog('Aucun lien individuel trouvé — extraction directe depuis le catalogue…');
+    await extractMultipleFromText(text, catalogUrl);
+    return;
+  }
+
+  scanLog(`🔗 ${irisLinks.length} fiches trouvées — scan individuel en cours…`);
+  let added=0,skipped=0,errors=0;
+
+  for(let i=0;i<irisLinks.length;i++){
+    const {label,url:irisUrl}=irisLinks[i];
+    scanLog(`\n[${i+1}/${irisLinks.length}] ${label||irisUrl}`);
+    try{
+      await new Promise(r=>setTimeout(r,1200));
+      const irisText=await fetchViaJina(irisUrl);
+      const site=getSiteForUrl(irisUrl);
+      const data=await extractIrisFromText(irisText,irisUrl,site.name);
+      if(!data||!data.name){scanLog('  → Pas de cultivar','err');skipped++;continue;}
+      if(irisDB.find(e=>e.name.toLowerCase()===data.name.toLowerCase())){
+        scanLog(`  → "${data.name}" déjà dans la base`);skipped++;continue;
+      }
+      irisDB.unshift({...data,id:'db-'+Date.now()+'-'+i});
+      S.s('db',irisDB);updateDBBadge();
+      scanLog(`  ✓ "${data.name}"${data.imgUrl?' 📷':''}${data.falls_col?' 🎨':''}`,'ok');
+      added++;
+    }catch(e){scanLog('  ✗ '+e.message,'err');errors++;}
+  }
+  scanLog(`\n📊 Terminé : ${added} ajoutés, ${skipped} ignorés, ${errors} erreurs`,'ok');
+  toast(`${added} iris ajoutés depuis le catalogue`);
+}
+
+// Extrait plusieurs iris directement depuis le texte d'une page liste
+async function extractMultipleFromText(text, url){
+  scanLog('🔍 Extraction multiple depuis Mistral…');
+  const site=getSiteForUrl(url);
+  try{
+    const resp=await fetch('https://api.mistral.ai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+      body:JSON.stringify({model:'mistral-small-latest',max_tokens:2000,temperature:.1,
+        messages:[{role:'user',content:`Tu es expert en iris. Extrait TOUS les cultivars d'iris présents dans ce texte de catalogue.
+Retourne UNIQUEMENT un JSON valide : un tableau d'objets, sans balises markdown.
+Format : [{"name":"","group":"","breeder":"","year":"","height":"","desc":"","falls_col":"","std_col":"","beard_col":"","imgUrl":""},...]
+Si aucun iris : []
+
+Texte du catalogue (${site.name}) :
+${text.slice(0,5000)}`}]
+      })
+    });
+    const d=await resp.json();
+    const raw=d.choices?.[0]?.message?.content||'[]';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const start=clean.indexOf('['), end=clean.lastIndexOf(']');
+    const arr=JSON.parse(clean.slice(start,end+1));
+    let added=0,skipped=0;
+    arr.forEach((data,i)=>{
+      if(!data.name)return;
+      if(irisDB.find(e=>e.name.toLowerCase()===data.name.toLowerCase())){skipped++;return;}
+      irisDB.unshift({...data,supplier:site.name,url,id:'db-'+Date.now()+'-'+i});
+      added++;
+    });
+    S.s('db',irisDB); updateDBBadge();
+    scanLog(`✓ ${added} iris extraits, ${skipped} ignorés`,'ok');
+    toast(`${added} iris ajoutés`);
+  }catch(e){scanLog('✗ Extraction multiple : '+e.message,'err');}
+}
+
+// Scanne une fiche individuelle
+async function scanSinglePage(text, url){
+  const site=getSiteForUrl(url);
+  scanLog('🔍 Extraction par Mistral…');
+  const data=await extractIrisFromText(text, url, site.name);
+  if(!data||!data.name){scanLog('✗ Aucun cultivar détecté','err');return;}
+  scanLog(`✓ "${data.name}" extrait`,'ok');
+  scanResult=data;
+  showScanResult(data);
+}
+
+function getSiteForUrl(url){
+  try{
+    const host=new URL(url).hostname;
+    return sites.find(s=>{
+      try{return new URL(s.base||s.url.replace('{query}','')).hostname===host;}catch{return false;}
+    })||{name:'Fournisseur'};
+  }catch{return {name:'Fournisseur'};}
+}
+
+async function autoScanSearch(){
+  const q=document.getElementById('autoScanQuery').value.trim();
+  if(!q){toast('Entrez un nom de cultivar');return;}
+  if(autoScanSiteIdx<0||autoScanSiteIdx>=sites.length){toast('Choisissez un site');return;}
+  const site=sites[autoScanSiteIdx];
+  const searchUrl=site.url.replace('{query}',encodeURIComponent(q));
+  document.getElementById('autoScanUrl').value=searchUrl;
+  scanLog(`\n🔍 Recherche "${q}" sur ${site.name}…`);
+  try{
+    const text=await fetchViaJina(searchUrl);
+    scanLog(`✓ Page de résultats lue (${text.length} car.)`,'ok');
+    // Try to find a direct link to the iris page
+    const base=new URL(searchUrl).origin;
+    const catPath=new URL(searchUrl).pathname.replace(/\/$/,'').split('/').slice(0,-1).join('/');
+    const links=[...text.matchAll(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g)]
+      .map(m=>m[2]).filter(u=>u!==searchUrl);
+    const relLinks=[...text.matchAll(/\[([^\]]+)\]\((\/[^\)]+)\)/g)]
+      .map(m=>base+m[2]).filter(u=>u!==searchUrl);
+    const allLinks=[...new Set([...links,...relLinks])];
+    // Find best match
+    const best=allLinks.find(u=>u.toLowerCase().includes(q.toLowerCase().split(' ')[0]));
+    if(best){
+      scanLog(`📄 Fiche trouvée : ${best}`);
+      document.getElementById('autoScanUrl').value=best;
+      const irisText=await fetchViaJina(best);
+      await scanSinglePage(irisText,best);
+    } else if(allLinks.length){
+      scanLog(`${allLinks.length} liens trouvés — scan de la page résultats`);
+      await scanCatalogPage(text,searchUrl);
+    } else {
+      scanLog('Aucun lien trouvé — extraction directe depuis les résultats');
+      await extractMultipleFromText(text,searchUrl);
+    }
+  }catch(e){scanLog('✗ Erreur : '+e.message,'err');}
+}
+
+async function autoScanBatch(){
+  const lines=document.getElementById('batchUrls').value.trim().split('\n').map(l=>l.trim()).filter(l=>l.startsWith('http'));
+  if(!lines.length){toast('Aucune URL valide');return;}
+  if(!miKey){toast('Clé Mistral requise');return;}
+  scanLog(`🚀 Scan en masse : ${lines.length} URLs…`);
+  let added=0,skipped=0,errors=0;
+  for(const url of lines){
+    scanLog(`\n📡 ${url}`);
+    try{
+      await new Promise(r=>setTimeout(r,1200)); // rate limit
+      const text=await fetchViaJina(url);
+      const site=sites.find(s=>url.includes(new URL(s.url.replace('{query}','')).hostname))||{name:'Fournisseur'};
+      const data=await extractIrisFromText(text,url,site.name);
+      if(!data.name){scanLog('  → Pas de cultivar','err');skipped++;continue;}
+      if(irisDB.find(e=>e.name.toLowerCase()===data.name.toLowerCase())){scanLog(`  → "${data.name}" déjà dans la base`,'err');skipped++;continue;}
+      irisDB.unshift({...data,id:'db-'+Date.now()+'-'+Math.random()});
+      S.s('db',irisDB);updateDBBadge();
+      scanLog(`  ✓ "${data.name}" ajouté`,'ok');added++;
+    }catch(e){scanLog('  ✗ '+e.message,'err');errors++;}
+  }
+  scanLog(`\n📊 Terminé : ${added} ajoutés, ${skipped} ignorés, ${errors} erreurs`,'ok');
+  toast(`Scan terminé : ${added} iris ajoutés`);
+}
+
+function showScanResult(data){
+  const card=document.getElementById('scanResultCard'),content=document.getElementById('scanResultContent');
+  card.style.display='block';
+  content.innerHTML=Object.entries(data).filter(([k,v])=>v&&k!=='id').map(([k,v])=>`<div style="display:flex;gap:.5rem;padding:.2rem 0;border-bottom:1px solid var(--p);font-size:.86rem"><strong style="color:var(--gr);width:100px;flex-shrink:0;font-size:.72rem;text-transform:uppercase">${k}</strong><span>${v}</span></div>`).join('');
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function saveScanResult(){
+  if(!scanResult||!scanResult.name){toast('Aucun résultat à enregistrer');return;}
+  if(irisDB.find(e=>e.name.toLowerCase()===scanResult.name.toLowerCase())){toast('"'+scanResult.name+'" déjà dans la base');return;}
+  irisDB.unshift({...scanResult,id:'db-'+Date.now()});
+  S.s('db',irisDB);updateDBBadge();
+  document.getElementById('scanResultCard').style.display='none';
+  scanResult=null;toast('Iris enregistré dans la base');
+}
+
+function editScanResult(){
+  if(!scanResult)return;
+  // Pre-fill the add form and switch to it
+  if(scanResult.name)    document.getElementById('de-name').value=scanResult.name;
+  if(scanResult.group)   document.getElementById('de-group').value=scanResult.group;
+  if(scanResult.breeder) document.getElementById('de-breeder').value=scanResult.breeder;
+  if(scanResult.year)    document.getElementById('de-year').value=scanResult.year;
+  if(scanResult.height)  document.getElementById('de-height').value=scanResult.height;
+  if(scanResult.supplier)document.getElementById('de-supplier').value=scanResult.supplier;
+  if(scanResult.url)     document.getElementById('de-url').value=scanResult.url;
+  if(scanResult.desc)    document.getElementById('de-desc').value=scanResult.desc;
+  if(scanResult.imgUrl)  {document.getElementById('de-imgurl').value=scanResult.imgUrl;document.getElementById('de-preview').src=scanResult.imgUrl;document.getElementById('de-preview').style.display='block';}
+  if(scanResult.falls_col)  document.getElementById('me-falls-col').value=scanResult.falls_col;
+  if(scanResult.falls_pat)  document.getElementById('me-falls-pat').value=scanResult.falls_pat;
+  if(scanResult.std_col)    document.getElementById('me-std-col').value=scanResult.std_col;
+  if(scanResult.beard_col)  document.getElementById('me-beard-col').value=scanResult.beard_col;
+  if(scanResult.beard_type) document.getElementById('me-beard-type').value=scanResult.beard_type;
+  setDesTab('add');toast('Formulaire pré-rempli — vérifiez et enregistrez');
+}
+
+function setText(id,val){const el=document.getElementById(id);if(el) el.textContent=val||'—';}
+
+// ══════════════════════════════════════════════
+// SAVE TO COLLECTION
+// ══════════════════════════════════════════════
+function updateBadge(){document.getElementById('badge').textContent=coll.length;}
+
+function saveNew(){
+  if(!curRes) return;
+  if(coll.find(c=>c.cultivar===curRes.cultivar)){toast('Déjà dans la collection');return;}
+  const iris={id:Date.now(),cultivar:curRes.cultivar,group:curRes.general?.group||curRes.group||'',
+    colors:curRes.colors||'',breeder:curRes.breeder||'',year:curRes.year||'',height:curRes.height||'',
+    desc:curRes.desc||'',coverIdx:0,photos:[...(curRes._photos||[])],obs:[],morpho:curRes};
+  rebuildFP(iris);
+  coll.unshift(iris);S.s('co',coll);updateBadge();
+  const sb=document.getElementById('saveBtn');
+  sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+  document.getElementById('addObsBtn').style.display='inline-flex';
+  document.getElementById('addObsBtn').textContent='📅 Ajouter une floraison';
+  curRes._matchId=iris.id;toast('"'+iris.cultivar+'" ajouté !');
+}
+
+function addToExisting(){
+  if(!curRes) return;
+  const iris=coll.find(c=>c.id===(curRes._matchId||0));
+  if(!iris) return;
+  const nph=(curRes._photos||[]).filter(p=>!iris.photos.includes(p));
+  iris.photos.push(...nph);rebuildFP(iris);S.s('co',coll);
+  openFiche(iris.id);toast('Photos ajoutées — ajoutez une observation');
+}
+
+// ══════════════════════════════════════════════
+// COLLECTION RENDER
+// ══════════════════════════════════════════════
+function setView(v,btn){collView=v;S.s('cv',v);document.getElementById('vg').classList.toggle('on',v==='g');document.getElementById('vl').classList.toggle('on',v==='l');renderColl();}
+
+function getCover(iris){const all=allPh(iris);return all.length?all[Math.min(iris.coverIdx||0,all.length-1)]:null;}
+function allPh(iris){const a=[...(iris.photos||[])];(iris.obs||[]).forEach(o=>(o.photos||[]).forEach(p=>{if(!a.includes(p))a.push(p);}));return a;}
+function yearTags(iris){const ys={};(iris.obs||[]).forEach(o=>{if(o.year)ys[o.year]=o.bloomed;});return Object.entries(ys).sort((a,b)=>b[0]-a[0]).slice(0,4).map(([y,b])=>`<span class="yr-tag ${b===true?'y':b===false?'n':''}">${y}${b===true?' ✓':b===false?' ✗':''}</span>`).join('');}
+
+function renderColl(){
+  const q=(document.getElementById('csearch')?.value||'').toLowerCase();
+  const fl=coll.filter(c=>!q||(c.cultivar||'').toLowerCase().includes(q)||(c.colors||'').toLowerCase().includes(q)||(c.group||'').toLowerCase().includes(q));
+  const out=document.getElementById('collOut');
+  if(!fl.length){out.innerHTML=`<div class="empty"><div class="ei">🌸</div><p>${q?'Aucun résultat':'Collection vide — identifiez votre premier iris !'}</p></div>`;return;}
+  if(collView==='g'){
+    out.innerHTML='<div class="cgrid">'+fl.map(c=>{
+      const cv=getCover(c);
+      return `<div class="cc" onclick="openFiche(${c.id})"><button class="cc-del" onclick="event.stopPropagation();delIris(${c.id})">✕</button>${cv?`<img class="cc-img" src="data:image/jpeg;base64,${cv}" alt="">`:'<div class="cc-ph">🌺</div>'}<div class="cc-info"><div class="cc-name">${c.cultivar||'Inconnu'}</div><div class="cc-meta">${c.group||''}</div><div style="margin-top:.18rem">${yearTags(c)}</div></div></div>`;
+    }).join('')+'</div>';
+  } else {
+    out.innerHTML='<div class="clist">'+fl.map(c=>{
+      const cv=getCover(c);
+      return `<div class="li" onclick="openFiche(${c.id})"><button class="li-del" onclick="event.stopPropagation();delIris(${c.id})">✕</button>${cv?`<img class="li-img" src="data:image/jpeg;base64,${cv}" alt="">`:'<div class="li-ph">🌺</div>'}<div class="li-info"><div class="li-name">${c.cultivar||'Inconnu'}</div><div class="li-meta">${[c.group,c.breeder,c.year].filter(Boolean).join(' · ')}</div><div class="li-meta" style="color:var(--vi)">${(c.colors||'').slice(0,45)}${(c.colors||'').length>45?'…':''}</div><div style="margin-top:.15rem">${yearTags(c)}</div></div></div>`;
+    }).join('')+'</div>';
+  }
+}
+function delIris(id){const ir=coll.find(c=>c.id===id);coll=coll.filter(c=>c.id!==id);S.s('co',coll);updateBadge();renderColl();if(ir)toast('"'+ir.cultivar+'" supprimé');}
+
+// ══════════════════════════════════════════════
+// IRIS FICHE MODAL
+// ══════════════════════════════════════════════
+function openFiche(id){
+  const ir=coll.find(c=>c.id===id);if(!ir)return;
+  currentIrisId=id;obsBloom=null;obsPhArr=[];
+  const cv=getCover(ir);
+  document.getElementById('coverImg').style.display=cv?'block':'none';
+  document.getElementById('coverPh').style.display=cv?'none':'flex';
+  if(cv) document.getElementById('coverImg').src='data:image/jpeg;base64,'+cv;
+  document.getElementById('ficheTitle').textContent=ir.cultivar||'Inconnu';
+  document.getElementById('ficheGroup').textContent=ir.group||'';
+  document.getElementById('f-colors').textContent=ir.colors||'—';
+  document.getElementById('f-breeder').textContent=ir.breeder||'—';
+  document.getElementById('f-year').textContent=ir.year||'—';
+  document.getElementById('f-height').textContent=ir.height||'—';
+  document.getElementById('f-desc').textContent=ir.desc||'';
+  const q=encodeURIComponent(ir.cultivar||'');
+  document.getElementById('f-ais').href='https://www.irises.org/iris-search/?name='+q;
+  document.getElementById('f-gimg').href='https://www.google.com/search?tbm=isch&q=iris+'+q;
+  // Supplier links
+  const fsl=document.getElementById('f-supplier-links'),fss=document.getElementById('f-supplier-sec');
+  if(sites.length){fsl.innerHTML=sites.map(s=>`<a class="chip" href="${s.url.replace('{query}',q)}" target="_blank">🛒 ${s.name}</a>`).join('');fss.style.display='block';}else fss.style.display='none';
+  renderFicheGallery(ir);renderObs(ir);
+  document.getElementById('obsForm').style.display='none';
+  document.getElementById('obsYr').value=new Date().getFullYear();
+  document.getElementById('obsDt').value=new Date().toISOString().split('T')[0];
+  document.getElementById('obsNotes').value='';
+  setBloom(null);renderObsFPh();
+  document.getElementById('ficheOv').classList.add('on');
+  document.getElementById('ficheModal').scrollTop=0;
+}
+function closeFiche(){document.getElementById('ficheOv').classList.remove('on');}
+function closeFicheOnBg(e){if(e.target===document.getElementById('ficheOv'))closeFiche();}
+function deleteCurrentIris(){
+  if(!currentIrisId)return;const ir=coll.find(c=>c.id===currentIrisId);
+  if(!confirm('Supprimer "'+ir?.cultivar+'" et tout son historique ?'))return;
+  delIris(currentIrisId);closeFiche();
+}
+
+function renderFicheGallery(ir){
+  const all=allPh(ir),ci=ir.coverIdx||0;
+  document.getElementById('ficheGallery').innerHTML=
+    all.map((p,i)=>`<div class="gp"><img src="data:image/jpeg;base64,${p}" class="${i===ci?'cov':''}" onclick="openLbox('data:image/jpeg;base64,${p}')"><button class="gp-s" onclick="setCov(${i})" title="Couverture">${i===ci?'★':'☆'}</button><button class="gp-d" onclick="rmPh(${i})">✕</button></div>`).join('')+
+    `<div class="add-ph" title="Ajouter"><input type="file" accept="image/*" multiple onchange="addPhToIris(this)">＋</div>`;
+}
+
+function addPhToIris(inp){
+  const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;
+  Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{resize(e.target.result.split(',')[1],1024,.85).then(b=>{ir.photos.push(b);S.s('co',coll);renderFicheGallery(ir);updateCoverImg(ir);renderColl();});};r.readAsDataURL(f);});
+  inp.value='';
+}
+function rmPh(idx){
+  const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;
+  const all=allPh(ir),b=all[idx],pi=ir.photos.indexOf(b);
+  if(pi>-1){ir.photos.splice(pi,1);if(ir.coverIdx>=ir.photos.length)ir.coverIdx=0;}
+  S.s('co',coll);renderFicheGallery(ir);updateCoverImg(ir);renderColl();
+}
+function setCov(idx){const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;ir.coverIdx=idx;S.s('co',coll);renderFicheGallery(ir);updateCoverImg(ir);renderColl();}
+function updateCoverImg(ir){const cv=getCover(ir);document.getElementById('coverImg').style.display=cv?'block':'none';document.getElementById('coverPh').style.display=cv?'none':'flex';if(cv)document.getElementById('coverImg').src='data:image/jpeg;base64,'+cv;}
+
+// Cover picker
+function openCP(){const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;const all=allPh(ir),ci=ir.coverIdx||0;document.getElementById('cpGrid').innerHTML=all.map((p,i)=>`<img class="cp-opt${i===ci?' sel':''}" src="data:image/jpeg;base64,${p}" onclick="pickCov(${i})">`).join('');document.getElementById('cpov').classList.add('on');}
+function pickCov(i){setCov(i);closeCP();}
+function closeCP(){document.getElementById('cpov').classList.remove('on');}
+
+// Observations
+function renderObs(ir){
+  const obs=(ir.obs||[]).slice().sort((a,b)=>b.year-a.year);
+  const list=document.getElementById('obsList'),empty=document.getElementById('obsEmpty');
+  if(!obs.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=obs.map(o=>{
+    const bc=o.bloomed===true?'y':o.bloomed===false?'n':'u';
+    const bt=o.bloomed===true?'✅ A fleuri':o.bloomed===false?'❌ Non':'— Inconnu';
+    const dt=o.date?new Date(o.date+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'';
+    return `<div class="obs-item"><button class="obs-del" onclick="deleteObs('${o.id}')">🗑</button>
+      <div class="obs-hd"><div class="obs-yr">🌸 ${o.year}</div><span class="obs-bl ${bc}">${bt}</span>${dt?`<span style="font-size:.72rem;color:var(--gr)">${dt}</span>`:''}</div>
+      ${o.photos?.length?`<div class="obs-photos">${o.photos.map(p=>`<img src="data:image/jpeg;base64,${p}" onclick="openLbox('data:image/jpeg;base64,${p}')">`).join('')}</div>`:''}
+      ${o.notes?`<div class="obs-notes">"${o.notes}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+function toggleObsForm(){const f=document.getElementById('obsForm');f.style.display=f.style.display==='none'?'block':'none';if(f.style.display==='block')f.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function setBloom(v){obsBloom=v;document.getElementById('bby').className='bb'+(v===true?' sy':'');document.getElementById('bbn').className='bb'+(v===false?' sn':'');document.getElementById('bbu').className='bb';}
+function addObsPh(inp){Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{resize(e.target.result.split(',')[1],800,.82).then(b=>{obsPhArr.push(b);renderObsFPh();});};r.readAsDataURL(f);});inp.value='';}
+function renderObsFPh(){document.getElementById('obsFormPh').innerHTML=obsPhArr.map((p,i)=>`<div class="op-wrap"><img src="data:image/jpeg;base64,${p}"><button class="op-del" onclick="obsPhArr.splice(${i},1);renderObsFPh()">✕</button></div>`).join('')+`<div class="add-op"><input type="file" accept="image/*" multiple onchange="addObsPh(this)">＋</div>`;}
+function saveObs(){
+  const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;
+  const yr=parseInt(document.getElementById('obsYr').value);if(!yr||isNaN(yr)){toast('Année invalide');return;}
+  const ob={id:Date.now().toString(),year:yr,date:document.getElementById('obsDt').value,bloomed:obsBloom,notes:document.getElementById('obsNotes').value.trim(),photos:[...obsPhArr]};
+  if(!ir.obs)ir.obs=[];ir.obs.push(ob);
+  ob.photos.forEach(p=>{if(!ir.photos.includes(p))ir.photos.push(p);});
+  rebuildFP(ir);S.s('co',coll);
+  document.getElementById('obsForm').style.display='none';obsPhArr=[];
+  renderFicheGallery(ir);renderObs(ir);renderColl();toast('Observation '+yr+' enregistrée');
+}
+function deleteObs(oid){const ir=coll.find(c=>c.id===currentIrisId);if(!ir)return;ir.obs=(ir.obs||[]).filter(o=>o.id!==oid);S.s('co',coll);renderObs(ir);renderColl();toast('Observation supprimée');}
+
+// ══════════════════════════════════════════════
+// DATABASE
+// ══════════════════════════════════════════════
+function updateDBBadge(){document.getElementById('dbBadge').textContent=irisDB.length;}
+
+function renderDB(){
+  const q=(document.getElementById('dbsearch')?.value||'').toLowerCase();
+  const fl=irisDB.filter(e=>!q||(e.name||'').toLowerCase().includes(q)||(e.group||'').toLowerCase().includes(q)||(e.supplier||'').toLowerCase().includes(q));
+  const out=document.getElementById('dbOut');
+  if(!fl.length){out.innerHTML=`<div class="empty"><div class="ei">🗄</div><p>${q?'Aucun résultat':'Base vide — ajoutez des iris via le mode Concepteur.'}</p></div>`;return;}
+  out.innerHTML='<div class="db-grid">'+fl.map(e=>{
+    const img=e.imgB64?`<img class="db-img" src="data:image/jpeg;base64,${e.imgB64}" alt="">`:e.imgUrl?`<img class="db-img" src="${e.imgUrl}" alt="" onerror="this.style.display='none'">` :`<div class="db-ph">🌸</div>`;
+    const comp=calcCompleteness(e);
+    return `<div class="db-card" onclick="openDBEntry('${e.id}')">${img}<div class="db-info"><div class="db-name">${e.name||'?'}</div><div class="db-meta">${[e.group,e.breeder,e.year].filter(Boolean).join(' · ')}</div>${e.supplier?`<div class="db-meta" style="color:var(--bl)">🛒 ${e.supplier}</div>`:''}<div class="db-completeness" title="Complétude ${comp}%"><div class="db-comp-fill" style="width:${comp}%"></div></div></div></div>`;
+  }).join('')+'</div>';
+}
+
+function calcCompleteness(e){
+  const fields=['name','group','breeder','year','desc','falls_tip','falls_pat','std_shape','std_vs','beard_type'];
+  const filled=fields.filter(f=>(e[f]||e.morpho?.[f]||'')).length;
+  return Math.round(filled/fields.length*100);
+}
+
+function openDBEntry(id){
+  const e=irisDB.find(x=>x.id===id);if(!e)return;
+  const q=encodeURIComponent(e.name||'');
+  const img=e.imgB64?`<img src="data:image/jpeg;base64,${e.imgB64}" alt="" style="width:100%;max-height:200px;object-fit:contain;border-radius:3px;border:1px solid var(--bd);margin-bottom:.8rem">`:e.imgUrl?`<img src="${e.imgUrl}" alt="" style="width:100%;max-height:200px;object-fit:contain;border-radius:3px;border:1px solid var(--bd);margin-bottom:.8rem" onerror="this.style.display='none'">` :'';
+  const M=e;
+  document.getElementById('dbEntryContent').innerHTML=`
+    ${img}
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;color:var(--vi);margin-bottom:.3rem">${e.name||'?'}</h2>
+    <div style="font-size:.78rem;color:var(--gr);margin-bottom:.7rem">${[e.group,e.breeder,e.year,e.height].filter(Boolean).join(' · ')}</div>
+    ${e.desc?`<div style="font-style:italic;color:var(--br);font-size:.86rem;line-height:1.6;margin-bottom:.8rem">${e.desc}</div>`:''}
+    ${e.supplier?`<div style="margin-bottom:.6rem"><span class="tag tag-b">🛒 ${e.supplier}</span>${e.url?` <a href="${e.url}" target="_blank" style="font-size:.8rem">↗ Fiche</a>`:''}</div>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.82rem;margin-bottom:.8rem">
+      ${mkRow('Falls — bout',e.falls_tip)}${mkRow('Falls — bord',e.falls_edge)}
+      ${mkRow('Falls — surface',e.falls_surf)}${mkRow('Falls — onglet',e.falls_haft)}
+      ${mkRow('Falls — patron',e.falls_pat)}${mkRow('Falls — veinures',e.falls_vein)}
+      ${mkRow('Falls — centre/bord',e.falls_cb)}${mkRow('Falls — couleur',e.falls_col)}
+      ${mkRow('Standards — forme',e.std_shape)}${mkRow('Standards — bout',e.std_tip)}
+      ${mkRow('Standards — bord',e.std_edge)}${mkRow('Standards — vs falls',e.std_vs)}
+      ${mkRow('Standards — couleur',e.std_col)}${mkRow('Barbe — type',e.beard_type)}
+      ${mkRow('Barbe — couleur',e.beard_col)}${mkRow('Barbe — contraste',e.beard_vs)}
+      ${mkRow('Forme globale',e.gen_form)}${mkRow('Ondulation',e.gen_ruff)}
+      ${mkRow('Saison',e.gen_season)}${mkRow('Parfum',e.gen_scent)}
+    </div>
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap">
+      <a class="lb" href="https://www.irises.org/iris-search/?name=${q}" target="_blank">🔗 AIS</a>
+      <a class="lb" href="https://www.google.com/search?tbm=isch&q=iris+${q}" target="_blank">🔍 Images</a>
+      <button class="lb" style="color:var(--gd);border-color:var(--gd)" onclick="editDBEntry('${e.id}')">✏️ Modifier</button>
+      <button class="lb" style="color:var(--rd);border-color:var(--rd)" onclick="deleteDBEntry('${e.id}')">🗑 Supprimer</button>
+    </div>`;
+  document.getElementById('dbEntryOv').classList.add('on');
+}
+function mkRow(lbl,val){if(!val)return '';return `<div><div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr)">${lbl}</div><div>${val}</div></div>`;}
+function closeDBEntry(){document.getElementById('dbEntryOv').classList.remove('on');}
+function editDBEntry(id){closeDBEntry();nav('designer');if(!desLocked){setDesTab('add');loadDBFormEntry(id);}}
+function deleteDBEntry(id){
+  if(!confirm('Supprimer cette entrée ?'))return;
+  irisDB=irisDB.filter(e=>e.id!==id);S.s('db',irisDB);updateDBBadge();renderDB();closeDBEntry();toast('Entrée supprimée');
+}
+
+// ══════════════════════════════════════════════
+// DESIGNER
+// ══════════════════════════════════════════════
+function showDesLock(){document.getElementById('designerLock').style.display='block';document.getElementById('designerContent').style.display='none';}
+function unlockDesigner(){
+  const pin=document.getElementById('designerPin').value;
+  if(pin===desPin){desLocked=false;document.getElementById('designerLock').style.display='none';document.getElementById('designerContent').style.display='block';setDesTab('add');}
+  else{toast('PIN incorrect');document.getElementById('designerPin').value='';}
+}
+function changePin(){const p=document.getElementById('newPin').value;if(!p||p.length<3){toast('PIN trop court');return;}desPin=p;S.s('dp',desPin);toast('PIN modifié');}
+
+function setDesTab(t){
+  ['add','import','scrape','manage','deploy','pin'].forEach(n=>{
+    const btn=document.getElementById('dt-'+n);const panel=document.getElementById('dt-'+n+'-panel');
+    if(btn) btn.className='btn '+(t===n?'btn-o':'btn-s');
+    if(panel) panel.style.display=t===n?'block':'none';
+  });
+  if(t==='manage') renderManageList();
+  if(t==='scrape'){ renderSiteChips(); renderAutoScanChips(); }
+  if(t==='deploy'){ document.getElementById('desVerDisplay').textContent=S.g('des-version')||APP_VERSION; document.getElementById('newVersion').value=S.g('des-version')||APP_VERSION; if(S.g('des-notes')) document.getElementById('releaseNotes').value=S.g('des-notes'); }
+}
+
+// DB Form
+function loadDBPhotoUrl(){const url=document.getElementById('de-imgurl').value.trim();if(url){document.getElementById('de-preview').src=url;document.getElementById('de-preview').style.display='block';}}
+let dbPhB64='';
+function loadDBPhoto(inp){const r=new FileReader();r.onload=e=>{resize(e.target.result.split(',')[1],800,.85).then(b=>{dbPhB64=b;document.getElementById('de-preview').src='data:image/jpeg;base64,'+b;document.getElementById('de-preview').style.display='block';});};r.readAsDataURL(inp.files[0]);inp.value='';}
+
+function saveDBEntry(){
+  const name=document.getElementById('de-name').value.trim();
+  if(!name){toast('Nom requis');return;}
+  const entry={
+    id:editDBId||('db-'+Date.now()),
+    name,group:document.getElementById('de-group').value,
+    breeder:document.getElementById('de-breeder').value.trim(),
+    year:document.getElementById('de-year').value.trim(),
+    height:document.getElementById('de-height').value.trim(),
+    supplier:document.getElementById('de-supplier').value.trim(),
+    url:document.getElementById('de-url').value.trim(),
+    desc:document.getElementById('de-desc').value.trim(),
+    imgUrl:document.getElementById('de-imgurl').value.trim(),
+    imgB64:dbPhB64||undefined,
+    // Morpho
+    falls_tip:document.getElementById('me-falls-tip').value,
+    falls_edge:document.getElementById('me-falls-edge').value,
+    falls_surf:document.getElementById('me-falls-surf').value,
+    falls_haft:document.getElementById('me-falls-haft').value,
+    falls_pat:document.getElementById('me-falls-pat').value,
+    falls_vein:document.getElementById('me-falls-vein').value,
+    falls_cb:document.getElementById('me-falls-cb').value,
+    falls_col:document.getElementById('me-falls-col').value.trim(),
+    std_shape:document.getElementById('me-std-shape').value,
+    std_tip:document.getElementById('me-std-tip').value,
+    std_edge:document.getElementById('me-std-edge').value,
+    std_ruff:document.getElementById('me-std-ruff').value,
+    std_col:document.getElementById('me-std-col').value.trim(),
+    std_vs:document.getElementById('me-std-vs').value,
+    beard_type:document.getElementById('me-beard-type').value,
+    beard_col:document.getElementById('me-beard-col').value.trim(),
+    beard_vs:document.getElementById('me-beard-vs').value,
+    beard_unif:document.getElementById('me-beard-unif').value,
+    gen_form:document.getElementById('me-gen-form').value,
+    gen_ruff:document.getElementById('me-gen-ruff').value,
+    gen_season:document.getElementById('me-gen-season').value,
+    gen_scent:document.getElementById('me-gen-scent').value,
+  };
+  if(editDBId){const idx=irisDB.findIndex(e=>e.id===editDBId);if(idx>-1)irisDB[idx]=entry;}
+  else irisDB.unshift(entry);
+  S.s('db',irisDB);updateDBBadge();clearDBForm();
+  document.getElementById('de-status').textContent=editDBId?'✓ Fiche modifiée':'✓ Iris ajouté à la base';
+  document.getElementById('de-status').className='kst ok';
+  editDBId=null;toast(name+' enregistré dans la base');
+}
+
+function loadDBFormEntry(id){
+  editDBId=id;const e=irisDB.find(x=>x.id===id);if(!e)return;
+  document.getElementById('de-name').value=e.name||'';
+  document.getElementById('de-group').value=e.group||'';
+  document.getElementById('de-breeder').value=e.breeder||'';
+  document.getElementById('de-year').value=e.year||'';
+  document.getElementById('de-height').value=e.height||'';
+  document.getElementById('de-supplier').value=e.supplier||'';
+  document.getElementById('de-url').value=e.url||'';
+  document.getElementById('de-desc').value=e.desc||'';
+  document.getElementById('de-imgurl').value=e.imgUrl||'';
+  if(e.imgB64){dbPhB64=e.imgB64;document.getElementById('de-preview').src='data:image/jpeg;base64,'+e.imgB64;document.getElementById('de-preview').style.display='block';}
+  else if(e.imgUrl){document.getElementById('de-preview').src=e.imgUrl;document.getElementById('de-preview').style.display='block';}
+  const fields=['falls_tip','falls_edge','falls_surf','falls_haft','falls_pat','falls_vein','falls_cb','falls_col','std_shape','std_tip','std_edge','std_ruff','std_col','std_vs','beard_type','beard_col','beard_vs','beard_unif','gen_form','gen_ruff','gen_season','gen_scent'];
+  fields.forEach(f=>{const el=document.getElementById('me-'+f.replace('_','-'));if(el)el.value=e[f]||'';});
+  document.getElementById('de-status').textContent='✏️ Modification de "'+e.name+'"';
+  document.getElementById('de-status').className='kst';
+  document.getElementById('de-name').scrollIntoView({behavior:'smooth'});
+}
+
+function clearDBForm(){
+  ['de-name','de-group','de-breeder','de-year','de-height','de-supplier','de-url','de-desc','de-imgurl'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('de-preview').style.display='none';dbPhB64='';editDBId=null;
+  const fields=['falls-tip','falls-edge','falls-surf','falls-haft','falls-pat','falls-vein','falls-cb','falls-col','std-shape','std-tip','std-edge','std-ruff','std-col','std-vs','beard-type','beard-col','beard-vs','beard-unif','gen-form','gen-ruff','gen-season','gen-scent'];
+  fields.forEach(f=>{const el=document.getElementById('me-'+f);if(el)el.value='';});
+  document.getElementById('de-status').textContent='';
+}
+
+function renderManageList(){
+  const q=(document.getElementById('mgsearch')?.value||'').toLowerCase();
+  const fl=irisDB.filter(e=>!q||(e.name||'').toLowerCase().includes(q));
+  document.getElementById('mgCount').textContent=fl.length+' iris';
+  document.getElementById('mgList').innerHTML=fl.length
+    ?fl.map(e=>`<div class="si"><div class="si-i"><div class="si-n">${e.name}</div><div class="si-u">${[e.group,e.breeder,e.year,e.supplier].filter(Boolean).join(' · ')}</div></div><button class="btn btn-s" style="font-size:.76rem;padding:.18rem .5rem" onclick="loadDBFormEntry('${e.id}');setDesTab('add')">✏️</button><button class="si-d" onclick="deleteDBEntry('${e.id}');renderManageList()">✕</button></div>`).join('')
+    :'<div style="color:var(--gr);font-size:.84rem;padding:.3rem 0">Aucune entrée.</div>';
+}
+
+// ── Scrape assist ──
+async function parseScrapedData(){
+  const txt=document.getElementById('scrapeData').value.trim();
+  if(!txt){toast('Collez d\'abord des données');return;}
+  if(!miKey){toast('Mistral requis pour cette fonction');return;}
+  toast('Analyse par Mistral…');
+  try{
+    const r=await fetch('https://api.mistral.ai/v1/chat/completions',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+      body:JSON.stringify({model:'mistral-small-latest',messages:[{role:'user',content:`Extrait les informations de cette fiche d'iris et retourne UNIQUEMENT du JSON valide sans balises :\n{"name":"","group":"","breeder":"","year":"","height":"","supplier":"","url":"","desc":"","falls_tip":"","falls_edge":"","falls_pat":"","falls_col":"","std_col":"","std_vs":"","beard_type":"","beard_col":""}\n\nTexte:\n${txt}`}],max_tokens:400,temperature:.1})
+    });
+    const d=await r.json();const res=cleanJSON(d.choices?.[0]?.message?.content||'');
+    Object.entries(res).forEach(([k,v])=>{const el=document.getElementById('de-'+k.replace('_','-'))||document.getElementById('me-'+k.replace('_','-'));if(el&&v)el.value=v;});
+    setDesTab('add');toast('Formulaire pré-rempli — vérifiez et complétez');
+  }catch(e){toast('Erreur : '+e.message);}
+}
+
+// ══════════════════════════════════════════════
+// IMPORT / EXPORT
+// ══════════════════════════════════════════════
+function downloadTemplate(){
+  const header='nom,groupe,obtenteur,annee,hauteur,fournisseur,url_fiche,description,falls_tip,falls_edge,falls_surf,falls_haft,falls_pat,falls_vein,falls_cb,falls_col,std_shape,std_tip,std_edge,std_ruff,std_col,std_vs,beard_type,beard_col,beard_vs,beard_unif,gen_form,gen_ruff,gen_season,gen_scent\n';
+  const ex='Immortality,TB (Tall Bearded),Zurbrigg,1982,90cm,Cayeux,https://cayeux.fr/...,Blanc pur remontant exceptionnel,Arrondi,Frisé,Plane,Clair/net,Uni (self),Fines,Uniforme,Blanc,Dressés,Arrondi,Frisé,Modéré,Blanc,Identique,Barbe (iris barbu),Jaune pâle,Légèrement contrasté,Uniforme,Ronde/pleine,Modéré,Remontant,Léger\n';
+  const blob=new Blob([header+ex],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='irisid-template.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+function loadImportFile(inp){const r=new FileReader();r.onload=e=>{document.getElementById('importData').value=e.target.result;};r.readAsText(inp.files[0]);inp.value='';}
+
+function doImport(){
+  const raw=document.getElementById('importData').value.trim();
+  if(!raw){toast('Données vides');return;}
+  let entries=[];
+  try{
+    if(raw.startsWith('{')||raw.startsWith('[')){
+      const parsed=JSON.parse(raw);
+      entries=Array.isArray(parsed)?parsed:(parsed.irisDB||parsed.db||[]);
+    } else {
+      // CSV
+      const lines=raw.split('\n').filter(l=>l.trim());
+      const header=lines[0].split(',').map(h=>h.trim());
+      const COL=['nom','groupe','obtenteur','annee','hauteur','fournisseur','url_fiche','description','falls_tip','falls_edge','falls_surf','falls_haft','falls_pat','falls_vein','falls_cb','falls_col','std_shape','std_tip','std_edge','std_ruff','std_col','std_vs','beard_type','beard_col','beard_vs','beard_unif','gen_form','gen_ruff','gen_season','gen_scent'];
+      const keys=['name','group','breeder','year','height','supplier','url','desc','falls_tip','falls_edge','falls_surf','falls_haft','falls_pat','falls_vein','falls_cb','falls_col','std_shape','std_tip','std_edge','std_ruff','std_col','std_vs','beard_type','beard_col','beard_vs','beard_unif','gen_form','gen_ruff','gen_season','gen_scent'];
+      for(let i=1;i<lines.length;i++){
+        const vals=lines[i].split(',');const obj={id:'db-'+Date.now()+'-'+i};
+        keys.forEach((k,j)=>{obj[k]=(vals[j]||'').trim();});
+        if(obj.name) entries.push(obj);
+      }
+    }
+  }catch(e){document.getElementById('import-status').textContent='Erreur parsing : '+e.message;document.getElementById('import-status').className='kst bad';return;}
+  let added=0,skipped=0;
+  entries.forEach(e=>{
+    if(!e.name){skipped++;return;}
+    if(irisDB.find(x=>x.name.toLowerCase()===e.name.toLowerCase())){skipped++;return;}
+    irisDB.push({...e,id:e.id||('db-'+Date.now()+'-'+Math.random())});added++;
+  });
+  S.s('db',irisDB);updateDBBadge();
+  document.getElementById('import-status').textContent=`✓ ${added} iris importés, ${skipped} ignorés (doublons/vides)`;
+  document.getElementById('import-status').className='kst ok';
+  toast(added+' iris importés');
+}
+
+function exportAll(){
+  const data={version:2,exported:new Date().toISOString(),collection:coll,irisDB};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='irisid-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Sauvegarde exportée');
+}
+function importAll(inp){
+  const r=new FileReader();r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!confirm('Importer et remplacer les données actuelles ?'))return;
+      if(d.collection){coll=d.collection;S.s('co',coll);coll.forEach(ir=>rebuildFP(ir));updateBadge();}
+      if(d.irisDB){irisDB=d.irisDB;S.s('db',irisDB);updateDBBadge();}
+      toast('Import réussi');renderColl();renderDB();
+    }catch(err){toast('Erreur : '+err.message);}
+  };r.readAsText(inp.files[0]);inp.value='';
+}
+
+// ══════════════════════════════════════════════
+// LIGHTBOX
+// ══════════════════════════════════════════════
+function openLbox(src){document.getElementById('lboxImg').src=src;document.getElementById('lbox').classList.add('on');}
+function closeLbox(){document.getElementById('lbox').classList.remove('on');}
+
+// ══════════════════════════════════════════════
+// VERSION & UPDATE SYSTEM
+// ══════════════════════════════════════════════
+const APP_VERSION=document.querySelector('meta[name="app-version"]')?.content||'1.0.0';
+
+// DATA KEYS — toutes les données utilisateur à préserver
+const DATA_KEYS=['pn','mi','si','co','db','dp','cv','k'];
+
+function semverGt(a,b){
+  // Returns true if a > b
+  const pa=a.split('.').map(Number), pb=b.split('.').map(Number);
+  for(let i=0;i<3;i++){if((pa[i]||0)>(pb[i]||0))return true;if((pa[i]||0)<(pb[i]||0))return false;}
+  return false;
+}
+
+function initVersionDisplay(){
+  const vEl=document.getElementById('currentVerDisplay');
+  const vEl2=document.getElementById('desVerDisplay');
+  if(vEl) vEl.textContent=APP_VERSION;
+  if(vEl2) vEl2.textContent=APP_VERSION;
+  document.getElementById('newVersion').value=APP_VERSION;
+  // Check stored update URL
+  const url=S.g('update-url');
+  if(url) document.getElementById('updateUrl').value=url;
+  // Auto-check on load (silent)
+  if(url) checkForUpdate(true);
+}
+
+function saveUpdateUrl(){
+  const url=document.getElementById('updateUrl').value.trim();
+  if(!url){toast('URL vide');return;}
+  S.s('update-url',url);
+  toast('URL enregistrée');
+}
+
+let pendingUpdateHtml=null;
+
+async function checkForUpdate(silent=false){
+  const url=document.getElementById('updateUrl').value.trim()||S.g('update-url');
+  if(!url){if(!silent) toast('Aucune URL configurée');return;}
+  const st=document.getElementById('updateStatus');
+  if(!silent){st.className='kst';st.textContent='⏳ Vérification…';}
+  try{
+    const resp=await fetch(url+'?t='+Date.now(),{cache:'no-store'});
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    const html=await resp.text();
+    // Extract version from meta tag in downloaded HTML
+    const match=html.match(/<meta[^>]*name="app-version"[^>]*content="([^"]+)"/);
+    if(!match) throw new Error('Pas de numéro de version dans le fichier');
+    const remoteVer=match[1];
+    // Extract release notes
+    const notesMatch=html.match(/<meta[^>]*name="release-notes"[^>]*content="([^"]+)"/);
+    const notes=notesMatch?decodeURIComponent(notesMatch[1]):'';
+
+    if(semverGt(remoteVer,APP_VERSION)){
+      pendingUpdateHtml=html;
+      st.className='kst ok';
+      st.innerHTML=`✅ Nouvelle version disponible : <strong>v${remoteVer}</strong>${notes?'<br><em style="font-size:.8rem">'+notes+'</em>':''}`;
+      document.getElementById('applyUpdateBtn').style.display='inline-flex';
+      document.getElementById('updateBadge').style.display='inline';
+      if(!silent) toast(`Mise à jour v${remoteVer} disponible !`);
+    } else {
+      pendingUpdateHtml=null;
+      document.getElementById('applyUpdateBtn').style.display='none';
+      document.getElementById('updateBadge').style.display='none';
+      if(!silent){st.className='kst ok';st.textContent=`✓ Vous avez la dernière version (v${APP_VERSION})`;}
+    }
+  }catch(e){
+    if(!silent){st.className='kst bad';st.textContent='Erreur : '+e.message;}
+  }
+}
+
+async function applyUpdate(){
+  if(!pendingUpdateHtml){toast('Aucune mise à jour en attente');return;}
+  if(!confirm('Installer la mise à jour ? Vos données seront préservées.\nL\'application va se recharger.'))return;
+
+  // 1. Sauvegarder toutes les données utilisateur
+  const backup={};
+  DATA_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)backup[k]=v;});
+  // Aussi sauvegarder update-url
+  const upUrl=localStorage.getItem('update-url');
+  if(upUrl) backup['update-url']=upUrl;
+
+  // 2. Stocker le backup dans sessionStorage (survit au rechargement)
+  sessionStorage.setItem('irisid-restore',JSON.stringify(backup));
+  sessionStorage.setItem('irisid-update-html',pendingUpdateHtml);
+  sessionStorage.setItem('irisid-updating','1');
+
+  // 3. Remplacer le document par le nouveau HTML
+  document.open();
+  document.write(pendingUpdateHtml);
+  document.close();
+}
+
+function restoreAfterUpdate(){
+  // Appelé au démarrage si on vient d'une mise à jour
+  if(!sessionStorage.getItem('irisid-updating')) return;
+  sessionStorage.removeItem('irisid-updating');
+  sessionStorage.removeItem('irisid-update-html');
+  const backup=sessionStorage.getItem('irisid-restore');
+  if(!backup) return;
+  sessionStorage.removeItem('irisid-restore');
+  try{
+    const data=JSON.parse(backup);
+    Object.entries(data).forEach(([k,v])=>localStorage.setItem(k,v));
+    toast('✅ Mise à jour installée — données restaurées !');
+    // Reload once more to apply restored data
+    setTimeout(()=>location.reload(),1200);
+  }catch(e){toast('Restauration : '+e.message);}
+}
+
+// ── DESIGNER: version bump & deploy ──
+function bumpVersion(){
+  const v=document.getElementById('newVersion').value.trim();
+  if(!/^\d+\.\d+\.\d+$/.test(v)){toast('Format invalide (ex: 1.2.0)');return;}
+  const notes=document.getElementById('releaseNotes').value.trim();
+  S.s('des-version',v);
+  S.s('des-notes',notes);
+  document.getElementById('desVerDisplay').textContent=v+' (non déployée)';
+  toast('Version mise à jour — téléchargez l\'app pour déployer');
+}
+
+function downloadApp(){
+  // Cloner le HTML actuel et injecter la nouvelle version + notes
+  let html=document.documentElement.outerHTML;
+  const newVer=S.g('des-version')||APP_VERSION;
+  const notes=S.g('des-notes')||'';
+  // Update version meta
+  html=html.replace(
+    /<meta[^>]*name="app-version"[^>]*>/,
+    `<meta name="app-version" content="${newVer}">`
+  );
+  // Inject or update release-notes meta
+  if(html.includes('name="release-notes"')){
+    html=html.replace(/<meta[^>]*name="release-notes"[^>]*>/,
+      `<meta name="release-notes" content="${encodeURIComponent(notes)}">`);
+  } else {
+    html=html.replace('<meta name="app-version"',
+      `<meta name="release-notes" content="${encodeURIComponent(notes)}">\n<meta name="app-version"`);
+  }
+  // Strip all localStorage data from the deployed file (clean slate for new users)
+  // but keep the structure
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`irisid-v${newVer}.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast(`irisid-v${newVer}.html téléchargé — publiez-le sur GitHub`);
+}
+
+// ── Export/Import DB only ──
+function exportDB(){
+  if(!irisDB.length){toast('Base vide');return;}
+  const blob=new Blob([JSON.stringify({version:APP_VERSION,irisDB},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='irisid-base-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Base exportée ('+irisDB.length+' iris)');
+}
+function importDBOnly(inp){
+  const r=new FileReader();r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      const db=d.irisDB||d;
+      if(!Array.isArray(db)) throw new Error('Format invalide');
+      let added=0,skipped=0;
+      db.forEach(en=>{
+        if(!en.name) return;
+        if(irisDB.find(x=>x.name.toLowerCase()===en.name.toLowerCase())){skipped++;return;}
+        irisDB.unshift({...en,id:en.id||'db-'+Date.now()+'-'+Math.random()});added++;
+      });
+      S.s('db',irisDB);updateDBBadge();
+      toast(`${added} iris importés, ${skipped} ignorés`);
+    }catch(err){toast('Erreur : '+err.message);}
+  };r.readAsText(inp.files[0]);inp.value='';
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);}
+</script>
+</body>
+</html>
