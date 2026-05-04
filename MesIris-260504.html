@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="app-version" content="1.0.0">
+<meta name="app-name" content="IrisID">
+<meta name="theme-color" content="#5b3a8c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="IrisID">
+<title>IrisID</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c:#f5f0e8;--p:#ede5d0;--dk:#2c1f0e;--br:#5c3d1e;--gr:#8a7968;
+  --vi:#5b3a8c;--gn:#3a6b28;--gd:#b8920a;--rd:#a02828;--bd:#c4b090;
+  --sh:rgba(44,31,14,.13);--bl:#2a5080;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--c);color:var(--dk);font-family:'Crimson Pro',serif;font-size:16px;min-height:100vh}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+a{color:var(--vi);text-decoration:none}
+/* HEADER */
+.hdr{text-align:center;padding:1.1rem 1rem .8rem;border-bottom:1px solid var(--bd);background:linear-gradient(to bottom,rgba(91,58,140,.05),transparent)}
+.hdr h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,5vw,2.6rem);font-weight:700}
+.hdr h1 em{color:var(--vi)}
+.hdr p{font-size:.72rem;color:var(--gr);letter-spacing:.18em;text-transform:uppercase;margin-top:.18rem}
+/* NAV */
+.nav{display:flex;border-bottom:1px solid var(--bd);background:rgba(237,229,208,.93);position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);overflow-x:auto}
+.nb{flex:1;min-width:max-content;background:none;border:none;padding:.55rem .5rem;font-size:.82rem;color:var(--gr);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.nb.on{color:var(--vi);border-bottom-color:var(--vi);font-weight:500}
+.nb.des{color:var(--gd)}.nb.des.on{border-bottom-color:var(--gd)}
+.bk{display:inline-block;background:var(--vi);color:#fff;border-radius:9px;font-size:.58rem;padding:.02rem .3rem;margin-left:.18rem;vertical-align:middle;font-family:sans-serif;font-weight:700}
+/* PAGES */
+.pg{display:none;padding:1rem 1rem 5rem;max-width:880px;margin:0 auto}
+.pg.on{display:block}
+/* CARDS */
+.card{background:#fff;border:1px solid var(--bd);border-radius:4px;padding:1.1rem;margin-bottom:.9rem}
+.card h2{font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--vi);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--p)}
+.card h2.gd{color:var(--gd)}
+/* FORMS */
+.fg{margin-bottom:.7rem}
+.fg label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.22rem}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;background:var(--c);color:var(--dk);transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--vi)}
+.fg textarea{resize:vertical;min-height:60px}
+.row{display:flex;gap:.4rem}.row input,.row select{flex:1}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem}
+@media(max-width:460px){.row2,.row3{grid-template-columns:1fr}}
+/* BUTTONS */
+.btn{border:none;padding:.4rem 1rem;border-radius:2px;cursor:pointer;font-size:.9rem;transition:all .2s}
+.btn-p{background:var(--vi);color:#fff}.btn-p:hover{background:#4a2f78}
+.btn-g{background:var(--gn);color:#fff}.btn-g:hover{background:#2a5020}
+.btn-d{background:var(--rd);color:#fff}.btn-d:hover{background:#7a1818}
+.btn-o{background:var(--gd);color:#fff}.btn-o:hover{background:#8a6a08}
+.btn-b{background:var(--bl);color:#fff}.btn-b:hover{background:#1a3860}
+.btn-s{background:none;border:1px solid var(--bd);color:var(--br)}.btn-s:hover{border-color:var(--vi);color:var(--vi)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:.38rem;flex-wrap:wrap;margin-top:.3rem}
+/* BANNER */
+.bn{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;border:1px solid #e8b840;background:#fff8e7;border-radius:3px;padding:.65rem .9rem;margin-bottom:.9rem;font-size:.86rem;color:var(--br)}
+.bn.ok{border-color:#7ab360;background:#edf5e8}
+.bn.info{border-color:var(--bd);background:var(--p)}
+/* UPLOAD */
+.dropbox{border:2px dashed var(--bd);border-radius:4px;padding:1.8rem 1.2rem;text-align:center;background:rgba(237,229,208,.3);transition:border-color .2s;position:relative}
+.dropbox.ov{border-color:var(--vi);background:rgba(91,58,140,.04)}
+.dropbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropbox .ico{font-size:2rem;opacity:.32;display:block;margin-bottom:.5rem}
+.dropbox h3{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--br);margin-bottom:.18rem}
+.dropbox p{font-size:.8rem;color:var(--gr)}
+.strip{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--bd)}
+.tw{position:relative}
+.tw img{width:72px;height:72px;object-fit:cover;border-radius:3px;border:2px solid var(--bd);display:block}
+.tw img.main{border-color:var(--vi)}
+.tw .td{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:.58rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tw .ml{position:absolute;bottom:2px;left:2px;background:var(--vi);color:#fff;font-size:.48rem;padding:.02rem .22rem;border-radius:1px}
+/* CAMERA */
+.cam-row{margin-top:.6rem;text-align:center}
+video#camv{width:100%;max-height:230px;border:1px solid var(--bd);border-radius:3px;display:none;margin-top:.5rem;background:#000}
+video#camv.on{display:block}
+/* SCAN BTN */
+.scan-btn{display:block;width:100%;margin-top:.9rem;padding:.72rem;background:var(--vi);color:#fff;border:none;font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic;cursor:pointer;border-radius:3px;transition:all .2s}
+.scan-btn:hover:not(:disabled){background:#4a2f78;transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,58,140,.3)}
+.scan-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+/* LOADING */
+.ld{text-align:center;padding:1.5rem;display:none}
+.ld.on{display:block}
+.sp{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--vi);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .6rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld p{font-family:'Playfair Display',serif;font-style:italic;color:var(--gr);font-size:.92rem}
+.prog-step{font-size:.82rem;padding:.22rem 0;display:flex;align-items:center;gap:.5rem;color:var(--gr);max-width:340px;margin:0 auto}
+.prog-step.done{color:var(--gn)}.prog-step.act{color:var(--vi);font-weight:500}
+.si-dot{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;background:var(--p)}
+.prog-step.done .si-dot{background:var(--gn);color:#fff}
+.prog-step.act .si-dot{background:var(--vi);color:#fff}
+/* ERR */
+.err{background:#fff5f5;border:1px solid #dba0a0;border-radius:3px;padding:.75rem .9rem;font-size:.86rem;line-height:1.5;margin-top:.8rem;display:none}
+.err.on{display:block}
+/* RESULT */
+.res{display:none;margin-top:.9rem;animation:fu .3s ease}
+.res.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pn-badge{border-radius:3px;padding:.5rem .8rem;margin-bottom:.7rem;font-size:.84rem;border:1px solid}
+.pn-ok{border-color:#7ab360;background:#edf5e8}
+.pn-warn{border-color:#e8b840;background:#fff8e7}
+.res-hd{background:linear-gradient(135deg,var(--vi),#3d2666);color:#fff;border-radius:4px 4px 0 0;padding:1.1rem 1.2rem;position:relative;overflow:hidden}
+.res-hd::after{content:'🌸';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:2.8rem;opacity:.1}
+.res-conf{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;opacity:.58;margin-bottom:.1rem}
+.res-name{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,4vw,1.75rem);font-style:italic;line-height:1.1}
+.res-group{font-size:.78rem;opacity:.65;margin-top:.08rem}
+.res-body{background:#fff;border:1px solid var(--bd);border-top:none;border-radius:0 0 4px 4px;padding:1rem 1.2rem}
+.res-colors{font-size:.92rem;color:var(--br);margin-bottom:.6rem}
+.res-desc{font-style:italic;color:var(--br);font-size:.88rem;line-height:1.6;margin-bottom:.6rem}
+.res-alts{font-size:.82rem;color:var(--gr);margin-bottom:.6rem}
+.res-actions{display:flex;gap:.38rem;flex-wrap:wrap;border-top:1px solid var(--p);padding-top:.75rem;margin-top:.5rem}
+.lb{display:inline-flex;align-items:center;gap:.22rem;padding:.24rem .7rem;border:1px solid var(--bd);border-radius:2px;font-size:.83rem;color:var(--br);text-decoration:none;cursor:pointer;background:none;transition:all .2s;white-space:nowrap}
+.lb:hover{border-color:var(--vi);color:var(--vi)}
+.lb-g{background:var(--gn);color:#fff;border-color:var(--gn)}.lb-g:hover{background:#2a5020!important;color:#fff!important;border-color:#2a5020!important}
+.lb-o{background:var(--vi);color:#fff;border-color:var(--vi)}.lb-o:hover{background:#4a2f78!important;color:#fff!important}
+.lb.done{background:var(--gr);border-color:var(--gr);color:#fff;cursor:default}
+.dup-banner{border-radius:3px;padding:.55rem .8rem;margin-top:.5rem;font-size:.84rem;line-height:1.5}
+.match-wrap{margin-top:.8rem;border-top:1px solid var(--p);padding-top:.7rem}
+.match-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.45rem}
+.match-item{border:1px solid var(--bd);border-radius:3px;background:#fff;cursor:pointer;transition:all .2s;display:flex;gap:.7rem;align-items:stretch;padding:.5rem .7rem;margin-bottom:.4rem}
+.match-item:hover{border-color:var(--vi)}
+.match-item.top{border-color:var(--vi);background:rgba(91,58,140,.02)}
+.mi-img{width:56px;height:56px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--p)}
+.mi-info{flex:1}
+.mi-name{font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;color:var(--dk);margin-bottom:.08rem}
+.mi-meta{font-size:.72rem;color:var(--gr)}
+.mi-score{font-size:.76rem;font-weight:600;margin-top:.18rem}
+.mi-score.hi{color:var(--gn)}.mi-score.med{color:var(--gd)}.mi-score.lo{color:var(--gr)}
+.chips-wrap{margin-top:.45rem}
+.chips-lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.25rem}
+.chip{display:inline-block;background:var(--p);border:1px solid var(--bd);border-radius:20px;padding:.14rem .55rem;font-size:.75rem;margin:.14rem;text-decoration:none;color:var(--br)}
+.chip:hover{border-color:var(--vi);color:var(--vi)}
+/* COLLECTION */
+.coll-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem}
+.coll-bar h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic}
+input.search{border:1px solid var(--bd);border-radius:2px;padding:.3rem .65rem;font-size:.88rem;background:#fff;color:var(--dk);width:155px}
+input.search:focus{outline:none;border-color:var(--vi)}
+.vt{display:flex;gap:.2rem}
+.vt button{background:none;border:1px solid var(--bd);padding:.26rem .45rem;border-radius:2px;cursor:pointer;font-size:.78rem;color:var(--gr);transition:all .2s}
+.vt button.on{background:var(--vi);color:#fff;border-color:var(--vi)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:.8rem}
+.cc{background:#fff;border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.cc:hover{border-color:var(--vi);box-shadow:0 4px 14px var(--sh);transform:translateY(-2px)}
+.cc-img{width:100%;height:115px;object-fit:cover;display:block;background:var(--p)}
+.cc-ph{width:100%;height:115px;background:linear-gradient(135deg,#e8dff0,#d5c8e8);display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.cc-info{padding:.45rem .6rem}
+.cc-name{font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--dk);margin-bottom:.08rem;line-height:1.2}
+.cc-meta{font-size:.68rem;color:var(--gr)}
+.yr-tag{font-size:.6rem;background:var(--p);border:1px solid var(--bd);border-radius:10px;padding:.02rem .28rem;color:var(--br);margin:.08rem .06rem 0 0;display:inline-block}
+.yr-tag.y{background:#e2f0e2;border-color:#8ab08a;color:var(--gn)}
+.yr-tag.n{background:#f5e2e2;border-color:#c09090;color:var(--rd)}
+.cc-del{position:absolute;top:.28rem;right:.28rem;background:rgba(44,31,14,.6);color:#fff;border:none;border-radius:50%;width:19px;height:19px;font-size:.65rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+.cc:hover .cc-del{display:flex}
+.clist{display:flex;flex-direction:column;gap:.45rem}
+.li{background:#fff;border:1px solid var(--bd);border-radius:3px;display:flex;align-items:stretch;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.li:hover{border-color:var(--vi);box-shadow:0 2px 10px var(--sh)}
+.li-img{width:68px;object-fit:cover;flex-shrink:0}
+.li-ph{width:68px;flex-shrink:0;background:linear-gradient(135deg,#e8dff0,#d5c8e8);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.li-info{flex:1;padding:.45rem .65rem}
+.li-name{font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;margin-bottom:.06rem}
+.li-meta{font-size:.72rem;color:var(--gr)}
+.li-del{position:absolute;top:.32rem;right:.32rem;background:rgba(44,31,14,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:.62rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+.li:hover .li-del{display:flex}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--gr)}
+.empty .ei{font-size:2.4rem;opacity:.25;margin-bottom:.55rem}
+.empty p{font-family:'Playfair Display',serif;font-style:italic}
+/* DATABASE */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.75rem}
+.db-card{background:#fff;border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.db-card:hover{border-color:var(--vi);box-shadow:0 3px 12px var(--sh)}
+.db-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--p)}
+.db-ph{width:100%;height:110px;background:linear-gradient(135deg,#dde8f0,#c8d8e8);display:flex;align-items:center;justify-content:center;font-size:2rem}
+.db-info{padding:.5rem .65rem}
+.db-name{font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;color:var(--dk);margin-bottom:.1rem}
+.db-meta{font-size:.68rem;color:var(--gr)}
+.db-bar{height:3px;border-radius:2px;margin-top:.35rem;overflow:hidden;background:var(--p)}
+.db-fill{height:100%;border-radius:2px;background:var(--gn)}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(44,31,14,.62);z-index:200;display:none;overflow-y:auto;padding:.8rem}
+.ov.on{display:block}
+.modal{background:var(--c);border:1px solid var(--bd);border-radius:4px;max-width:720px;margin:0 auto;position:relative;animation:fu .22s ease}
+.modal-x{position:absolute;top:.55rem;right:.55rem;background:rgba(44,31,14,.5);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+.cover-wrap{position:relative;width:100%;height:200px;background:linear-gradient(135deg,#e8dff0,#d5c8e8);overflow:hidden}
+.cover-img{width:100%;height:100%;object-fit:cover;display:block}
+.cover-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,20,80,.65) 0%,transparent 55%)}
+.cover-title{position:absolute;bottom:.8rem;left:1rem;right:1rem;color:#fff}
+.cover-title h2{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,4vw,1.8rem);font-style:italic;line-height:1.1}
+.cover-title p{font-size:.78rem;opacity:.72;margin-top:.08rem}
+.cover-edt{position:absolute;top:.55rem;left:.55rem;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.35);padding:.2rem .55rem;border-radius:2px;font-size:.72rem;cursor:pointer;backdrop-filter:blur(4px)}
+.mbody{padding:1rem 1.1rem}
+.mfgrid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.75rem}
+.mf label{display:block;font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr)}
+.mf span{font-size:.88rem;color:var(--dk)}
+.mdesc{font-style:italic;color:var(--br);font-size:.84rem;line-height:1.6;border-top:1px solid var(--p);padding-top:.6rem;margin-bottom:.9rem}
+.gallery{display:flex;gap:.38rem;flex-wrap:wrap}
+.gp{position:relative}
+.gp img{width:72px;height:72px;object-fit:cover;border-radius:3px;border:2px solid var(--bd);cursor:pointer}
+.gp img.cov{border-color:var(--vi)}
+.gp .gp-d{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:.52rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.gp .gp-s{position:absolute;bottom:2px;left:2px;font-size:.58rem;background:var(--vi);color:#fff;padding:.02rem .25rem;border-radius:2px;cursor:pointer}
+.add-ph{width:72px;height:72px;border:2px dashed var(--bd);border-radius:3px;background:none;cursor:pointer;font-size:1.5rem;color:var(--gr);display:flex;align-items:center;justify-content:center;position:relative}
+.add-ph:hover{border-color:var(--vi);color:var(--vi)}
+.add-ph input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.obs-list{display:flex;flex-direction:column;gap:.5rem}
+.obs-item{border:1px solid var(--bd);border-radius:3px;padding:.6rem .75rem;background:#fff;position:relative}
+.obs-hd{display:flex;align-items:center;gap:.45rem;margin-bottom:.35rem;flex-wrap:wrap}
+.obs-yr{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700}
+.obs-bl{font-size:.7rem;padding:.07rem .4rem;border-radius:10px;font-family:sans-serif;font-weight:600}
+.obs-bl.y{background:#d4ecd4;color:var(--gn)}
+.obs-bl.n{background:#f0d8d8;color:var(--rd)}
+.obs-bl.u{background:var(--p);color:var(--gr)}
+.obs-del{position:absolute;top:.38rem;right:.38rem;background:none;border:none;color:var(--gr);cursor:pointer;font-size:.82rem}
+.obs-del:hover{color:var(--rd)}
+.obs-photos{display:flex;gap:.32rem;flex-wrap:wrap;margin:.4rem 0}
+.obs-photos img{width:58px;height:58px;object-fit:cover;border-radius:3px;border:1px solid var(--bd);cursor:pointer}
+.obs-form{border:1px solid var(--vi);border-radius:3px;padding:.75rem;background:#f9f7ff;margin-top:.5rem}
+.obs-form h4{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--vi);margin-bottom:.5rem}
+.bloom-row{display:flex;gap:.32rem;flex-wrap:wrap}
+.bb{background:none;border:1px solid var(--bd);padding:.22rem .6rem;border-radius:2px;font-size:.82rem;cursor:pointer;transition:all .2s;color:var(--gr)}
+.bb.sy{background:#d4ecd4;border-color:var(--gn);color:var(--gn);font-weight:600}
+.bb.sn{background:#f0d8d8;border-color:var(--rd);color:var(--rd);font-weight:600}
+.obs-fph{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.35rem}
+.op-wrap{position:relative}
+.op-wrap img{width:54px;height:54px;object-fit:cover;border-radius:3px;border:1px solid var(--bd)}
+.op-del{position:absolute;top:-3px;right:-3px;background:var(--rd);color:#fff;border:none;border-radius:50%;width:14px;height:14px;font-size:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.add-op{width:54px;height:54px;border:2px dashed var(--bd);border-radius:3px;background:none;cursor:pointer;font-size:1.3rem;color:var(--gr);display:flex;align-items:center;justify-content:center;position:relative}
+.add-op:hover{border-color:var(--vi);color:var(--vi)}
+.add-op input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+/* DESIGNER */
+.lock-screen{text-align:center;padding:2rem 1rem}
+.lock-ico{font-size:3rem;opacity:.3;margin-bottom:.8rem}
+.me-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:500px){.me-grid{grid-template-columns:1fr}}
+.me-group{background:rgba(237,229,208,.4);border:1px solid var(--bd);border-radius:3px;padding:.65rem}
+.me-group h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:.45rem}
+.me-f{margin-bottom:.38rem}
+.me-f label{display:block;font-size:.68rem;color:var(--gr);margin-bottom:.15rem;text-transform:capitalize}
+.me-f select,.me-f input{width:100%;border:1px solid var(--bd);border-radius:2px;padding:.28rem .5rem;font-size:.82rem;background:#fff;color:var(--dk)}
+.me-f select:focus,.me-f input:focus{outline:none;border-color:var(--vi)}
+/* SITES */
+.si-list{list-style:none}
+.si{display:flex;align-items:center;gap:.38rem;padding:.3rem .45rem;border:1px solid var(--bd);border-radius:2px;margin-bottom:.28rem;background:var(--c)}
+.si-i{flex:1;min-width:0}.si-n{font-size:.86rem;font-weight:500}.si-u{font-size:.68rem;color:var(--gr);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-d{background:none;border:none;color:var(--rd);cursor:pointer;font-size:.88rem}
+.add-row{display:grid;grid-template-columns:1fr 2fr auto;gap:.38rem;margin-top:.45rem;align-items:end}
+@media(max-width:460px){.add-row{grid-template-columns:1fr}}
+.hint{font-size:.73rem;color:var(--gr);margin-top:.28rem;line-height:1.45}
+code{background:var(--p);padding:.06rem .22rem;border-radius:2px;font-size:.78rem}
+.kst{font-size:.82rem;margin-top:.28rem}.kst.ok{color:#3a7a2a}.kst.bad{color:var(--rd)}
+.step-s{display:flex;gap:.55rem;margin-bottom:.48rem}
+.sn{background:var(--vi);color:#fff;border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-family:sans-serif;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.st{font-size:.85rem;color:var(--br);line-height:1.48}.st a{color:var(--vi)}
+/* SCAN LOG */
+.log-box{border:1px solid var(--bd);border-radius:3px;background:#fff;padding:.6rem;font-size:.76rem;color:var(--br);max-height:260px;overflow-y:auto;font-family:monospace;white-space:pre-wrap;line-height:1.45;margin-top:.5rem}
+.log-ok{color:var(--gn)}.log-err{color:var(--rd)}
+/* SITE CHIPS */
+.site-chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.6rem}
+.site-chip{border:1px solid var(--bd);border-radius:2px;padding:.22rem .6rem;font-size:.8rem;cursor:pointer;background:none;color:var(--br);transition:all .2s}
+.site-chip.sel{background:var(--vi);color:#fff;border-color:var(--vi)}
+/* COVER PICKER */
+.cpov{position:fixed;inset:0;background:rgba(44,31,14,.7);z-index:300;display:none;align-items:center;justify-content:center;padding:.8rem}
+.cpov.on{display:flex}
+.cpbox{background:var(--c);border:1px solid var(--bd);border-radius:4px;padding:1rem;max-width:480px;width:100%}
+.cpbox h3{font-family:'Playfair Display',serif;font-style:italic;color:var(--vi);margin-bottom:.65rem}
+.cp-grid{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+.cp-opt{width:78px;height:78px;object-fit:cover;border-radius:3px;border:3px solid transparent;cursor:pointer}
+.cp-opt.sel{border-color:var(--vi)}
+/* LIGHTBOX */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;justify-content:center}
+.lbox.on{display:flex}
+.lbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:3px}
+.lbox-x{position:absolute;top:.8rem;right:.8rem;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:50%;width:30px;height:30px;font-size:.95rem;cursor:pointer}
+/* TOAST */
+.toast{position:fixed;bottom:1.1rem;left:50%;transform:translateX(-50%) translateY(55px);background:var(--dk);color:#fff;padding:.4rem 1rem;border-radius:3px;font-size:.88rem;transition:transform .25s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>Iris<em>ID</em></h1>
+  <p>Identification morphologique · Collection · Base de données</p>
+</div>
+
+<div class="nav">
+  <button class="nb on"  id="nb-scan"       onclick="nav('scan')">🔍 Identifier</button>
+  <button class="nb"     id="nb-collection"  onclick="nav('collection')">🌸 Collection <span class="bk" id="badge">0</span></button>
+  <button class="nb"     id="nb-database"    onclick="nav('database')">🗄 Base <span class="bk" id="dbBadge">0</span></button>
+  <button class="nb des" id="nb-designer"    onclick="nav('designer')">🔧 Concepteur</button>
+  <button class="nb"     id="nb-settings"    onclick="nav('settings')">⚙️ Config</button>
+</div>
+
+<!-- ══ SCAN ══ -->
+<div class="pg on" id="pg-scan">
+  <div class="bn" id="apiBanner">
+    <span>⚠️</span>
+    <span style="flex:1">Configurez vos clés API pour identifier vos iris.</span>
+    <button class="btn btn-p" onclick="nav('settings')" style="padding:.2rem .65rem;font-size:.82rem">Configurer →</button>
+  </div>
+  <div class="dropbox" id="dropbox">
+    <input type="file" id="scanFiles" accept="image/*" multiple>
+    <span class="ico">🌺</span>
+    <h3>Photo(s) d'iris à identifier</h3>
+    <p>Glissez ou cliquez · 1-2 photos · JPG, PNG, WEBP</p>
+  </div>
+  <div class="strip" id="thumbStrip" style="display:none"></div>
+  <div class="cam-row">
+    <button class="btn btn-s" onclick="toggleCam()">📷 Appareil photo</button>
+    <video id="camv" autoplay playsinline></video>
+    <div id="camCtrl" style="display:none;text-align:center;margin-top:.45rem">
+      <button class="btn btn-p" onclick="captureCam()">📸 Capturer</button>
+      <button class="btn btn-d" onclick="stopCam()" style="margin-left:.35rem">✕</button>
+    </div>
+    <canvas id="camCanvas" style="display:none"></canvas>
+  </div>
+  <button class="scan-btn" id="scanBtn" onclick="doScan()" disabled>Identifier →</button>
+  <div class="ld" id="loadDiv">
+    <div class="sp"></div>
+    <p id="loadTxt">Analyse en cours…</p>
+    <div id="stepsDiv" style="margin-top:.6rem"></div>
+  </div>
+  <div class="err" id="errDiv"></div>
+  <div class="res" id="resDiv">
+    <div id="pnBadge" style="display:none"></div>
+    <div class="res-hd">
+      <div class="res-conf" id="rConf"></div>
+      <div class="res-name" id="rName"></div>
+      <div class="res-group" id="rGroup"></div>
+    </div>
+    <div class="res-body">
+      <div class="res-colors" id="rColors"></div>
+      <div class="res-desc"   id="rDesc" style="display:none"></div>
+      <div class="res-alts"   id="rAlts"></div>
+      <div id="matchWrap" style="display:none" class="match-wrap">
+        <div class="match-title">Correspondances dans la base</div>
+        <div id="matchList"></div>
+      </div>
+      <div class="res-actions">
+        <a id="rAIS"  class="lb" href="#" target="_blank">🔗 AIS</a>
+        <a id="rGoog" class="lb" href="#" target="_blank">🔍 Images</a>
+        <a class="lb" href="https://lens.google.com/" target="_blank" onclick="toast('Glissez votre photo sur Google Lens')">🔎 Lens</a>
+        <button class="lb lb-g" id="saveBtn"   onclick="saveNew()">💾 Ajouter</button>
+        <button class="lb lb-o" id="addObsBtn" onclick="addToExisting()" style="display:none">📅 Floraison</button>
+      </div>
+      <div id="dupBanner" class="dup-banner"></div>
+      <div id="suppChips" style="display:none" class="chips-wrap">
+        <div class="chips-lbl">Fournisseurs</div>
+        <div id="chipsInner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COLLECTION ══ -->
+<div class="pg" id="pg-collection">
+  <div class="coll-bar">
+    <h2>Ma Collection</h2>
+    <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+      <input class="search" type="text" placeholder="Rechercher…" id="csearch" oninput="renderColl()">
+      <div class="vt">
+        <button id="vg" class="on" onclick="setView('g',this)">⊞</button>
+        <button id="vl"            onclick="setView('l',this)">☰</button>
+      </div>
+    </div>
+  </div>
+  <div id="collOut"></div>
+</div>
+
+<!-- ══ DATABASE ══ -->
+<div class="pg" id="pg-database">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic">Base morphologique</h2>
+    <div style="display:flex;gap:.35rem;align-items:center">
+      <input class="search" type="text" id="dbsearch" placeholder="Rechercher…" oninput="renderDB()">
+      <button class="btn btn-s" onclick="nav('designer')" style="font-size:.8rem;padding:.28rem .7rem">+ Ajouter</button>
+    </div>
+  </div>
+  <div id="dbOut"></div>
+</div>
+
+<!-- ══ DESIGNER ══ -->
+<div class="pg" id="pg-designer">
+  <div id="desLockDiv" class="lock-screen">
+    <div class="lock-ico">🔐</div>
+    <p style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;margin-bottom:.8rem">Mode concepteur</p>
+    <p style="font-size:.86rem;color:var(--gr);margin-bottom:1rem">Gérez la base de données morphologique.</p>
+    <div style="display:flex;gap:.4rem;max-width:300px;margin:0 auto">
+      <input type="password" id="designerPin" placeholder="PIN (défaut: 1234)" style="flex:1;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;background:var(--c)">
+      <button class="btn btn-o" onclick="unlockDesigner()">Entrer</button>
+    </div>
+  </div>
+  <div id="desContent" style="display:none">
+    <div style="display:flex;gap:.3rem;margin-bottom:.9rem;flex-wrap:wrap">
+      <button class="btn btn-o" id="dt-add"    onclick="setDesTab('add')">➕ Nouvel iris</button>
+      <button class="btn btn-s" id="dt-scrape" onclick="setDesTab('scrape')">🌐 Scan sites</button>
+      <button class="btn btn-s" id="dt-import" onclick="setDesTab('import')">📥 Import</button>
+      <button class="btn btn-s" id="dt-manage" onclick="setDesTab('manage')">🗂 Gérer</button>
+      <button class="btn btn-s" id="dt-deploy" onclick="setDesTab('deploy')">🚀 Déployer</button>
+      <button class="btn btn-s" id="dt-pin"    onclick="setDesTab('pin')" style="margin-left:auto">🔒 PIN</button>
+    </div>
+
+    <!-- ADD -->
+    <div id="dt-add-panel">
+      <div class="card">
+        <h2 class="gd">Informations générales</h2>
+        <div class="row2">
+          <div class="fg"><label>Nom du cultivar *</label><input type="text" id="de-name" placeholder="ex: Immortality"></div>
+          <div class="fg"><label>Groupe *</label>
+            <select id="de-group"><option value="">— Sélectionner —</option><option>TB (Tall Bearded)</option><option>IB (Intermediate Bearded)</option><option>SDB (Standard Dwarf Bearded)</option><option>MDB (Miniature Dwarf Bearded)</option><option>BB (Border Bearded)</option><option>MTB (Miniature Tall Bearded)</option><option>Siberian</option><option>Japanese (Ensata)</option><option>Louisiana</option><option>Species</option><option>Arilbred</option><option>Spuria</option></select>
+          </div>
+        </div>
+        <div class="row3">
+          <div class="fg"><label>Obtenteur</label><input type="text" id="de-breeder"></div>
+          <div class="fg"><label>Année AIS</label><input type="text" id="de-year" placeholder="2020"></div>
+          <div class="fg"><label>Hauteur (cm)</label><input type="text" id="de-height"></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Fournisseur</label><input type="text" id="de-supplier"></div>
+          <div class="fg"><label>URL fiche</label><input type="text" id="de-url" placeholder="https://…"></div>
+        </div>
+        <div class="fg"><label>Description</label><textarea id="de-desc"></textarea></div>
+        <div class="fg"><label>Photo URL</label>
+          <div class="row">
+            <input type="text" id="de-imgurl" placeholder="https://… (URL image)" oninput="previewDBImg()">
+            <div style="position:relative;flex-shrink:0"><button class="btn btn-s" style="padding:.38rem .65rem">📁</button><input type="file" accept="image/*" onchange="loadDBPhoto(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"></div>
+          </div>
+          <img id="de-preview" src="" alt="" style="display:none;width:100%;max-height:160px;object-fit:contain;margin-top:.5rem;border-radius:3px;border:1px solid var(--bd)">
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="gd">Critères morphologiques</h2>
+        <div class="me-grid">
+          <div class="me-group">
+            <h4>🌸 Falls (pétales extérieurs)</h4>
+            <div class="me-f"><label>Bout</label><select id="me-falls-tip"><option value="">—</option><option>Lisse/arrondi</option><option>Légèrement ondulé</option><option>Ondulé</option><option>Fortement frisé</option><option>Dentelé</option></select></div>
+            <div class="me-f"><label>Bord</label><select id="me-falls-edge"><option value="">—</option><option>Uni/lisse</option><option>Frisé</option><option>Lacé</option><option>Crénelé</option></select></div>
+            <div class="me-f"><label>Surface</label><select id="me-falls-surf"><option value="">—</option><option>Plane</option><option>Arrondie</option><option>Réfléchie</option><option>Évasée</option></select></div>
+            <div class="me-f"><label>Onglet (haft)</label><select id="me-falls-haft"><option value="">—</option><option>Clair/net</option><option>Veiné</option><option>Strié</option><option>Uniforme</option></select></div>
+            <div class="me-f"><label>Patron couleur</label><select id="me-falls-pat"><option value="">—</option><option>Uni (self)</option><option>Bicolore</option><option>Biton</option><option>Plicata</option><option>Blend (dégradé)</option><option>Luminata</option><option>Amoena</option></select></div>
+            <div class="me-f"><label>Veinures</label><select id="me-falls-vein"><option value="">—</option><option>Absentes</option><option>Fines</option><option>Marquées</option><option>Contrastées</option></select></div>
+            <div class="me-f"><label>Centre vs bord</label><select id="me-falls-cb"><option value="">—</option><option>Uniforme</option><option>Centre plus sombre</option><option>Centre plus clair</option><option>Halo lumineux</option><option>Signal contrasté</option></select></div>
+            <div class="me-f"><label>Couleur dominante</label><input type="text" id="me-falls-col" placeholder="ex: violet foncé"></div>
+          </div>
+          <div class="me-group">
+            <h4>🌿 Standards (pétales intérieurs)</h4>
+            <div class="me-f"><label>Forme</label><select id="me-std-shape"><option value="">—</option><option>Dressés</option><option>Ouverts</option><option>En dôme</option><option>Évasés</option></select></div>
+            <div class="me-f"><label>Bout</label><select id="me-std-tip"><option value="">—</option><option>Arrondi</option><option>Pointu</option><option>Échancré</option><option>Ondulé</option></select></div>
+            <div class="me-f"><label>Bord</label><select id="me-std-edge"><option value="">—</option><option>Lisse</option><option>Frisé</option><option>Lacé</option></select></div>
+            <div class="me-f"><label>Ondulation</label><select id="me-std-ruff"><option value="">—</option><option>Aucune</option><option>Légère</option><option>Modérée</option><option>Prononcée</option></select></div>
+            <div class="me-f"><label>Couleur dominante</label><input type="text" id="me-std-col" placeholder="ex: blanc nacré"></div>
+            <div class="me-f"><label>vs Falls</label><select id="me-std-vs"><option value="">—</option><option>Identique</option><option>Plus clair</option><option>Plus foncé</option><option>Teinte différente</option><option>Très contrasté</option></select></div>
+          </div>
+          <div class="me-group">
+            <h4>✨ Barbe / Signal / Crête</h4>
+            <div class="me-f"><label>Type</label><select id="me-beard-type"><option value="">—</option><option>Barbe (iris barbu)</option><option>Signal (Siberian/Japanese)</option><option>Crête (crested)</option><option>Absent</option></select></div>
+            <div class="me-f"><label>Couleur</label><input type="text" id="me-beard-col" placeholder="ex: orange vif"></div>
+            <div class="me-f"><label>vs Pétale</label><select id="me-beard-vs"><option value="">—</option><option>Identique</option><option>Légèrement contrasté</option><option>Fortement contrasté</option><option>Multicolore</option></select></div>
+            <div class="me-f"><label>Uniformité</label><select id="me-beard-unif"><option value="">—</option><option>Uniforme</option><option>Dégradé</option><option>Tacheté</option></select></div>
+          </div>
+          <div class="me-group">
+            <h4>📐 Général</h4>
+            <div class="me-f"><label>Forme globale</label><select id="me-gen-form"><option value="">—</option><option>Ronde/pleine</option><option>Triangulaire</option><option>Plate/étalée</option><option>En coupe</option><option>Papillon</option></select></div>
+            <div class="me-f"><label>Ondulation globale</label><select id="me-gen-ruff"><option value="">—</option><option>Aucune</option><option>Légère</option><option>Modérée</option><option>Prononcée</option></select></div>
+            <div class="me-f"><label>Saison</label><select id="me-gen-season"><option value="">—</option><option>Hâtif</option><option>Milieu de saison</option><option>Tardif</option><option>Remontant</option></select></div>
+            <div class="me-f"><label>Parfum</label><select id="me-gen-scent"><option value="">—</option><option>Inodore</option><option>Léger</option><option>Prononcé</option><option>Intense</option></select></div>
+          </div>
+        </div>
+        <div class="btns" style="margin-top:.8rem">
+          <button class="btn btn-o" onclick="saveDBEntry()">💾 Enregistrer</button>
+          <button class="btn btn-s" onclick="clearDBForm()">✕ Effacer</button>
+        </div>
+        <div class="kst" id="de-status"></div>
+      </div>
+    </div>
+
+    <!-- SCRAPE -->
+    <div id="dt-scrape-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🤖 Scan automatique des sites</h2>
+        <p style="font-size:.86rem;color:var(--br);margin-bottom:.8rem;line-height:1.55">L'appli explore le site en profondeur et extrait TOUS les iris trouvés. Nécessite <strong>Mistral</strong>.</p>
+        <div class="fg">
+          <label>URL à scanner (catalogue ou fiche individuelle)</label>
+          <div class="row">
+            <input type="text" id="scanUrl" placeholder="https://www.iris-cayeux.com/fr/26-grand-iris">
+            <button class="btn btn-o" id="scanStartBtn" onclick="startCrawl()">▶ Scanner</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem">
+          <div class="fg" style="margin:0"><label>Profondeur</label>
+            <select id="scanDepth" style="width:100%;border:1px solid var(--bd);border-radius:2px;padding:.38rem .6rem;font-size:.88rem;background:var(--c)">
+              <option value="1">1 — Page seule</option>
+              <option value="2" selected>2 — Catalogue + fiches</option>
+              <option value="3">3 — Multi-niveaux</option>
+              <option value="4">4 — Exploration profonde</option>
+            </select>
+          </div>
+          <div class="fg" style="margin:0"><label>Max pages</label>
+            <select id="scanMaxPg" style="width:100%;border:1px solid var(--bd);border-radius:2px;padding:.38rem .6rem;font-size:.88rem;background:var(--c)">
+              <option value="20">20</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option>
+            </select>
+          </div>
+          <button class="btn btn-d" onclick="stopCrawl()" style="align-self:flex-end;padding:.38rem .65rem;font-size:.82rem">⏹ Stop</button>
+        </div>
+        <div class="hint" style="margin-bottom:.7rem">Profondeur 2 = page catalogue + toutes les fiches liées.</div>
+        <div style="border-top:1px solid var(--p);margin-top:.7rem;padding-top:.7rem">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.35rem">📋 Fallback : coller le texte d'une page</div>
+          <textarea id="pasteScanData" style="width:100%;min-height:80px;border:1px solid var(--bd);border-radius:2px;padding:.4rem .65rem;font-size:.82rem;background:var(--c)" placeholder="Copiez-collez le texte d'une page de fiche iris…"></textarea>
+          <div class="btns" style="margin-top:.4rem">
+            <button class="btn btn-o" onclick="parsePaste()">📋 Extraire</button>
+          </div>
+        </div>
+        <div id="scanLogWrap" style="display:none;margin-top:.7rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+            <span style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr)">Journal</span>
+            <button class="btn btn-s" style="font-size:.72rem;padding:.15rem .5rem" onclick="document.getElementById('scanLogWrap').style.display='none'">Fermer</button>
+          </div>
+          <div id="scanLog" class="log-box"></div>
+        </div>
+      </div>
+      <div class="card" id="scanResCard" style="display:none">
+        <h2 class="gd">✅ Résultat extrait</h2>
+        <div id="scanResContent"></div>
+        <div class="btns" style="margin-top:.7rem">
+          <button class="btn btn-o" onclick="saveScanRes()">💾 Enregistrer</button>
+          <button class="btn btn-s" onclick="editScanRes()">✏️ Modifier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT -->
+    <div id="dt-import-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">📥 Import CSV / JSON</h2>
+        <p style="font-size:.86rem;color:var(--br);margin-bottom:.7rem">Les doublons (même nom) sont ignorés.</p>
+        <div class="fg"><label>Données CSV ou JSON</label><textarea id="importData" style="min-height:100px;font-size:.78rem" placeholder="Collez votre CSV ou JSON…"></textarea></div>
+        <div class="fg"><label>Ou charger un fichier</label>
+          <div style="position:relative;display:inline-block">
+            <button class="btn btn-b">📁 Choisir (.csv, .json)</button>
+            <input type="file" accept=".csv,.json" onchange="loadImportFile(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+          </div>
+        </div>
+        <div class="btns"><button class="btn btn-o" onclick="doImport()">⬆️ Importer</button><button class="btn btn-b" onclick="dlTemplate()">⬇️ Template CSV</button></div>
+        <div class="kst" id="import-status"></div>
+      </div>
+      <div class="card">
+        <h2 class="gd">💾 Sauvegarde complète</h2>
+        <div class="btns">
+          <button class="btn btn-g" onclick="exportAll()">⬇️ Exporter tout (JSON)</button>
+          <div style="position:relative"><button class="btn btn-b">⬆️ Importer sauvegarde</button><input type="file" accept=".json" onchange="importAll(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE -->
+    <div id="dt-manage-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🗂 Gestion de la base</h2>
+        <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap">
+          <input class="search" type="text" id="mgsearch" placeholder="Rechercher…" oninput="renderManage()">
+          <span id="mgCount" style="font-size:.82rem;color:var(--gr)"></span>
+        </div>
+        <div id="mgList"></div>
+      </div>
+    </div>
+
+    <!-- DEPLOY -->
+    <div id="dt-deploy-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🚀 Déploiement</h2>
+        <div style="background:var(--p);border-radius:3px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.86rem">
+          Version actuelle : <strong id="desVer" style="color:var(--vi)"></strong>
+        </div>
+        <div class="fg"><label>Nouvelle version (X.Y.Z)</label><input type="text" id="newVer" placeholder="1.1.0"></div>
+        <div class="fg"><label>Notes de mise à jour</label><textarea id="relNotes" style="min-height:70px" placeholder="- Amélioration identification&#10;- Nouveaux iris…"></textarea></div>
+        <div style="margin-bottom:.8rem">
+          <div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);margin-bottom:.5rem">Contenu à embarquer</div>
+          <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;cursor:pointer">
+            <input type="checkbox" id="inclDB" checked style="width:16px;height:16px;accent-color:var(--vi)">
+            <span>Base de données (<span id="deployDBCount">0</span> iris)</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;cursor:pointer">
+            <input type="checkbox" id="inclKeys" checked style="width:16px;height:16px;accent-color:var(--vi)">
+            <span>Clés API PlantNet + Mistral <span style="color:var(--rd);font-size:.78rem">(⚠️ visibles dans le code)</span></span>
+          </label>
+        </div>
+        <div style="border-top:1px solid var(--p);margin-top:.7rem;padding-top:.7rem">
+          <div class="step-s"><div class="sn">1</div><div class="st">Cliquez <strong>Télécharger</strong></div></div>
+          <div class="step-s"><div class="sn">2</div><div class="st">Publiez sur <a href="https://github.com" target="_blank">GitHub</a> → copiez l'URL Raw</div></div>
+          <div class="step-s"><div class="sn">3</div><div class="st">Transmettez l'URL une seule fois à l'utilisatrice</div></div>
+          <div class="btns" style="margin-top:.7rem">
+            <button class="btn btn-o" onclick="downloadApp()">⬇️ Télécharger l'app</button>
+            <button class="btn btn-g" onclick="exportDB()">⬇️ Base seule (JSON)</button>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--p);margin-top:.8rem;padding-top:.8rem">
+          <h3 style="font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--gd);margin-bottom:.6rem">URL de mise à jour (pour déploiement)</h3>
+          <div class="fg"><label>URL GitHub Raw de l'app</label>
+            <div class="row">
+              <input type="text" id="deployUrl" placeholder="https://raw.githubusercontent.com/…/irisid.html">
+              <button class="btn btn-p" onclick="saveDeployUrl()">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIN -->
+    <div id="dt-pin-panel" style="display:none">
+      <div class="card">
+        <h2 class="gd">🔒 Changer le PIN</h2>
+        <div class="fg"><label>Nouveau PIN</label><input type="password" id="newPin" placeholder="1234" maxlength="6"></div>
+        <button class="btn btn-o" onclick="changePin()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div class="pg" id="pg-settings">
+  <div class="card">
+    <h2>🌿 PlantNet (identification — gratuit)</h2>
+    <div class="step-s"><div class="sn">1</div><div class="st">Compte sur <a href="https://my.plantnet.org/" target="_blank">my.plantnet.org</a></div></div>
+    <div class="step-s"><div class="sn">2</div><div class="st">Settings → API key → cochez <strong>"Expose my API key"</strong> + ajoutez <code>*</code> aux domaines</div></div>
+    <div class="fg" style="margin-top:.6rem"><label>Clé PlantNet</label>
+      <div class="row"><input type="password" id="pnIn" placeholder="Clé PlantNet…"><button class="btn btn-p" onclick="savePN()">OK</button></div>
+      <div class="kst" id="pnKst"></div>
+    </div>
+    <div class="btns"><button class="btn btn-g" onclick="testPN()">🔍 Tester</button><button class="btn btn-d" onclick="clearPN()">Supprimer</button></div>
+    <p class="hint" style="margin-top:.4rem">500 identifications/jour gratuites.</p>
+  </div>
+  <div class="card">
+    <h2>🔑 Mistral AI (analyse morphologique — optionnel)</h2>
+    <div class="step-s"><div class="sn">1</div><div class="st"><a href="https://console.mistral.ai/home?workspace_dialog=apiKeys" target="_blank">console.mistral.ai → Create new secret key</a></div></div>
+    <div class="fg" style="margin-top:.6rem"><label>Clé Mistral</label>
+      <div class="row"><input type="password" id="miIn" placeholder="Clé Mistral…"><button class="btn btn-p" onclick="saveMI()">OK</button></div>
+      <div class="kst" id="miKst"></div>
+    </div>
+    <div class="btns"><button class="btn btn-g" onclick="testMI()">🔍 Tester</button><button class="btn btn-d" onclick="clearMI()">Supprimer</button></div>
+  </div>
+  <div class="card">
+    <h2>🌐 Sites fournisseurs</h2>
+    <ul class="si-list" id="siteList"></ul>
+    <div class="add-row">
+      <div class="fg" style="margin:0"><label>Nom</label><input type="text" id="sName" placeholder="Cayeux"></div>
+      <div class="fg" style="margin:0"><label>URL avec <code>{query}</code></label><input type="text" id="sUrl" placeholder="https://…?q={query}"></div>
+      <button class="btn btn-p" onclick="addSite()" style="align-self:flex-end">+</button>
+    </div>
+    <div class="hint">Ex: <code>https://www.iris-cayeux.com/?s={query}</code></div>
+  </div>
+  <div class="card">
+    <h2>🔄 Mises à jour</h2>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap">
+      <span style="font-size:.82rem;color:var(--gr)">Version : <strong id="curVerDisp"></strong></span>
+      <span id="updBadge" style="display:none;background:var(--gd);color:#fff;font-size:.72rem;padding:.1rem .45rem;border-radius:10px;font-family:sans-serif">Mise à jour dispo !</span>
+    </div>
+    <div class="fg"><label>URL de mise à jour</label>
+      <div class="row"><input type="text" id="updateUrl" placeholder="https://raw.githubusercontent.com/…/irisid.html"><button class="btn btn-p" onclick="saveUpdateUrl()">OK</button></div>
+    </div>
+    <div class="btns">
+      <button class="btn btn-g" onclick="checkUpdate()">🔍 Vérifier</button>
+      <button class="btn btn-b" id="applyBtn" onclick="applyUpdate()" style="display:none">⬇️ Installer</button>
+    </div>
+    <div id="updStatus" class="kst" style="margin-top:.4rem"></div>
+    <p class="hint" style="margin-top:.4rem">Vos données sont toujours préservées lors des mises à jour.</p>
+  </div>
+  <div class="card">
+    <h2>📱 Installer comme application</h2>
+    <div class="btns" style="margin-bottom:.7rem">
+      <button class="lb lb-o btn" id="installPwaBtn" onclick="window.installPWA&&window.installPWA()" style="display:none">📲 Installer IrisID</button>
+    </div>
+    <div style="font-size:.84rem;color:var(--br);line-height:1.8">
+      <strong>Android Chrome :</strong> Menu ⋮ → Ajouter à l'écran d'accueil<br>
+      <strong>iPhone Safari :</strong> Bouton partage ⬆️ → Sur l'écran d'accueil
+    </div>
+  </div>
+</div>
+
+<!-- ══ IRIS FICHE MODAL ══ -->
+<div class="ov" id="ficheOv">
+  <div class="modal" id="ficheModal">
+    <button class="modal-x" onclick="closeFiche()">✕</button>
+    <div class="cover-wrap" id="coverWrap">
+      <div id="coverPh" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4.5rem">🌺</div>
+      <img id="coverImg" class="cover-img" src="" alt="" style="display:none">
+      <div class="cover-ov"></div>
+      <button class="cover-edt" onclick="openCP()">🖼 Photo</button>
+      <div class="cover-title"><h2 id="ficheTitle"></h2><p id="ficheGroup"></p></div>
+    </div>
+    <div class="mbody">
+      <div class="mfgrid">
+        <div class="mf"><label>Couleur(s)</label><span id="f-colors"></span></div>
+        <div class="mf"><label>Obtenteur</label><span id="f-breeder"></span></div>
+        <div class="mf"><label>Année</label><span id="f-year"></span></div>
+        <div class="mf"><label>Hauteur</label><span id="f-height"></span></div>
+      </div>
+      <div class="mdesc" id="f-desc"></div>
+      <div id="f-supp-sec" style="margin-bottom:.9rem;display:none">
+        <div class="chips-lbl">Fournisseurs</div>
+        <div id="f-supp-links"></div>
+      </div>
+      <div style="margin-bottom:.9rem">
+        <div style="font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--br);margin-bottom:.5rem;padding-bottom:.22rem;border-top:1px solid var(--p);padding-top:.55rem">📷 Photos</div>
+        <div class="gallery" id="ficheGallery"></div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;padding-top:.55rem;border-top:1px solid var(--p)">
+          <div style="font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--br)">📅 Historique</div>
+          <button class="btn btn-p" style="font-size:.76rem;padding:.2rem .65rem" onclick="toggleObsForm()">+ Observation</button>
+        </div>
+        <div class="obs-form" id="obsForm" style="display:none">
+          <h4>Nouvelle observation</h4>
+          <div class="row2" style="margin-bottom:.5rem">
+            <div class="fg" style="margin:0"><label>Année</label><input type="text" id="obsYr" placeholder="2025" maxlength="4"></div>
+            <div class="fg" style="margin:0"><label>Date</label><input type="date" id="obsDt"></div>
+          </div>
+          <div class="fg"><label>A fleuri ?</label>
+            <div class="bloom-row">
+              <button class="bb" id="bby" onclick="setBloom(true)">✅ Oui</button>
+              <button class="bb" id="bbn" onclick="setBloom(false)">❌ Non</button>
+              <button class="bb" id="bbu" onclick="setBloom(null)">— Inconnu</button>
+            </div>
+          </div>
+          <div class="fg"><label>Notes</label><textarea id="obsNotes" style="min-height:52px"></textarea></div>
+          <div class="fg"><label>Photos</label>
+            <div class="obs-fph" id="obsFormPh">
+              <div class="add-op"><input type="file" accept="image/*" multiple onchange="addObsPh(this)">＋</div>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn btn-p" onclick="saveObs()">Enregistrer</button>
+            <button class="btn btn-d" onclick="document.getElementById('obsForm').style.display='none'">Annuler</button>
+          </div>
+        </div>
+        <div class="obs-list" id="obsList"></div>
+        <p id="obsEmpty" style="font-size:.82rem;color:var(--gr);font-style:italic;padding:.4rem 0;display:none">Aucune observation.</p>
+      </div>
+      <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--p)">
+        <a id="f-ais"  class="lb" href="#" target="_blank">🔗 AIS</a>
+        <a id="f-gimg" class="lb" href="#" target="_blank">🔍 Images</a>
+        <button class="lb" style="color:var(--rd);border-color:var(--rd)" onclick="deleteCurrentIris()">🗑 Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DB Entry Modal -->
+<div class="ov" id="dbEntryOv">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-x" onclick="document.getElementById('dbEntryOv').classList.remove('on')">✕</button>
+    <div id="dbEntryContent" style="padding:1rem"></div>
+  </div>
+</div>
+
+<!-- Cover Picker -->
+<div class="cpov" id="cpov">
+  <div class="cpbox">
+    <h3>Photo de couverture</h3>
+    <div class="cp-grid" id="cpGrid"></div>
+    <button class="btn btn-d" onclick="document.getElementById('cpov').classList.remove('on')">Fermer</button>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lbox" id="lbox" onclick="closeLbox()">
+  <button class="lbox-x" onclick="closeLbox()">✕</button>
+  <img id="lboxImg" src="" alt="">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SEED DATA -->
+<script type="application/json" id="__seed__">{}</script>
+
+<script>
+// ══════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════
+var S = {
+  g: function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  s: function(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  d: function(k){ localStorage.removeItem(k); }
+};
+
+// ══════════════════════════════════════════
+// FINGERPRINT
+// ══════════════════════════════════════════
+function fp(b64){ var s=(b64||'').replace(/\s/g,''); return s.length+'|'+s.slice(0,100)+'|'+s.slice(-50); }
+function rebuildFP(iris){
+  var set=new Set();
+  (iris.photos||[]).forEach(function(p){ set.add(fp(p)); });
+  (iris.obs||[]).forEach(function(o){ (o.photos||[]).forEach(function(p){ set.add(fp(p)); }); });
+  iris._fps=[...set];
+}
+function findByPhoto(b64){
+  var f=fp(b64);
+  for(var i=0;i<coll.length;i++){
+    var iris=coll[i];
+    if((iris._fps||[]).indexOf(f)>=0) return iris;
+    if((iris.photos||[]).some(function(p){ return fp(p)===f; })) return iris;
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════
+// SEED DATA
+// ══════════════════════════════════════════
+var SEED = (function(){
+  try{ var el=document.getElementById('__seed__'); return el?JSON.parse(el.textContent)||{}:{}; }
+  catch(e){ return {}; }
+})();
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+var DEF_SITES = [
+  {name:'Iris Cayeux',  url:'https://www.iris-cayeux.com/?s={query}',          base:'https://www.iris-cayeux.com/'},
+  {name:"Schreiner's",  url:'https://www.schreinersgardens.com/?s={query}',     base:'https://www.schreinersgardens.com/'},
+  {name:'Superstition', url:'https://www.superstitioniris.com/?s={query}',      base:'https://www.superstitioniris.com/'},
+  {name:'Mid-America',  url:'https://www.mid-americagarden.com/?s={query}',     base:'https://www.mid-americagarden.com/'},
+  {name:'Iris-Passion', url:'https://www.iris-passion.com/?s={query}',          base:'https://www.iris-passion.com/'},
+  {name:'AIS Database', url:'https://www.irises.org/iris-search/?name={query}', base:'https://www.irises.org/iris-database/'},
+];
+
+var pnKey    = S.g('pn') || SEED.pn || '';
+var miKey    = S.g('mi') || SEED.mi || '';
+var sites    = S.g('si') || SEED.si || DEF_SITES.slice();
+var coll     = S.g('co') || [];
+var irisDB   = S.g('db') || SEED.db || [];
+var desPin   = S.g('dp') || SEED.dp || '1234';
+var collView = S.g('cv') || 'g';
+var desLocked = true;
+var APP_VERSION = (document.querySelector('meta[name="app-version"]')||{}).content || '1.0.0';
+
+// Persist seed on first run
+if(!S.g('pn') && SEED.pn) S.s('pn', SEED.pn);
+if(!S.g('mi') && SEED.mi) S.s('mi', SEED.mi);
+if(!S.g('si') && SEED.si) S.s('si', SEED.si);
+if(!S.g('db') && SEED.db && SEED.db.length) S.s('db', SEED.db);
+
+coll.forEach(function(ir){ if(!ir._fps||!ir._fps.length) rebuildFP(ir); });
+
+var scanPhotos=[], curRes=null, camStream=null;
+var currentIrisId=null, obsBloom=null, obsPhArr=[];
+var editDBId=null, scanResult=null, scanRunning=false;
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+  restoreAfterUpdate();
+  updateBanner(); updateBadge(); updateDBBadge();
+  renderSites();
+  initDropbox();
+  if(pnKey) document.getElementById('pnIn').value = pnKey;
+  if(miKey) document.getElementById('miIn').value = miKey;
+  document.getElementById('vg').classList.toggle('on', collView==='g');
+  document.getElementById('vl').classList.toggle('on', collView==='l');
+  initVersionDisplay();
+});
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function nav(p){
+  document.querySelectorAll('.pg').forEach(function(el){ el.classList.remove('on'); });
+  document.querySelectorAll('.nb').forEach(function(el){ el.classList.remove('on'); });
+  document.getElementById('pg-'+p).classList.add('on');
+  document.getElementById('nb-'+p).classList.add('on');
+  if(p==='collection') renderColl();
+  if(p==='database')   renderDB();
+  if(p==='settings'){
+    renderSites();
+    if(pnKey) document.getElementById('pnIn').value = pnKey;
+    if(miKey) document.getElementById('miIn').value = miKey;
+  }
+  if(p==='designer' && desLocked)  showDesLock();
+  if(p==='designer' && !desLocked) setDesTab('add');
+}
+
+// ══════════════════════════════════════════
+// BADGES / BANNER
+// ══════════════════════════════════════════
+function updateBadge()   { document.getElementById('badge').textContent   = coll.length; }
+function updateDBBadge() { document.getElementById('dbBadge').textContent = irisDB.length; }
+
+function updateBanner(){
+  var b = document.getElementById('apiBanner');
+  var ok = pnKey || miKey;
+  if(ok){
+    b.className = 'bn ok';
+    b.innerHTML = '<span>✅</span><span>' + (pnKey?'🌿 PlantNet':'') + (pnKey&&miKey?' + ':'') + (miKey?'🔑 Mistral':'') + ' configuré(s).</span>';
+  } else {
+    b.className = 'bn';
+    b.innerHTML = '<span>⚠️</span><span style="flex:1">Configurez vos clés API.</span><button class="btn btn-p" onclick="nav(\'settings\')" style="padding:.2rem .65rem;font-size:.82rem">Configurer →</button>';
+  }
+}
+
+// ══════════════════════════════════════════
+// API KEYS
+// ══════════════════════════════════════════
+function savePN(){ var v=document.getElementById('pnIn').value.trim(); if(!v){toast('Clé vide');return;} pnKey=v; S.s('pn',pnKey); updateBanner(); setKst('pnKst','ok','✓ PlantNet enregistré'); toast('Clé PlantNet enregistrée'); }
+function clearPN(){ pnKey=''; S.d('pn'); document.getElementById('pnIn').value=''; setKst('pnKst','bad','Supprimé'); updateBanner(); }
+function saveMI(){ var v=document.getElementById('miIn').value.trim(); if(!v){toast('Clé vide');return;} miKey=v; S.s('mi',miKey); updateBanner(); setKst('miKst','ok','✓ Mistral enregistré'); toast('Clé Mistral enregistrée'); }
+function clearMI(){ miKey=''; S.d('mi'); document.getElementById('miIn').value=''; setKst('miKst','bad','Supprimé'); updateBanner(); }
+function setKst(id,cls,txt){ var el=document.getElementById(id); el.className='kst'+(cls?' '+cls:''); el.textContent=txt; }
+
+async function testPN(){
+  var k=document.getElementById('pnIn').value.trim()||pnKey; if(!k){toast('Aucune clé');return;}
+  setKst('pnKst','','⏳ Test…');
+  try{
+    var c=document.createElement('canvas'); c.width=1; c.height=1;
+    var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg'); });
+    var fd=new FormData(); fd.append('images',blob,'t.jpg'); fd.append('organs','flower');
+    var r=await fetch('https://my-api.plantnet.org/v2/identify/all?api-key='+k+'&lang=fr',{method:'POST',body:fd});
+    if(r.status===401){ setKst('pnKst','bad','❌ Clé invalide — cochez "Expose my API key"'); return; }
+    pnKey=k; S.s('pn',pnKey); document.getElementById('pnIn').value=k; updateBanner();
+    setKst('pnKst','ok','✅ PlantNet OK !');
+  }catch(e){ setKst('pnKst','bad','❌ Erreur réseau ou CORS'); }
+}
+async function testMI(){
+  var k=document.getElementById('miIn').value.trim()||miKey; if(!k){toast('Aucune clé');return;}
+  setKst('miKst','','⏳ Test…');
+  try{
+    var r=await fetch('https://api.mistral.ai/v1/models',{headers:{'Authorization':'Bearer '+k}});
+    if(r.ok){ miKey=k; S.s('mi',miKey); document.getElementById('miIn').value=k; updateBanner(); setKst('miKst','ok','✅ Mistral OK !'); }
+    else setKst('miKst','bad','❌ Erreur '+r.status);
+  }catch(e){ setKst('miKst','bad','❌ Erreur réseau'); }
+}
+
+// ══════════════════════════════════════════
+// SITES
+// ══════════════════════════════════════════
+function renderSites(){
+  var ul=document.getElementById('siteList');
+  if(!sites.length){ ul.innerHTML='<li style="color:var(--gr);font-size:.84rem;padding:.22rem 0">Aucun site.</li>'; return; }
+  ul.innerHTML=sites.map(function(s,i){
+    return '<li class="si"><div class="si-i"><div class="si-n">'+s.name+'</div><div class="si-u">'+s.url+'</div></div><button class="si-d" onclick="delSite('+i+')">✕</button></li>';
+  }).join('');
+}
+function addSite(){
+  var n=document.getElementById('sName').value.trim(), u=document.getElementById('sUrl').value.trim();
+  if(!n||!u){toast('Nom et URL requis');return;}
+  sites.push({name:n,url:u}); S.s('si',sites); renderSites();
+  document.getElementById('sName').value=''; document.getElementById('sUrl').value='';
+  toast('"'+n+'" ajouté');
+}
+function delSite(i){ sites.splice(i,1); S.s('si',sites); renderSites(); }
+function getSiteForUrl(url){
+  try{
+    var host=new URL(url).hostname;
+    return sites.find(function(s){ try{ return new URL(s.base||s.url.replace('{query}','')).hostname===host; }catch(e){ return false; } }) || {name:'Fournisseur'};
+  }catch(e){ return {name:'Fournisseur'}; }
+}
+
+// ══════════════════════════════════════════
+// FILE / CAMERA
+// ══════════════════════════════════════════
+function initDropbox(){
+  var db=document.getElementById('dropbox');
+  db.addEventListener('dragover', function(e){ e.preventDefault(); db.classList.add('ov'); });
+  db.addEventListener('dragleave', function(){ db.classList.remove('ov'); });
+  db.addEventListener('drop', function(e){ e.preventDefault(); db.classList.remove('ov'); handleFiles(Array.from(e.dataTransfer.files)); });
+  document.getElementById('scanFiles').addEventListener('change', function(){ handleFiles(Array.from(this.files)); this.value=''; });
+}
+function handleFiles(files){
+  var imgs=files.filter(function(f){ return f.type.startsWith('image/'); });
+  if(scanPhotos.length+imgs.length>2){ toast('Max 2 photos'); return; }
+  imgs.forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(e){ scanPhotos.push({b64:e.target.result.split(',')[1],src:e.target.result}); renderStrip(); };
+    r.readAsDataURL(f);
+  });
+}
+function renderStrip(){
+  var strip=document.getElementById('thumbStrip');
+  if(!scanPhotos.length){ strip.style.display='none'; document.getElementById('scanBtn').disabled=true; return; }
+  strip.style.display='flex';
+  strip.innerHTML=scanPhotos.map(function(p,i){
+    return '<div class="tw">'+(i===0?'<div class="ml">Principale</div>':'')+'<img src="'+p.src+'" class="'+(i===0?'main':'')+'">'+'<button class="td" onclick="rmScanPh('+i+')">✕</button></div>';
+  }).join('');
+  document.getElementById('scanBtn').disabled=false;
+  document.getElementById('resDiv').classList.remove('on');
+  document.getElementById('errDiv').classList.remove('on');
+}
+function rmScanPh(i){ scanPhotos.splice(i,1); renderStrip(); }
+function toggleCam(){
+  if(camStream){ stopCam(); return; }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(s){ camStream=s; var v=document.getElementById('camv'); v.srcObject=s; v.classList.add('on'); document.getElementById('camCtrl').style.display='block'; })
+    .catch(function(){ toast('Caméra refusée'); });
+}
+function stopCam(){ if(camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream=null; } document.getElementById('camv').classList.remove('on'); document.getElementById('camCtrl').style.display='none'; }
+function captureCam(){
+  var v=document.getElementById('camv'), c=document.getElementById('camCanvas');
+  c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0);
+  var src=c.toDataURL('image/jpeg',.9);
+  if(scanPhotos.length>=2){ toast('Max 2 photos'); return; }
+  scanPhotos.push({b64:src.split(',')[1],src:src}); renderStrip(); stopCam();
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function resize(b64,max,q){
+  return new Promise(function(res){
+    var img=new Image();
+    img.onload=function(){
+      var w=img.width,h=img.height;
+      if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; }else{ w=Math.round(w*max/h); h=max; } }
+      var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg',q).split(',')[1]);
+    };
+    img.src='data:image/jpeg;base64,'+b64;
+  });
+}
+function b64Blob(b64,mime){ mime=mime||'image/jpeg'; var a=atob(b64),ar=new Uint8Array(a.length); for(var i=0;i<a.length;i++) ar[i]=a.charCodeAt(i); return new Blob([ar],{type:mime}); }
+function cleanJSON(raw){
+  if(!raw) throw new Error('Réponse vide');
+  var s=raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+  var isArr=s.indexOf('[')!==-1&&(s.indexOf('[')<(s.indexOf('{')<0?999:s.indexOf('{'))||s.indexOf('{')<0);
+  var open=isArr?'[':'{', close=isArr?']':'}';
+  var a=s.indexOf(open), b=s.lastIndexOf(close);
+  if(a<0||b<0||b<=a) throw new Error('Pas de JSON dans la réponse');
+  s=s.slice(a,b+1).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,'').replace(/,\s*([}\]])/g,'$1');
+  return JSON.parse(s);
+}
+
+// ══════════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════════
+function setStep(n){
+  var steps=['🌿 Vérification PlantNet','🔑 Analyse morphologique','🗄 Correspondances base'];
+  document.getElementById('stepsDiv').innerHTML=steps.map(function(s,i){
+    var cls=i+1<n?'done':i+1===n?'act':'';
+    return '<div class="prog-step '+cls+'"><span class="si-dot">'+(i+1<n?'✓':i+1)+'</span> '+s+'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// PLANTNET
+// ══════════════════════════════════════════
+async function identifyPN(photos){
+  var fd=new FormData();
+  photos.slice(0,3).forEach(function(p,i){ fd.append('images',b64Blob(p.b64),'iris'+i+'.jpg'); fd.append('organs','flower'); });
+  var r=await fetch('https://my-api.plantnet.org/v2/identify/all?api-key='+pnKey+'&lang=fr&nb-results=6',{method:'POST',body:fd});
+  if(!r.ok){
+    if(r.status===401) throw new Error('Clé PlantNet invalide. Vérifiez "Expose my API key".');
+    throw new Error('PlantNet '+r.status);
+  }
+  return r.json();
+}
+function parsePN(data){
+  var results=data.results||[];
+  if(!results.length) return {isIris:false,score:0};
+  var top=results[0], sp=top.species||{};
+  var score=Math.round((top.score||0)*100);
+  var name=sp.scientificNameWithoutAuthor||sp.scientificName||'';
+  var common=(sp.commonNames||[]).join(', ');
+  var genus=(sp.genus&&sp.genus.scientificNameWithoutAuthor||'').toLowerCase();
+  var isIris=genus==='iris'||name.toLowerCase().startsWith('iris');
+  var alts=results.slice(1,5).map(function(r){ return {name:r.species&&(r.species.scientificNameWithoutAuthor||r.species.scientificName)||'',score:Math.round((r.score||0)*100)}; });
+  return {isIris:isIris,name:name,common:common,score:score,alts:alts,quota:data.remainingIdentificationRequests};
+}
+
+// ══════════════════════════════════════════
+// MISTRAL MORPHO
+// ══════════════════════════════════════════
+async function analyzeMorpho(photos, pnInfo){
+  var n=photos.length;
+  var resized=await Promise.all(photos.map(function(p){ return resize(p.b64,n>1?768:900,.8); }));
+  var pnCtx=pnInfo?'PlantNet : "'+pnInfo.name+'" ('+pnInfo.score+'%). ':'';
+  var parts=[];
+  resized.forEach(function(b,i){
+    parts.push({type:'image_url',image_url:{url:'data:image/jpeg;base64,'+b}});
+    if(n>1) parts.push({type:'text',text:'Photo '+(i+1)+'/'+n+' :'});
+  });
+  parts.push({type:'text',text:'Tu es botaniste expert en iris. '+pnCtx+'\nAnalyse et décris cette fleur.\nJSON uniquement sans balises :\n{"is_iris":true,"confidence":"élevée|moyenne|faible","why":"","falls":{"tip":"","edge":"","surf":"","haft":"","pat":"","vein":"","cb":"","col":""},"standards":{"shape":"","tip":"","edge":"","ruff":"","col":"","vs_falls":""},"beard":{"type":"","col":"","vs_pet":"","unif":""},"general":{"group":"","size":"","form":"","ruff":""},"cultivar":"","colors":"","breeder":"","year":"","height":"","desc":"","alts":[{"n":"","r":""}],"search_terms":""}\nSinon: {"is_iris":false,"reason":""}'});
+  var r=await fetch('https://api.mistral.ai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},
+    body:JSON.stringify({model:'pixtral-12b-2409',messages:[{role:'user',content:parts}],max_tokens:1000,temperature:.15})
+  });
+  if(!r.ok){
+    var e=await r.json().catch(function(){ return {}; });
+    if(r.status===401) throw new Error('Clé Mistral invalide.');
+    if(r.status===429) throw new Error('Limite Mistral — attendez 30s.');
+    throw new Error('Mistral '+(e.message||r.status));
+  }
+  var d=await r.json();
+  return cleanJSON(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content||'');
+}
+
+// ══════════════════════════════════════════
+// DB MATCHING
+// ══════════════════════════════════════════
+function matchScore(r, e){
+  var score=0,total=0;
+  var F=r.falls||{},St=r.standards||{},B=r.beard||{},G=r.general||{};
+  var pairs=[
+    [F.tip,e.falls_tip,4],[F.edge,e.falls_edge,3],[F.surf,e.falls_surf,2],
+    [F.haft,e.falls_haft,2],[F.pat,e.falls_pat,4],[F.vein,e.falls_vein,2],
+    [F.cb,e.falls_cb,3],[St.shape,e.std_shape,3],[St.tip,e.std_tip,2],
+    [St.edge,e.std_edge,2],[St.ruff,e.std_ruff,2],[St.vs_falls||St.vs,e.std_vs,3],
+    [B.type,e.beard_type,4],[B.vs_pet||B.vs,e.beard_vs,3],[B.unif,e.beard_unif,2],
+    [G.group,e.group||e.de_group,5],[G.form,e.gen_form,3],[G.ruff,e.gen_ruff,2]
+  ];
+  pairs.forEach(function(p){
+    var mv=p[0]||'',ev=p[1]||'',w=p[2];
+    if(!mv||!ev) return; total+=w;
+    var mn=mv.toLowerCase(),en=ev.toLowerCase();
+    if(mn===en) score+=w;
+    else if(mn.includes(en)||en.includes(mn)) score+=w*0.6;
+  });
+  return total?Math.round(score/total*100):0;
+}
+function findMatches(r){
+  if(!irisDB.length) return [];
+  return irisDB.map(function(e){ return {entry:e,score:matchScore(r,e)}; })
+    .filter(function(x){ return x.score>30; })
+    .sort(function(a,b){ return b.score-a.score; })
+    .slice(0,5);
+}
+
+// ══════════════════════════════════════════
+// MAIN SCAN
+// ══════════════════════════════════════════
+async function doScan(){
+  if(!scanPhotos.length) return;
+  if(!pnKey&&!miKey){ nav('settings'); toast('Configurez au moins une clé API'); return; }
+  var photoMatch=null;
+  for(var i=0;i<scanPhotos.length;i++){ var f=findByPhoto(scanPhotos[i].b64); if(f){photoMatch=f;break;} }
+  document.getElementById('scanBtn').disabled=true;
+  document.getElementById('loadDiv').classList.add('on');
+  document.getElementById('resDiv').classList.remove('on');
+  document.getElementById('errDiv').classList.remove('on');
+  document.getElementById('stepsDiv').innerHTML='';
+  var pnInfo=null, morpho=null;
+  try{
+    if(pnKey){
+      setStep(1); document.getElementById('loadTxt').textContent='🌿 PlantNet…';
+      try{
+        var pnData=await identifyPN(scanPhotos); pnInfo=parsePN(pnData);
+        if(!pnInfo.isIris&&pnInfo.score>65){
+          document.getElementById('loadDiv').classList.remove('on');
+          showErr('🌿 PlantNet ('+pnInfo.score+'%) : pas un iris — '+pnInfo.name+'. Essayez une meilleure photo.');
+          document.getElementById('scanBtn').disabled=false; return;
+        }
+      }catch(e){ pnInfo=null; }
+    }
+    if(miKey){
+      setStep(2); document.getElementById('loadTxt').textContent='🔑 Mistral…';
+      morpho=await analyzeMorpho(scanPhotos.slice(0,2),pnInfo);
+      if(!morpho.is_iris&&!pnInfo){
+        document.getElementById('loadDiv').classList.remove('on');
+        showErr('Non identifié — '+(morpho.reason||'Image non exploitable.'));
+        document.getElementById('scanBtn').disabled=false; return;
+      }
+    }
+    setStep(3); document.getElementById('loadTxt').textContent='🗄 Recherche base…';
+    await new Promise(function(r){ setTimeout(r,300); });
+    document.getElementById('loadDiv').classList.remove('on');
+    if(!morpho&&pnInfo){
+      morpho={is_iris:true,confidence:'moyenne',why:'PlantNet',falls:{},standards:{},beard:{},general:{group:''},
+        cultivar:pnInfo.name,colors:'—',breeder:'Inconnu',year:'Inconnue',height:'—',
+        desc:'PlantNet: '+pnInfo.name+(pnInfo.common?' ('+pnInfo.common+')':''),
+        alts:pnInfo.alts.map(function(a){ return {n:a.name,r:a.score+'%'}; }),search_terms:'iris '+pnInfo.name};
+    }
+    curRes=Object.assign({},morpho,{_photos:scanPhotos.map(function(p){ return p.b64; }),_pnInfo:pnInfo,_photoMatch:photoMatch});
+    showResult(curRes,photoMatch);
+  }catch(e){
+    document.getElementById('loadDiv').classList.remove('on');
+    showErr('Erreur : '+e.message);
+  }
+  document.getElementById('scanBtn').disabled=false;
+}
+
+function showErr(msg){ var el=document.getElementById('errDiv'); el.innerHTML=msg; el.classList.add('on'); }
+
+function showResult(r,photoMatch){
+  var pn=r._pnInfo;
+  var pnEl=document.getElementById('pnBadge');
+  if(pn){
+    pnEl.style.display='block';
+    pnEl.className='pn-badge '+(pn.isIris?'pn-ok':'pn-warn');
+    pnEl.innerHTML='🌿 <strong>PlantNet</strong> : <em>'+pn.name+'</em>'+(pn.common?' — '+pn.common:'')+' <strong>'+pn.score+'%</strong>'+(pn.isIris?' ✅':'');
+  } else pnEl.style.display='none';
+
+  document.getElementById('rConf').textContent='Confiance : '+(r.confidence||'?')+(r.why?' — '+r.why:'');
+  document.getElementById('rName').textContent=r.cultivar||'Iris sp.';
+  var G=r.general||{};
+  document.getElementById('rGroup').textContent=[G.group||r.group,G.size].filter(Boolean).join(' · ');
+  var colEl=document.getElementById('rColors');
+  if(r.colors){colEl.textContent=r.colors;colEl.style.display='block';}else colEl.style.display='none';
+  var descEl=document.getElementById('rDesc');
+  if(r.desc){descEl.textContent=r.desc;descEl.style.display='block';}else descEl.style.display='none';
+  var altsEl=document.getElementById('rAlts');
+  altsEl.innerHTML=r.alts&&r.alts.length?'<strong>Autres :</strong> '+r.alts.slice(0,2).map(function(a){ return a.n||a; }).join(' · '):'';
+
+  var matches=findMatches(r);
+  var mw=document.getElementById('matchWrap'), ml=document.getElementById('matchList');
+  if(matches.length){
+    mw.style.display='block';
+    ml.innerHTML=matches.slice(0,3).map(function(m,i){
+      var sc=m.score>70?'hi':m.score>45?'med':'lo';
+      var img=m.entry.imgB64?'<img class="mi-img" src="data:image/jpeg;base64,'+m.entry.imgB64+'" alt="">':m.entry.imgUrl?'<img class="mi-img" src="'+m.entry.imgUrl+'" alt="" onerror="this.style.display=\'none\'">':'<div class="mi-img" style="background:var(--p);display:flex;align-items:center;justify-content:center;font-size:1.8rem">🌸</div>';
+      return '<div class="match-item'+(i===0?' top':'')+'" onclick="openDBEntry(\''+m.entry.id+'\')">'+img+'<div class="mi-info"><div class="mi-name">'+m.entry.name+'</div><div class="mi-meta">'+[m.entry.group,m.entry.breeder,m.entry.year].filter(Boolean).join(' · ')+'</div>'+(m.entry.supplier?'<div class="mi-meta">🛒 '+m.entry.supplier+'</div>':'')+'<div class="mi-score '+sc+'">Correspondance : '+m.score+'%</div></div></div>';
+    }).join('');
+  } else {
+    mw.style.display=irisDB.length?'block':'none';
+    ml.innerHTML='<div style="font-style:italic;font-size:.84rem;color:var(--gr)">'+(irisDB.length?'Aucune correspondance.':'Base vide.')+'</div>';
+  }
+
+  var q=encodeURIComponent(r.cultivar||pn&&pn.name||'iris');
+  var sq=encodeURIComponent(r.search_terms||(pn?'iris cultivar '+pn.name:'iris'));
+  document.getElementById('rAIS').href='https://www.irises.org/iris-search/?name='+q;
+  document.getElementById('rGoog').href='https://www.google.com/search?tbm=isch&q='+sq;
+
+  var ci=document.getElementById('chipsInner'),cs=document.getElementById('suppChips');
+  if(sites.length){ ci.innerHTML=sites.map(function(s){ return '<a class="chip" href="'+s.url.replace('{query}',q)+'" target="_blank">🌸 '+s.name+'</a>'; }).join(''); cs.style.display='block'; } else cs.style.display='none';
+
+  var sb=document.getElementById('saveBtn'),ab=document.getElementById('addObsBtn'),dup=document.getElementById('dupBanner');
+  var collMatch=!photoMatch?coll.find(function(c){ return (c.cultivar||'').trim().toLowerCase()===(r.cultivar||'').trim().toLowerCase(); }):null;
+  if(photoMatch){
+    dup.style.cssText='border:1px solid #e8b840;background:#fff8e7;border-radius:3px;padding:.55rem .8rem;margin-top:.5rem;font-size:.84rem';
+    dup.innerHTML='📷 <strong>Photo déjà enregistrée</strong> — <em>"'+photoMatch.cultivar+'"</em>.';
+    sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+    ab.style.display='inline-flex';ab.textContent='📅 Ajouter une floraison';curRes._matchId=photoMatch.id;
+  } else if(collMatch){
+    var last=(collMatch.obs||[]).sort(function(a,b){ return b.year-a.year; })[0];
+    var lt=last?' — '+last.year+(last.bloomed===true?' ✅':last.bloomed===false?' ❌':''):'';
+    dup.style.cssText='border:1px solid #7ab360;background:#edf5e8;border-radius:3px;padding:.55rem .8rem;margin-top:.5rem;font-size:.84rem';
+    dup.innerHTML='🌸 <strong>Déjà dans votre collection</strong> : <em>"'+collMatch.cultivar+'"</em>'+lt+'.';
+    sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+    ab.style.display='inline-flex';ab.textContent='📅 Ajouter une floraison';curRes._matchId=collMatch.id;
+  } else {
+    dup.style.cssText='';dup.innerHTML='';
+    sb.className='lb lb-g';sb.disabled=false;sb.textContent='💾 Ajouter';ab.style.display='none';
+  }
+  document.getElementById('resDiv').classList.add('on');
+  setTimeout(function(){ document.getElementById('resDiv').scrollIntoView({behavior:'smooth',block:'nearest'}); },60);
+}
+
+// ══════════════════════════════════════════
+// SAVE TO COLLECTION
+// ══════════════════════════════════════════
+function saveNew(){
+  if(!curRes) return;
+  if(coll.find(function(c){ return c.cultivar===curRes.cultivar; })){toast('Déjà dans la collection');return;}
+  var G=curRes.general||{};
+  var iris={id:Date.now(),cultivar:curRes.cultivar,group:G.group||curRes.group||'',
+    colors:curRes.colors||'',breeder:curRes.breeder||'',year:curRes.year||'',height:curRes.height||'',
+    desc:curRes.desc||'',coverIdx:0,photos:curRes._photos?[].concat(curRes._photos):[],obs:[],morpho:curRes};
+  rebuildFP(iris); coll.unshift(iris); S.s('co',coll); updateBadge();
+  var sb=document.getElementById('saveBtn');
+  sb.className='lb done';sb.disabled=true;sb.textContent='✓ Dans la collection';
+  document.getElementById('addObsBtn').style.display='inline-flex';
+  document.getElementById('addObsBtn').textContent='📅 Ajouter une floraison';
+  curRes._matchId=iris.id; toast('"'+iris.cultivar+'" ajouté !');
+}
+function addToExisting(){
+  if(!curRes) return;
+  var iris=coll.find(function(c){ return c.id===(curRes._matchId||0); });
+  if(!iris) return;
+  var nph=(curRes._photos||[]).filter(function(p){ return !iris.photos.includes(p); });
+  iris.photos.push.apply(iris.photos,nph); rebuildFP(iris); S.s('co',coll);
+  openFiche(iris.id); toast('Photos ajoutées');
+}
+
+// ══════════════════════════════════════════
+// COLLECTION
+// ══════════════════════════════════════════
+function setView(v,btn){ collView=v; S.s('cv',v); document.getElementById('vg').classList.toggle('on',v==='g'); document.getElementById('vl').classList.toggle('on',v==='l'); renderColl(); }
+function getCover(iris){ var all=allPh(iris); return all.length?all[Math.min(iris.coverIdx||0,all.length-1)]:null; }
+function allPh(iris){ var a=[].concat(iris.photos||[]); (iris.obs||[]).forEach(function(o){ (o.photos||[]).forEach(function(p){ if(!a.includes(p)) a.push(p); }); }); return a; }
+function yearTags(iris){
+  var ys={};
+  (iris.obs||[]).forEach(function(o){ if(o.year) ys[o.year]=o.bloomed; });
+  return Object.entries(ys).sort(function(a,b){ return b[0]-a[0]; }).slice(0,4).map(function(e){ var y=e[0],b=e[1]; return '<span class="yr-tag '+(b===true?'y':b===false?'n':'')+'">'+''+y+(b===true?' ✓':b===false?' ✗':'')+'</span>'; }).join('');
+}
+function renderColl(){
+  var q=(document.getElementById('csearch')&&document.getElementById('csearch').value||'').toLowerCase();
+  var fl=coll.filter(function(c){ return !q||(c.cultivar||'').toLowerCase().includes(q)||(c.colors||'').toLowerCase().includes(q)||(c.group||'').toLowerCase().includes(q); });
+  var out=document.getElementById('collOut');
+  if(!fl.length){ out.innerHTML='<div class="empty"><div class="ei">🌸</div><p>'+(q?'Aucun résultat':'Collection vide — identifiez votre premier iris !')+'</p></div>'; return; }
+  if(collView==='g'){
+    out.innerHTML='<div class="cgrid">'+fl.map(function(c){
+      var cv=getCover(c);
+      return '<div class="cc" onclick="openFiche('+c.id+')"><button class="cc-del" onclick="event.stopPropagation();delIris('+c.id+')">✕</button>'+(cv?'<img class="cc-img" src="data:image/jpeg;base64,'+cv+'" alt="">':'<div class="cc-ph">🌺</div>')+'<div class="cc-info"><div class="cc-name">'+(c.cultivar||'Inconnu')+'</div><div class="cc-meta">'+(c.group||'')+'</div><div style="margin-top:.18rem">'+yearTags(c)+'</div></div></div>';
+    }).join('')+'</div>';
+  } else {
+    out.innerHTML='<div class="clist">'+fl.map(function(c){
+      var cv=getCover(c);
+      return '<div class="li" onclick="openFiche('+c.id+')"><button class="li-del" onclick="event.stopPropagation();delIris('+c.id+')">✕</button>'+(cv?'<img class="li-img" src="data:image/jpeg;base64,'+cv+'" alt="">':'<div class="li-ph">🌺</div>')+'<div class="li-info"><div class="li-name">'+(c.cultivar||'Inconnu')+'</div><div class="li-meta">'+[c.group,c.breeder,c.year].filter(Boolean).join(' · ')+'</div><div class="li-meta" style="color:var(--vi)">'+((c.colors||'').slice(0,45))+((c.colors||'').length>45?'…':'')+'</div><div style="margin-top:.15rem">'+yearTags(c)+'</div></div></div>';
+    }).join('')+'</div>';
+  }
+}
+function delIris(id){ var ir=coll.find(function(c){ return c.id===id; }); coll=coll.filter(function(c){ return c.id!==id; }); S.s('co',coll); updateBadge(); renderColl(); if(ir) toast('"'+ir.cultivar+'" supprimé'); }
+
+// ══════════════════════════════════════════
+// IRIS FICHE MODAL
+// ══════════════════════════════════════════
+function openFiche(id){
+  var ir=coll.find(function(c){ return c.id===id; }); if(!ir) return;
+  currentIrisId=id; obsBloom=null; obsPhArr=[];
+  var cv=getCover(ir);
+  document.getElementById('coverImg').style.display=cv?'block':'none';
+  document.getElementById('coverPh').style.display=cv?'none':'flex';
+  if(cv) document.getElementById('coverImg').src='data:image/jpeg;base64,'+cv;
+  document.getElementById('ficheTitle').textContent=ir.cultivar||'Inconnu';
+  document.getElementById('ficheGroup').textContent=ir.group||'';
+  document.getElementById('f-colors').textContent=ir.colors||'—';
+  document.getElementById('f-breeder').textContent=ir.breeder||'—';
+  document.getElementById('f-year').textContent=ir.year||'—';
+  document.getElementById('f-height').textContent=ir.height||'—';
+  document.getElementById('f-desc').textContent=ir.desc||'';
+  var q=encodeURIComponent(ir.cultivar||'');
+  document.getElementById('f-ais').href='https://www.irises.org/iris-search/?name='+q;
+  document.getElementById('f-gimg').href='https://www.google.com/search?tbm=isch&q=iris+'+q;
+  var fsl=document.getElementById('f-supp-links'),fss=document.getElementById('f-supp-sec');
+  if(sites.length){ fsl.innerHTML=sites.map(function(s){ return '<a class="chip" href="'+s.url.replace('{query}',q)+'" target="_blank">🛒 '+s.name+'</a>'; }).join(''); fss.style.display='block'; } else fss.style.display='none';
+  renderFicheGallery(ir); renderObs(ir);
+  document.getElementById('obsForm').style.display='none';
+  document.getElementById('obsYr').value=new Date().getFullYear();
+  document.getElementById('obsDt').value=new Date().toISOString().split('T')[0];
+  document.getElementById('obsNotes').value='';
+  setBloom(null); renderObsFPh();
+  document.getElementById('ficheOv').classList.add('on');
+  document.getElementById('ficheModal').scrollTop=0;
+}
+function closeFiche(){ document.getElementById('ficheOv').classList.remove('on'); }
+document.getElementById('ficheOv').addEventListener('click',function(e){ if(e.target===document.getElementById('ficheOv')) closeFiche(); });
+function deleteCurrentIris(){
+  if(!currentIrisId) return;
+  var ir=coll.find(function(c){ return c.id===currentIrisId; });
+  if(!confirm('Supprimer "'+ir.cultivar+'" et tout son historique ?')) return;
+  delIris(currentIrisId); closeFiche();
+}
+
+function renderFicheGallery(ir){
+  var all=allPh(ir), ci=ir.coverIdx||0;
+  document.getElementById('ficheGallery').innerHTML=
+    all.map(function(p,i){ return '<div class="gp"><img src="data:image/jpeg;base64,'+p+'" class="'+(i===ci?'cov':'')+'" onclick="openLbox(\'data:image/jpeg;base64,'+p+'\')"><button class="gp-s" onclick="setCov('+i+')">'+(i===ci?'★':'☆')+'</button><button class="gp-d" onclick="rmPh('+i+')">✕</button></div>'; }).join('')+
+    '<div class="add-ph" title="Ajouter"><input type="file" accept="image/*" multiple onchange="addPhToIris(this)">＋</div>';
+}
+function addPhToIris(inp){
+  var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return;
+  Array.from(inp.files).forEach(function(f){
+    var r=new FileReader(); r.onload=function(e){ resize(e.target.result.split(',')[1],1024,.85).then(function(b){ ir.photos.push(b); S.s('co',coll); renderFicheGallery(ir); updateCoverImg(ir); renderColl(); }); }; r.readAsDataURL(f);
+  }); inp.value='';
+}
+function rmPh(idx){ var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return; var all=allPh(ir),b=all[idx],pi=ir.photos.indexOf(b); if(pi>-1){ ir.photos.splice(pi,1); if(ir.coverIdx>=ir.photos.length) ir.coverIdx=0; } S.s('co',coll); renderFicheGallery(ir); updateCoverImg(ir); renderColl(); }
+function setCov(idx){ var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return; ir.coverIdx=idx; S.s('co',coll); renderFicheGallery(ir); updateCoverImg(ir); renderColl(); }
+function updateCoverImg(ir){ var cv=getCover(ir); document.getElementById('coverImg').style.display=cv?'block':'none'; document.getElementById('coverPh').style.display=cv?'none':'flex'; if(cv) document.getElementById('coverImg').src='data:image/jpeg;base64,'+cv; }
+
+function openCP(){
+  var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return;
+  var all=allPh(ir),ci=ir.coverIdx||0;
+  document.getElementById('cpGrid').innerHTML=all.map(function(p,i){ return '<img class="cp-opt'+(i===ci?' sel':'')+'" src="data:image/jpeg;base64,'+p+'" onclick="pickCov('+i+')">'; }).join('');
+  document.getElementById('cpov').classList.add('on');
+}
+function pickCov(i){ setCov(i); document.getElementById('cpov').classList.remove('on'); }
+
+function renderObs(ir){
+  var obs=(ir.obs||[]).slice().sort(function(a,b){ return b.year-a.year; });
+  var list=document.getElementById('obsList'),empty=document.getElementById('obsEmpty');
+  if(!obs.length){ list.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  list.innerHTML=obs.map(function(o){
+    var bc=o.bloomed===true?'y':o.bloomed===false?'n':'u';
+    var bt=o.bloomed===true?'✅ A fleuri':o.bloomed===false?'❌ Non':'— Inconnu';
+    var dt=o.date?new Date(o.date+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'';
+    return '<div class="obs-item"><button class="obs-del" onclick="deleteObs(\''+o.id+'\')">🗑</button><div class="obs-hd"><div class="obs-yr">🌸 '+o.year+'</div><span class="obs-bl '+bc+'">'+bt+'</span>'+(dt?'<span style="font-size:.72rem;color:var(--gr)">'+dt+'</span>':'')+'</div>'+(o.photos&&o.photos.length?'<div class="obs-photos">'+o.photos.map(function(p){ return '<img src="data:image/jpeg;base64,'+p+'" onclick="openLbox(\'data:image/jpeg;base64,'+p+'\')">'; }).join('')+'</div>':'')+(o.notes?'<div style="font-style:italic;font-size:.82rem;color:var(--br)">"'+o.notes+'"</div>':'')+'</div>';
+  }).join('');
+}
+function toggleObsForm(){ var f=document.getElementById('obsForm'); f.style.display=f.style.display==='none'?'block':'none'; if(f.style.display==='block') f.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+function setBloom(v){ obsBloom=v; document.getElementById('bby').className='bb'+(v===true?' sy':''); document.getElementById('bbn').className='bb'+(v===false?' sn':''); document.getElementById('bbu').className='bb'; }
+function addObsPh(inp){ Array.from(inp.files).forEach(function(f){ var r=new FileReader(); r.onload=function(e){ resize(e.target.result.split(',')[1],800,.82).then(function(b){ obsPhArr.push(b); renderObsFPh(); }); }; r.readAsDataURL(f); }); inp.value=''; }
+function renderObsFPh(){
+  document.getElementById('obsFormPh').innerHTML=obsPhArr.map(function(p,i){ return '<div class="op-wrap"><img src="data:image/jpeg;base64,'+p+'"><button class="op-del" onclick="obsPhArr.splice('+i+',1);renderObsFPh()">✕</button></div>'; }).join('')+'<div class="add-op"><input type="file" accept="image/*" multiple onchange="addObsPh(this)">＋</div>';
+}
+function saveObs(){
+  var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return;
+  var yr=parseInt(document.getElementById('obsYr').value); if(!yr||isNaN(yr)){toast('Année invalide');return;}
+  var ob={id:Date.now().toString(),year:yr,date:document.getElementById('obsDt').value,bloomed:obsBloom,notes:document.getElementById('obsNotes').value.trim(),photos:[].concat(obsPhArr)};
+  if(!ir.obs) ir.obs=[]; ir.obs.push(ob);
+  ob.photos.forEach(function(p){ if(!ir.photos.includes(p)) ir.photos.push(p); });
+  rebuildFP(ir); S.s('co',coll);
+  document.getElementById('obsForm').style.display='none'; obsPhArr=[];
+  renderFicheGallery(ir); renderObs(ir); renderColl(); toast('Observation '+yr+' enregistrée');
+}
+function deleteObs(oid){ var ir=coll.find(function(c){ return c.id===currentIrisId; }); if(!ir) return; ir.obs=(ir.obs||[]).filter(function(o){ return o.id!==oid; }); S.s('co',coll); renderObs(ir); renderColl(); toast('Observation supprimée'); }
+
+// ══════════════════════════════════════════
+// DATABASE
+// ══════════════════════════════════════════
+function renderDB(){
+  var q=(document.getElementById('dbsearch')&&document.getElementById('dbsearch').value||'').toLowerCase();
+  var fl=irisDB.filter(function(e){ return !q||(e.name||'').toLowerCase().includes(q)||(e.group||'').toLowerCase().includes(q)||(e.supplier||'').toLowerCase().includes(q); });
+  var out=document.getElementById('dbOut');
+  if(!fl.length){ out.innerHTML='<div class="empty"><div class="ei">🗄</div><p>'+(q?'Aucun résultat':'Base vide — utilisez le Concepteur pour ajouter des iris.')+'</p></div>'; return; }
+  out.innerHTML='<div class="db-grid">'+fl.map(function(e){
+    var img=e.imgB64?'<img class="db-img" src="data:image/jpeg;base64,'+e.imgB64+'" alt="">':e.imgUrl?'<img class="db-img" src="'+e.imgUrl+'" alt="" onerror="this.style.display=\'none\'">':'<div class="db-ph">🌸</div>';
+    var comp=calcComp(e);
+    return '<div class="db-card" onclick="openDBEntry(\''+e.id+'\')">'+img+'<div class="db-info"><div class="db-name">'+(e.name||'?')+'</div><div class="db-meta">'+[e.group,e.breeder,e.year].filter(Boolean).join(' · ')+'</div>'+(e.supplier?'<div class="db-meta" style="color:var(--bl)">🛒 '+e.supplier+'</div>':'')+'<div class="db-bar"><div class="db-fill" style="width:'+comp+'%"></div></div></div></div>';
+  }).join('')+'</div>';
+}
+function calcComp(e){ var fs=['name','group','breeder','year','desc','falls_tip','falls_pat','std_shape','std_vs','beard_type']; return Math.round(fs.filter(function(f){ return !!(e[f]); }).length/fs.length*100); }
+
+function openDBEntry(id){
+  var e=irisDB.find(function(x){ return x.id===id; }); if(!e) return;
+  var q=encodeURIComponent(e.name||'');
+  var img=e.imgB64?'<img src="data:image/jpeg;base64,'+e.imgB64+'" alt="" style="width:100%;max-height:200px;object-fit:contain;border-radius:3px;border:1px solid var(--bd);margin-bottom:.8rem">':e.imgUrl?'<img src="'+e.imgUrl+'" alt="" style="width:100%;max-height:200px;object-fit:contain;border-radius:3px;border:1px solid var(--bd);margin-bottom:.8rem" onerror="this.style.display=\'none\'">':'';
+  var rows=[['Groupe',e.group],['Obtenteur',e.breeder],['Année',e.year],['Hauteur',e.height],['Falls — bout',e.falls_tip],['Falls — bord',e.falls_edge],['Falls — patron',e.falls_pat],['Falls — couleur',e.falls_col],['Standards — forme',e.std_shape],['Standards — couleur',e.std_col],['Standards — vs falls',e.std_vs],['Barbe — type',e.beard_type],['Barbe — couleur',e.beard_col]].filter(function(r){ return !!r[1]; });
+  document.getElementById('dbEntryContent').innerHTML=
+    img+
+    '<h2 style="font-family:\'Playfair Display\',serif;font-size:1.4rem;font-style:italic;color:var(--vi);margin-bottom:.3rem">'+(e.name||'?')+'</h2>'+
+    (e.desc?'<div style="font-style:italic;color:var(--br);font-size:.86rem;line-height:1.6;margin-bottom:.8rem">'+e.desc+'</div>':'')+
+    (e.supplier?'<div style="margin-bottom:.6rem;font-size:.84rem">🛒 '+e.supplier+(e.url?' <a href="'+e.url+'" target="_blank" style="font-size:.8rem">↗ Fiche</a>':'')+'</div>':'')+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.45rem;font-size:.82rem;margin-bottom:.8rem">'+rows.map(function(r){ return '<div><div style="font-size:.62rem;text-transform:uppercase;color:var(--gr)">'+r[0]+'</div><div>'+r[1]+'</div></div>'; }).join('')+'</div>'+
+    '<div style="display:flex;gap:.35rem;flex-wrap:wrap">'+
+    '<a class="lb" href="https://www.irises.org/iris-search/?name='+q+'" target="_blank">🔗 AIS</a>'+
+    '<a class="lb" href="https://www.google.com/search?tbm=isch&q=iris+'+q+'" target="_blank">🔍 Images</a>'+
+    '<button class="lb" style="color:var(--gd);border-color:var(--gd)" onclick="editDBEntryById(\''+e.id+'\')">✏️ Modifier</button>'+
+    '<button class="lb" style="color:var(--rd);border-color:var(--rd)" onclick="deleteDBEntry(\''+e.id+'\')">🗑 Supprimer</button>'+
+    '</div>';
+  document.getElementById('dbEntryOv').classList.add('on');
+}
+function deleteDBEntry(id){ if(!confirm('Supprimer cette entrée ?')) return; irisDB=irisDB.filter(function(e){ return e.id!==id; }); S.s('db',irisDB); updateDBBadge(); renderDB(); document.getElementById('dbEntryOv').classList.remove('on'); toast('Entrée supprimée'); }
+function editDBEntryById(id){ document.getElementById('dbEntryOv').classList.remove('on'); nav('designer'); if(!desLocked){ setDesTab('add'); loadDBFormEntry(id); } }
+
+// ══════════════════════════════════════════
+// DESIGNER
+// ══════════════════════════════════════════
+function showDesLock(){ document.getElementById('desLockDiv').style.display='block'; document.getElementById('desContent').style.display='none'; }
+function unlockDesigner(){ var pin=document.getElementById('designerPin').value; if(pin===desPin){ desLocked=false; document.getElementById('desLockDiv').style.display='none'; document.getElementById('desContent').style.display='block'; setDesTab('add'); } else { toast('PIN incorrect'); document.getElementById('designerPin').value=''; } }
+function changePin(){ var p=document.getElementById('newPin').value; if(!p||p.length<3){toast('PIN trop court');return;} desPin=p; S.s('dp',desPin); toast('PIN modifié'); }
+
+function setDesTab(t){
+  ['add','scrape','import','manage','deploy','pin'].forEach(function(n){
+    var btn=document.getElementById('dt-'+n), panel=document.getElementById('dt-'+n+'-panel');
+    if(btn) btn.className='btn '+(t===n?'btn-o':'btn-s');
+    if(panel) panel.style.display=t===n?'block':'none';
+  });
+  if(t==='manage') renderManage();
+  if(t==='deploy'){
+    document.getElementById('desVer').textContent=S.g('des-version')||APP_VERSION;
+    document.getElementById('newVer').value=S.g('des-version')||APP_VERSION;
+    if(S.g('des-notes')) document.getElementById('relNotes').value=S.g('des-notes');
+    document.getElementById('deployDBCount').textContent=irisDB.length;
+    var du=S.g('deploy-url')||''; if(du) document.getElementById('deployUrl').value=du;
+  }
+}
+
+// DB Form
+var dbPhB64='';
+function previewDBImg(){ var url=document.getElementById('de-imgurl').value.trim(); if(url){ var el=document.getElementById('de-preview'); el.src=url; el.style.display='block'; } }
+function loadDBPhoto(inp){ var r=new FileReader(); r.onload=function(e){ resize(e.target.result.split(',')[1],800,.85).then(function(b){ dbPhB64=b; var el=document.getElementById('de-preview'); el.src='data:image/jpeg;base64,'+b; el.style.display='block'; }); }; r.readAsDataURL(inp.files[0]); inp.value=''; }
+
+function saveDBEntry(){
+  var name=document.getElementById('de-name').value.trim(); if(!name){toast('Nom requis');return;}
+  var fields=['falls-tip','falls-edge','falls-surf','falls-haft','falls-pat','falls-vein','falls-cb','falls-col','std-shape','std-tip','std-edge','std-ruff','std-col','std-vs','beard-type','beard-col','beard-vs','beard-unif','gen-form','gen-ruff','gen-season','gen-scent'];
+  var entry={id:editDBId||('db-'+Date.now()),name:name,group:document.getElementById('de-group').value,breeder:document.getElementById('de-breeder').value.trim(),year:document.getElementById('de-year').value.trim(),height:document.getElementById('de-height').value.trim(),supplier:document.getElementById('de-supplier').value.trim(),url:document.getElementById('de-url').value.trim(),desc:document.getElementById('de-desc').value.trim(),imgUrl:document.getElementById('de-imgurl').value.trim(),imgB64:dbPhB64||undefined};
+  fields.forEach(function(f){ var el=document.getElementById('me-'+f); if(el) entry[f.replace('-','_')]=el.value; });
+  if(editDBId){ var idx=irisDB.findIndex(function(e){ return e.id===editDBId; }); if(idx>-1) irisDB[idx]=entry; } else irisDB.unshift(entry);
+  S.s('db',irisDB); updateDBBadge(); clearDBForm();
+  document.getElementById('de-status').textContent=editDBId?'✓ Fiche modifiée':'✓ Ajouté à la base';
+  document.getElementById('de-status').className='kst ok';
+  editDBId=null; toast(name+' enregistré');
+}
+function loadDBFormEntry(id){
+  editDBId=id; var e=irisDB.find(function(x){ return x.id===id; }); if(!e) return;
+  ['name','group','breeder','year','height','supplier','url','desc','imgurl'].forEach(function(f){ var el=document.getElementById('de-'+f); if(el&&e[f]) el.value=e[f]; });
+  if(e.imgB64){ dbPhB64=e.imgB64; document.getElementById('de-preview').src='data:image/jpeg;base64,'+e.imgB64; document.getElementById('de-preview').style.display='block'; }
+  else if(e.imgUrl){ document.getElementById('de-preview').src=e.imgUrl; document.getElementById('de-preview').style.display='block'; }
+  var fields=['falls-tip','falls-edge','falls-surf','falls-haft','falls-pat','falls-vein','falls-cb','falls-col','std-shape','std-tip','std-edge','std-ruff','std-col','std-vs','beard-type','beard-col','beard-vs','beard-unif','gen-form','gen-ruff','gen-season','gen-scent'];
+  fields.forEach(function(f){ var el=document.getElementById('me-'+f); if(el&&e[f.replace('-','_')]) el.value=e[f.replace('-','_')]; });
+  document.getElementById('de-status').textContent='✏️ Modification de "'+e.name+'"';
+  document.getElementById('de-status').className='kst';
+  document.getElementById('de-name').scrollIntoView({behavior:'smooth'});
+}
+function clearDBForm(){
+  ['de-name','de-group','de-breeder','de-year','de-height','de-supplier','de-url','de-desc','de-imgurl'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('de-preview').style.display='none'; dbPhB64=''; editDBId=null;
+  var fields=['falls-tip','falls-edge','falls-surf','falls-haft','falls-pat','falls-vein','falls-cb','falls-col','std-shape','std-tip','std-edge','std-ruff','std-col','std-vs','beard-type','beard-col','beard-vs','beard-unif','gen-form','gen-ruff','gen-season','gen-scent'];
+  fields.forEach(function(f){ var el=document.getElementById('me-'+f); if(el) el.value=''; });
+  document.getElementById('de-status').textContent='';
+}
+function renderManage(){
+  var q=(document.getElementById('mgsearch')&&document.getElementById('mgsearch').value||'').toLowerCase();
+  var fl=irisDB.filter(function(e){ return !q||(e.name||'').toLowerCase().includes(q); });
+  document.getElementById('mgCount').textContent=fl.length+' iris';
+  document.getElementById('mgList').innerHTML=fl.length?fl.map(function(e){ return '<div class="si"><div class="si-i"><div class="si-n">'+e.name+'</div><div class="si-u">'+[e.group,e.breeder,e.year,e.supplier].filter(Boolean).join(' · ')+'</div></div><button class="btn btn-s" style="font-size:.76rem;padding:.18rem .5rem" onclick="loadDBFormEntry(\''+e.id+'\');setDesTab(\'add\')">✏️</button><button class="si-d" onclick="deleteDBEntry(\''+e.id+'\');renderManage()">✕</button></div>'; }).join(''):'<div style="color:var(--gr);font-size:.84rem;padding:.3rem 0">Aucune entrée.</div>';
+}
+
+// ══════════════════════════════════════════
+// MULTI-PROXY FETCH
+// ══════════════════════════════════════════
+function scanLog(msg,type){
+  var el=document.getElementById('scanLog'); if(!el) return;
+  var cls=type==='ok'?'log-ok':type==='err'?'log-err':'';
+  el.innerHTML+='<span class="'+cls+'">'+msg+'</span>\n';
+  el.scrollTop=el.scrollHeight;
+  document.getElementById('scanLogWrap').style.display='block';
+}
+
+async function fetchViaProxy(url){
+  var proxies=[
+    function(){ return fetch('https://r.jina.ai/'+url,{headers:{'Accept':'text/plain','X-No-Cache':'true'}}).then(function(r){ if(!r.ok) throw new Error('Jina '+r.status); return r.text(); }); },
+    function(){ return fetch('https://api.allorigins.win/get?url='+encodeURIComponent(url)).then(function(r){ if(!r.ok) throw new Error('AllOrigins '+r.status); return r.json(); }).then(function(d){ if(!d.contents) throw new Error('AllOrigins vide'); return d.contents.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s{2,}/g,' ').slice(0,8000); }); },
+    function(){ return fetch('https://corsproxy.io/?'+encodeURIComponent(url)).then(function(r){ if(!r.ok) throw new Error('corsproxy '+r.status); return r.text(); }).then(function(h){ return h.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s{2,}/g,' ').slice(0,8000); }); }
+  ];
+  var lastErr='';
+  for(var i=0;i<proxies.length;i++){
+    try{ var text=await proxies[i](); if(text&&text.length>100) return text; throw new Error('Contenu trop court'); }
+    catch(e){ lastErr=e.message; scanLog('  Proxy '+(i+1)+'/3 : '+e.message,'err'); }
+  }
+  throw new Error('Tous les proxies ont échoué : '+lastErr);
+}
+
+// ══════════════════════════════════════════
+// EXTRACT ALL IRIS FROM PAGE (Mistral)
+// ══════════════════════════════════════════
+async function extractAllIrisFromPage(text, url, siteName){
+  var imgUrls=[]; var re=/!\[[^\]]*\]\((https?:\/\/[^\)]+\.(?:jpg|jpeg|png|webp)[^\)]*)\)/gi; var m; while((m=re.exec(text))!==null){ var u=m[1]; if(!u.includes('logo')&&!u.includes('icon')&&!u.includes('banner')) imgUrls.push(u); }
+  var clean=text.replace(/!\[[^\]]*\]\([^\)]+\)/g,'').replace(/\[([^\]]+)\]\([^\)]+\)/g,'$1').replace(/\s{3,}/g,'\n').slice(0,5500);
+  var imgList=imgUrls.slice(0,8).join('\n');
+  var resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+miKey},body:JSON.stringify({model:'mistral-small-latest',max_tokens:3000,temperature:.05,messages:[{role:'user',content:'Tu es expert en iris. Extrait TOUS les cultivars d\'iris de cette page.\nSite : '+siteName+'\nURL : '+url+'\nImages disponibles :\n'+imgList+'\n\nRetourne UNIQUEMENT un tableau JSON valide sans balises. Champs pour chaque iris : name(OBLIGATOIRE),group,breeder,year,height,desc,colors,falls_col,falls_pat,falls_edge,falls_tip,std_col,std_vs,beard_type,beard_col,imgUrl,supplier,url\nSi aucun iris : []\n\nTexte :\n'+clean}]})});
+  if(!resp.ok) throw new Error('Mistral extract '+resp.status);
+  var d=await resp.json();
+  var raw=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content||'').trim();
+  try{
+    var s=raw.replace(/```json|```/g,'').trim();
+    var a=s.indexOf('['),b=s.lastIndexOf(']');
+    if(a<0||b<0) return [];
+    var arr=JSON.parse(s.slice(a,b+1).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,'').replace(/,\s*([}\]])/g,'$1'));
+    return arr.filter(function(x){ return x&&x.name; }).map(function(iris,i){ if(!iris.imgUrl&&imgUrls[i]) iris.imgUrl=imgUrls[i]; if(!iris.url) iris.url=url; if(!iris.supplier) iris.supplier=siteName; return iris; });
+  }catch(e){ return []; }
+}
+
+async function saveIrisArr(arr){
+  var added=0,skipped=0;
+  for(var i=0;i<arr.length;i++){
+    var data=arr[i]; if(!data||!data.name){skipped++;continue;}
+    if(irisDB.find(function(e){ return e.name.trim().toLowerCase()===data.name.trim().toLowerCase(); })){ scanLog('  ⏭ "'+data.name+'" déjà en base'); skipped++; continue; }
+    irisDB.unshift(Object.assign({id:'db-'+Date.now()+'-'+i},data));
+    S.s('db',irisDB); updateDBBadge();
+    scanLog('  ✅ "'+data.name+'"'+(data.imgUrl?' 📷':'')+(data.falls_col?' 🎨':''),'ok');
+    added++;
+  }
+  return {added:added,skipped:skipped};
+}
+
+// ══════════════════════════════════════════
+// CRAWLER BFS
+// ══════════════════════════════════════════
+function isNavUrl(url){ var u=url.toLowerCase(); return /\/(cart|panier|account|login|register|contact|ajax|cdn|wp-json|wp-admin|feed|sitemap|robots|tag|page\/\d)/.test(u)||u.endsWith('.jpg')||u.endsWith('.png')||u.endsWith('.css')||u.endsWith('.js')||u.endsWith('.pdf')||u.includes('?add-to-cart')||u.includes('?v='); }
+
+function extractLinksFromText(text, baseUrl, originHost){
+  var links=new Set();
+  var re1=/\]\((https?:\/\/[^\)\s"']+)\)/g, m;
+  while((m=re1.exec(text))!==null){ try{ if(new URL(m[1]).hostname===originHost) links.add(m[1].split('#')[0]); }catch(e){} }
+  var re2=/\]\((\/[^\)\s"']+)\)/g;
+  while((m=re2.exec(text))!==null){ try{ links.add(new URL(m[1],baseUrl).href.split('#')[0]); }catch(e){} }
+  var re3=/https?:\/\/[^\s\)\]"'<>,]+/g;
+  while((m=re3.exec(text))!==null){ try{ if(new URL(m[0]).hostname===originHost) links.add(m[0].split('#')[0]); }catch(e){} }
+  return [...links];
+}
+
+async function startCrawl(){
+  var url=document.getElementById('scanUrl').value.trim(); if(!url){toast('Entrez une URL');return;}
+  if(!miKey){toast('Clé Mistral requise');return;}
+  if(scanRunning){toast('Scan en cours');return;}
+  var depth=parseInt(document.getElementById('scanDepth').value||'2');
+  var maxPg=parseInt(document.getElementById('scanMaxPg').value||'50');
+  document.getElementById('scanResCard').style.display='none';
+  document.getElementById('scanLog').innerHTML='';
+  document.getElementById('scanLogWrap').style.display='block';
+  document.getElementById('scanStartBtn').disabled=true;
+  scanRunning=true;
+  var originHost; try{ originHost=new URL(url).hostname; }catch(e){ toast('URL invalide'); scanRunning=false; document.getElementById('scanStartBtn').disabled=false; return; }
+  var site=getSiteForUrl(url);
+  scanLog('🕷 SCAN : '+url);
+  scanLog('Profondeur '+depth+' | Max '+maxPg+' pages\n');
+  var queue=[{url:url,depth:0}];
+  var visited=new Set([url]);
+  var pageCount=0,totalAdded=0,totalSkipped=0,errors=0;
+  while(queue.length&&pageCount<maxPg&&scanRunning){
+    var item=queue.shift(); var curUrl=item.url, curDepth=item.depth;
+    if(isNavUrl(curUrl)) continue;
+    pageCount++;
+    scanLog('\n['+pageCount+'] prof.'+curDepth+' → '+curUrl.slice(0,90));
+    var text='';
+    try{ await new Promise(function(r){ setTimeout(r,800); }); text=await fetchViaProxy(curUrl); scanLog('  📄 '+text.length+' car.'); }
+    catch(e){ scanLog('  ✗ '+e.message,'err'); errors++; continue; }
+    try{
+      var iris=await extractAllIrisFromPage(text,curUrl,site.name);
+      if(iris.length){ scanLog('  🌸 '+iris.length+' iris trouvé(s)','ok'); var res=await saveIrisArr(iris); totalAdded+=res.added; totalSkipped+=res.skipped; }
+      else scanLog('  — Aucun iris');
+    }catch(e){ scanLog('  ✗ Extract : '+e.message,'err'); errors++; }
+    if(curDepth<depth){
+      var children=extractLinksFromText(text,curUrl,originHost).filter(function(u){ return !visited.has(u)&&!isNavUrl(u); });
+      children.sort(function(a,b){ var va=a.toLowerCase().includes('iris')?-1:0; var vb=b.toLowerCase().includes('iris')?-1:0; return va-vb; });
+      var toAdd=children.slice(0,50);
+      toAdd.forEach(function(u){ visited.add(u); queue.push({url:u,depth:curDepth+1}); });
+      if(toAdd.length) scanLog('  🔗 '+toAdd.length+' liens ajoutés (file: '+queue.length+')');
+    }
+  }
+  scanLog('\n📊 TERMINÉ'+(scanRunning?'':' (arrêté)')+'\n✅ '+totalAdded+' iris ajoutés\n⏭ '+totalSkipped+' ignorés\n❌ '+errors+' erreurs\n📄 '+pageCount+' pages','ok');
+  toast(totalAdded+' iris ajoutés');
+  scanRunning=false; document.getElementById('scanStartBtn').disabled=false;
+}
+function stopCrawl(){ scanRunning=false; toast('Arrêt demandé…'); }
+
+async function parsePaste(){
+  var txt=document.getElementById('pasteScanData').value.trim(); if(!txt){toast('Collez du texte');return;}
+  if(!miKey){toast('Mistral requis');return;}
+  scanLog('📋 Extraction depuis texte collé…');
+  try{
+    var iris=await extractAllIrisFromPage(txt,'(manuel)','Manuel');
+    if(!iris.length){scanLog('✗ Aucun iris détecté','err');return;}
+    scanLog('🌸 '+iris.length+' iris trouvé(s)','ok');
+    var res=await saveIrisArr(iris);
+    if(res.added>0&&iris[0]){ scanResult=iris[0]; showScanRes(iris[0]); }
+    toast(res.added+' iris ajoutés');
+    document.getElementById('pasteScanData').value='';
+  }catch(e){ scanLog('✗ '+e.message,'err'); }
+}
+function showScanRes(data){
+  var card=document.getElementById('scanResCard'),content=document.getElementById('scanResContent');
+  card.style.display='block';
+  content.innerHTML=Object.entries(data).filter(function(e){ return e[1]&&e[0]!=='id'; }).map(function(e){ return '<div style="display:flex;gap:.5rem;padding:.2rem 0;border-bottom:1px solid var(--p);font-size:.86rem"><strong style="color:var(--gr);width:100px;flex-shrink:0;font-size:.72rem;text-transform:uppercase">'+e[0]+'</strong><span>'+e[1]+'</span></div>'; }).join('');
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function saveScanRes(){ if(!scanResult){toast('Aucun résultat');return;} toast('Déjà enregistré'); document.getElementById('scanResCard').style.display='none'; scanResult=null; }
+function editScanRes(){
+  if(!scanResult) return;
+  var map={name:'de-name',group:'de-group',breeder:'de-breeder',year:'de-year',height:'de-height',supplier:'de-supplier',url:'de-url',desc:'de-desc',imgUrl:'de-imgurl',falls_col:'me-falls-col',falls_pat:'me-falls-pat',std_col:'me-std-col',beard_col:'me-beard-col',beard_type:'me-beard-type'};
+  Object.entries(map).forEach(function(e){ var el=document.getElementById(e[1]); if(el&&scanResult[e[0]]) el.value=scanResult[e[0]]; });
+  if(scanResult.imgUrl){ var p=document.getElementById('de-preview'); p.src=scanResult.imgUrl; p.style.display='block'; }
+  setDesTab('add'); toast('Formulaire pré-rempli');
+}
+
+// ══════════════════════════════════════════
+// IMPORT / EXPORT
+// ══════════════════════════════════════════
+function loadImportFile(inp){ var r=new FileReader(); r.onload=function(e){ document.getElementById('importData').value=e.target.result; }; r.readAsText(inp.files[0]); inp.value=''; }
+function dlTemplate(){ var h='nom,groupe,obtenteur,annee,hauteur,fournisseur,url_fiche,description,falls_tip,falls_pat,falls_col,std_col,std_vs,beard_type,beard_col\n'; var blob=new Blob([h],{type:'text/csv;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='irisid-template.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+function doImport(){
+  var raw=document.getElementById('importData').value.trim(); if(!raw){toast('Données vides');return;}
+  var entries=[]; try{
+    if(raw.startsWith('{')||raw.startsWith('[')){ var parsed=JSON.parse(raw); entries=Array.isArray(parsed)?parsed:(parsed.irisDB||parsed.db||[]); }
+    else{ var lines=raw.split('\n').filter(function(l){ return l.trim(); }); var keys=['name','group','breeder','year','height','supplier','url','desc','falls_tip','falls_pat','falls_col','std_col','std_vs','beard_type','beard_col']; for(var i=1;i<lines.length;i++){ var vals=lines[i].split(','); var obj={id:'db-'+Date.now()+'-'+i}; keys.forEach(function(k,j){ obj[k]=(vals[j]||'').trim(); }); if(obj.name) entries.push(obj); } }
+  }catch(e){ document.getElementById('import-status').textContent='Erreur : '+e.message; document.getElementById('import-status').className='kst bad'; return; }
+  var added=0,skipped=0;
+  entries.forEach(function(e){ if(!e.name){skipped++;return;} if(irisDB.find(function(x){ return x.name.toLowerCase()===e.name.toLowerCase(); })){skipped++;return;} irisDB.push(Object.assign({id:e.id||('db-'+Date.now()+'-'+Math.random())},e)); added++; });
+  S.s('db',irisDB); updateDBBadge();
+  document.getElementById('import-status').textContent='✓ '+added+' importés, '+skipped+' ignorés';
+  document.getElementById('import-status').className='kst ok'; toast(added+' iris importés');
+}
+function exportAll(){ var data={version:APP_VERSION,exported:new Date().toISOString(),collection:coll,irisDB:irisDB}; var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='irisid-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('Sauvegarde exportée'); }
+function importAll(inp){ var r=new FileReader(); r.onload=function(e){ try{ var d=JSON.parse(e.target.result); if(!confirm('Importer et remplacer les données actuelles ?')) return; if(d.collection){coll=d.collection;S.s('co',coll);coll.forEach(function(ir){rebuildFP(ir);});updateBadge();} if(d.irisDB){irisDB=d.irisDB;S.s('db',irisDB);updateDBBadge();} toast('Import réussi'); renderColl(); renderDB(); }catch(err){toast('Erreur : '+err.message);} }; r.readAsText(inp.files[0]); inp.value=''; }
+function exportDB(){ if(!irisDB.length){toast('Base vide');return;} var blob=new Blob([JSON.stringify({version:APP_VERSION,irisDB:irisDB},null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='irisid-base-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('Base exportée'); }
+
+// ══════════════════════════════════════════
+// DEPLOY
+// ══════════════════════════════════════════
+function saveDeployUrl(){ var u=document.getElementById('deployUrl').value.trim(); if(u){ S.s('deploy-url',u); toast('URL enregistrée'); } }
+
+function downloadApp(){
+  var newVer=document.getElementById('newVer').value.trim()||APP_VERSION;
+  var notes=document.getElementById('relNotes').value.trim();
+  var inclDB=document.getElementById('inclDB').checked;
+  var inclKeys=document.getElementById('inclKeys').checked;
+  S.s('des-version',newVer); S.s('des-notes',notes);
+  var seed={si:sites,dp:desPin};
+  if(inclDB&&irisDB.length) seed.db=irisDB;
+  if(inclKeys&&pnKey) seed.pn=pnKey;
+  if(inclKeys&&miKey) seed.mi=miKey;
+  var html=document.documentElement.outerHTML;
+  html=html.replace(/<meta[^>]*name="app-version"[^>]*>/,'<meta name="app-version" content="'+newVer+'">');
+  if(html.includes('name="release-notes"')) html=html.replace(/<meta[^>]*name="release-notes"[^>]*>/,'<meta name="release-notes" content="'+encodeURIComponent(notes)+'">');
+  else html=html.replace('<meta name="app-version"','<meta name="release-notes" content="'+encodeURIComponent(notes)+'">\n<meta name="app-version"');
+  html=html.replace(/<script type="application\/json" id="__seed__">[^<]*<\/script>/,'<script type="application/json" id="__seed__">'+JSON.stringify(seed)+'<\/script>');
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='irisid-v'+newVer+'.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  toast('irisid-v'+newVer+'.html prêt'+(inclDB?' ('+irisDB.length+' iris)':''));
+}
+
+// ══════════════════════════════════════════
+// UPDATE SYSTEM
+// ══════════════════════════════════════════
+function initVersionDisplay(){
+  var el=document.getElementById('curVerDisp'); if(el) el.textContent=APP_VERSION;
+  var url=S.g('update-url')||S.g('deploy-url'); if(url) document.getElementById('updateUrl').value=url;
+  if(url) checkUpdate(true);
+}
+function saveUpdateUrl(){ var u=document.getElementById('updateUrl').value.trim(); if(u){ S.s('update-url',u); toast('URL enregistrée'); } }
+function fixGhUrl(url){ return url.replace('/refs/heads/','/').replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/').trim(); }
+
+var pendingUpdateHtml=null;
+
+async function checkUpdate(silent){
+  var rawUrl=document.getElementById('updateUrl').value.trim()||S.g('update-url')||''; if(!rawUrl){if(!silent) toast('Aucune URL');return;}
+  var url=fixGhUrl(rawUrl); document.getElementById('updateUrl').value=url;
+  var st=document.getElementById('updStatus');
+  if(!silent){st.className='kst';st.textContent='⏳ Vérification…';}
+  try{
+    var resp=await fetch(url+'?nocache='+Date.now(),{cache:'no-store'});
+    if(resp.status===404){if(st){st.className='kst bad';st.innerHTML='❌ Fichier introuvable (404).<br><code style="font-size:.72rem">'+url+'</code>';}return;}
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    var html=await resp.text();
+    var match=html.match(/<meta[^>]*name="app-version"[^>]*content="([^"]+)"/);
+    if(!match){if(st){st.className='kst bad';st.textContent='❌ Pas de numéro de version dans le fichier.';}return;}
+    var remVer=match[1];
+    var notesM=html.match(/<meta[^>]*name="release-notes"[^>]*content="([^"]+)"/);
+    var notes=notesM?decodeURIComponent(notesM[1]):'';
+    function semGt(a,b){ var pa=a.split('.').map(Number),pb=b.split('.').map(Number); for(var i=0;i<3;i++){if((pa[i]||0)>(pb[i]||0))return true;if((pa[i]||0)<(pb[i]||0))return false;} return false; }
+    if(semGt(remVer,APP_VERSION)){
+      pendingUpdateHtml=html;
+      if(st){st.className='kst ok';st.innerHTML='✅ v'+remVer+' disponible (vous avez v'+APP_VERSION+')'+(notes?'<br><em style="font-size:.8rem;color:var(--br)">'+notes+'</em>':'');}
+      document.getElementById('applyBtn').style.display='inline-flex';
+      document.getElementById('updBadge').style.display='inline';
+      if(!silent) toast('Mise à jour v'+remVer+' disponible !');
+    } else {
+      pendingUpdateHtml=null;
+      document.getElementById('applyBtn').style.display='none';
+      document.getElementById('updBadge').style.display='none';
+      if(!silent&&st){st.className='kst ok';st.textContent='✓ Vous avez la dernière version (v'+APP_VERSION+')';}
+    }
+  }catch(e){if(!silent&&st){st.className='kst bad';st.textContent='Erreur : '+e.message;}}
+}
+
+async function applyUpdate(){
+  if(!pendingUpdateHtml){toast('Aucune mise à jour');return;}
+  if(!confirm('Installer la mise à jour ? Vos données seront préservées.')) return;
+  var backup={};
+  ['pn','mi','si','co','db','dp','cv','update-url','deploy-url'].forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) backup[k]=v; });
+  sessionStorage.setItem('irisid-restore',JSON.stringify(backup));
+  sessionStorage.setItem('irisid-updating','1');
+  document.open(); document.write(pendingUpdateHtml); document.close();
+}
+function restoreAfterUpdate(){
+  if(!sessionStorage.getItem('irisid-updating')) return;
+  sessionStorage.removeItem('irisid-updating');
+  var backup=sessionStorage.getItem('irisid-restore'); if(!backup) return;
+  sessionStorage.removeItem('irisid-restore');
+  try{ var data=JSON.parse(backup); Object.entries(data).forEach(function(e){ localStorage.setItem(e[0],e[1]); }); toast('✅ Mise à jour installée !'); setTimeout(function(){ location.reload(); },1200); }catch(e){ toast('Erreur restauration'); }
+}
+
+// ══════════════════════════════════════════
+// LIGHTBOX
+// ══════════════════════════════════════════
+function openLbox(src){ document.getElementById('lboxImg').src=src; document.getElementById('lbox').classList.add('on'); }
+function closeLbox(){ document.getElementById('lbox').classList.remove('on'); }
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+var toastT;
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){ t.classList.remove('on'); },2600); }
+
+// PWA
+if('serviceWorker' in navigator){
+  var swCode="const C='irisid-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));self.addEventListener('fetch',e=>{if(/plantnet|mistral|jina|allorigins|corsproxy|githubusercontent/.test(e.request.url))return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});";
+  var blob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); var dP=e; var btn=document.getElementById('installPwaBtn'); if(btn){btn.style.display='inline-flex'; btn.onclick=function(){ dP.prompt(); };} });
+}
+</script>
+</body>
+</html>
